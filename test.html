@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farkındalık Testi - Kontrol Sende</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo">KontrolSende</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Ana Sayfa</a></li>
+                <li><a href="test.html" class="active">Test Et</a></li>
+                <li><a href="etkinlikler.html">Etkinlikler</a></li>
+                <li><a href="yardim.html">Yardım Al</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger-menu"><span></span><span></span><span></span></button>
+        </nav>
+    </header>
+
+    <main class="container page-content">
+        <h1>Alışkanlık Farkındalık Testi</h1>
+        <p class="subtitle">Bu test tıbbi bir teşhis değildir. Sadece kendi yönelimlerin üzerine düşünmen için bir araçtır.</p>
+        
+        <div id="quiz-container" class="quiz-container">
+            <div id="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+            <div id="question-container" class="question">
+                </div>
+            <div id="quiz-navigation">
+                <button id="next-btn">Sonraki Soru</button>
+            </div>
+        </div>
+
+        <div id="result-container" class="result-container" style="display:none;">
+            </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 KontrolSende Platformu. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+    <script src="js/main.js"></script>
+</body>
+</html>
