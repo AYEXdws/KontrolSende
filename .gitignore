@@ -1,0 +1,17 @@
+# Sistem dosyaları
+.DS_Store
+Thumbs.db
+
+# IDE / editör ayarları
+.vscode/
+.idea/
+
+# Log dosyaları
+*.log
+
+# Geçici build klasörleri
+dist/
+build/
+
+# Node.js modülleri (ileride gerekirse)
+node_modules/
