@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Yardım • KontrolSende</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="KontrolSende - Yardım">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#icerik">İçeriğe geç</a>
+
+  <header class="site-header" role="banner">
+    <nav class="nav container" aria-label="Ana menü">
+      <a href="index.html" class="logo">KontrolSende</a>
+      <button class="nav-toggle" aria-label="Menüyü aç/kapat" aria-expanded="false">☰</button>
+      <ul class="nav-list">
+        <li><a href="index.html">Ana Sayfa</a></li>
+        <li><a href="etkinlikler.html">Etkinlikler</a></li>
+        <li><a class="active" href="yardim.html">Yardım</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="icerik" class="container">
+    <header class="page-header">
+      <h1>Yardım</h1>
+      <p>Sık sorulan sorular ve iletişim.</p>
+    </header>
+
+    <section class="faq">
+      <details class="faq-item">
+        <summary>Bu site nasıl çalışıyor?</summary>
+        <p>Sadece HTML ve CSS ile çalışır; herhangi bir kurulum gerekmez.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Mobil uyum var mı?</summary>
+        <p>Evet, esnek grid ve tipografi ile tüm ekranlara uyum sağlar.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Proje lisansı nedir?</summary>
+        <p>MIT lisansını README’de bulabilirsiniz.</p>
+      </details>
+    </section>
+
+    <section class="contact card">
+      <h2>İletişim</h2>
+      <form class="contact-form" action="#" method="post" novalidate>
+        <label>Ad Soyad
+          <input type="text" name="ad" required>
+        </label>
+        <label>E-posta
+          <input type="email" name="email" required>
+        </label>
+        <label>Mesaj
+          <textarea name="mesaj" rows="4" required></textarea>
+        </label>
+        <button class="btn primary" type="submit">Gönder</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© 2025 KontrolSende</small>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
