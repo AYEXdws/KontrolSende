@@ -1,72 +1,54 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8">
-  <title>Yardım • KontrolSende</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="KontrolSende - Yardım">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yardım Al - Kontrol Sende</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-  <a class="skip-link" href="#icerik">İçeriğe geç</a>
-
-  <header class="site-header" role="banner">
-    <nav class="nav container" aria-label="Ana menü">
-      <a href="index.html" class="logo">KontrolSende</a>
-      <button class="nav-toggle" aria-label="Menüyü aç/kapat" aria-expanded="false">☰</button>
-      <ul class="nav-list">
-        <li><a href="index.html">Ana Sayfa</a></li>
-        <li><a href="etkinlikler.html">Etkinlikler</a></li>
-        <li><a class="active" href="yardim.html">Yardım</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <main id="icerik" class="container">
-    <header class="page-header">
-      <h1>Yardım</h1>
-      <p>Sık sorulan sorular ve iletişim.</p>
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo">KontrolSende</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Ana Sayfa</a></li>
+                <li><a href="test.html">Test Et</a></li>
+                <li><a href="etkinlikler.html">Etkinlikler</a></li>
+                <li><a href="yardim.html" class="active">Yardım Al</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger-menu"><span></span><span></span><span></span></button>
+        </nav>
     </header>
-
-    <section class="faq">
-      <details class="faq-item">
-        <summary>Bu site nasıl çalışıyor?</summary>
-        <p>Sadece HTML ve CSS ile çalışır; herhangi bir kurulum gerekmez.</p>
-      </details>
-      <details class="faq-item">
-        <summary>Mobil uyum var mı?</summary>
-        <p>Evet, esnek grid ve tipografi ile tüm ekranlara uyum sağlar.</p>
-      </details>
-      <details class="faq-item">
-        <summary>Proje lisansı nedir?</summary>
-        <p>MIT lisansını README’de bulabilirsiniz.</p>
-      </details>
-    </section>
-
-    <section class="contact card">
-      <h2>İletişim</h2>
-      <form class="contact-form" action="#" method="post" novalidate>
-        <label>Ad Soyad
-          <input type="text" name="ad" required>
-        </label>
-        <label>E-posta
-          <input type="email" name="email" required>
-        </label>
-        <label>Mesaj
-          <textarea name="mesaj" rows="4" required></textarea>
-        </label>
-        <button class="btn primary" type="submit">Gönder</button>
-      </form>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <small>© 2025 KontrolSende</small>
-    </div>
-  </footer>
-
-  <script src="script.js" defer></script>
+    <main class="container page-content">
+        <h1>Nereden Yardım Alabilirim?</h1>
+        <p class="subtitle">Unutma, bir telefon veya bir mesaj uzağında sana destek olacak birileri var.</p>
+        
+        <div class="help-list">
+            <div class="help-item">
+                <h3>Yeşilay Danışmanlık Merkezi (YEDAM)</h3>
+                <p>Tütün, alkol, madde, kumar ve internet bağımlılıkları konusunda ücretsiz ve gizli psikososyal destek hizmeti sunar.</p>
+                <a href="tel:115" class="contact-link">Telefon: 115</a>
+            </div>
+            <div class="help-item">
+                <h3>Sosyal Destek Hattı</h3>
+                <p>Aile, Çalışma ve Sosyal Hizmetler Bakanlığı'na bağlıdır ve psikososyal destek sağlar.</p>
+                <a href="tel:183" class="contact-link">Telefon: 183</a>
+            </div>
+            <div class="help-item">
+                <h3>Uyuşturucu ile Mücadele Danışma ve Destek Hattı</h3>
+                <p>Sağlık Bakanlığı bünyesinde hizmet verir ve danışmanlık sağlar.</p>
+                <a href="tel:191" class="contact-link">Telefon: 191</a>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 KontrolSende Platformu. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+    <script src="js/main.js"></script>
 </body>
 </html>
