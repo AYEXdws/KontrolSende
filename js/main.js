@@ -368,6 +368,18 @@ document.addEventListener('DOMContentLoaded', () => {
       await DB.addResult(payload);       // veritabanına (şimdilik local)
       loadHistory();                     // yerel geçmişi yenile
       alert('Sonucunuz kaydedildi.');
+       // 🔹 Ek olarak NeonDB'ye kaydet (Render API üzerinden)
+fetch("https://kontrolsende.onrender.com/addResult", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    total_pct: stats.totalPct,
+    cats: stats.cats
+  })
+})
+  .then((res) => res.json())
+  .then((data) => console.log("✅ NeonDB'ye kaydedildi:", data))
+  .catch((err) => console.error("❌ NeonDB kaydı başarısız:", err));
     });
   }
 
