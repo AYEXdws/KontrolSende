@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>KontrolSende • Admin Panel</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="theme-glass">
+  <header id="ks-header" class="ks-header">
+  <nav class="ks-nav ks-container">
+    <a class="ks-logo" href="index.html">KontrolSende</a>
+
+    <!-- Hamburger -->
+    <button id="ks-hamburger" class="ks-hamburger" aria-label="Menüyü aç/kapat" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- Menü -->
+    <ul id="ks-drawer" class="ks-drawer" role="menu">
+      <li><a href="index.html">Ana Sayfa</a></li>
+      <li><a href="test.html">Test Et</a></li>
+      <li><a href="etkinlikler.html">Etkinlikler</a></li>
+      <li><a href="yardim.html">Yardım Al</a></li>
+      <li><a href="admin.html">Admin</a></li>
+    </ul>
+  </nav>
+</header>
+  <main class="ks-container admin-wrap" style="padding:28px 0">
+    <h1>Yönetim Paneli</h1>
+    <section class="card" id="admin-login">
+      <h3>Giriş</h3>
+      <p class="small muted">Basit yerel PIN koruması (Firebase Auth için hazır yapı)</p>
+      <div class="admin-login-row">
+        <input type="password" id="admin-pin" placeholder="PIN">
+        <button class="btn btn-primary" id="admin-enter">Giriş</button>
+      </div>
+      <p class="tiny muted">Varsayılan PIN: <code>2468</code></p>
+    </section>
+
+    <section class="card" id="admin-panel" style="display:none">
+      <div class="tabs">
+        <button id="tab-events" class="btn btn-primary">Etkinlikler</button>
+        <button id="tab-results" class="btn ghost">Kullanıcı Sonuçları</button>
+      </div>
+
+      <!-- Etkinlik Yönetimi -->
+      <div id="events-panel">
+        <h3>Etkinlik Ekle</h3>
+        <div class="event-form">
+          <input type="text" id="event-title" placeholder="Başlık">
+          <input type="text" id="event-desc" placeholder="Açıklama">
+          <input type="text" id="event-img" placeholder="Görsel URL">
+          <button id="add-event" class="btn btn-primary">Ekle</button>
+        </div>
+        <div id="admin-event-list" class="grid-3"></div>
+      </div>
+
+      <!-- Test Sonuçları -->
+      <div id="results-panel" style="display:none">
+        <h3>Kullanıcı Sonuçları</h3>
+        <div id="admin-result-list" class="history-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="ks-container foot">
+      <span class="tiny muted">© 2025 KontrolSende</span>
+      <a class="link tiny" href="index.html">Ana Sayfa</a>
+    </div>
+  </footer>
+  <script src="js/main.js" defer></script>
+</body>
+</html>
