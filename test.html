@@ -1,48 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Farkındalık Testi - Kontrol Sende</title>
-  <link rel="stylesheet" href="css/style.css"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KontrolSende • Farkındalık Testi</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <nav class="container">
-      <a href="index.html" class="logo">KontrolSende</a>
-      <ul class="nav-links">
-        <li><a href="index.html">Ana Sayfa</a></li>
-        <li><a class="active" href="test.html">Test Et</a></li>
-        <li><a href="etkinlikler.html">Etkinlikler</a></li>
-        <li><a href="yardim.html">Yardım Al</a></li>
-      </ul>
-      <select id="themeSwitcher" aria-label="Tema seç" 
-  style="padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:#fff;margin-left:10px;">
-  <option value="theme-green">Modern Yeşil</option>
-  <option value="theme-dark">Koyu Derin</option>
-  <option value="theme-glass">Glass / Gradient</option>
-</select>
-      <button class="hamburger" id="hamburger-menu" aria-label="Menüyü aç/kapat">
-        <span></span><span></span><span></span>
-      </button>
-    </nav>
-  </header>
+<header class="site-header">
+  <nav class="container nav">
+    <a class="logo" href="index.html">KontrolSende</a>
+    <button class="hamburger" id="hamburger" aria-label="Menüyü aç/kapat">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Ana Sayfa</a></li>
+      <li><a class="active" href="test.html">Test Et</a></li>
+      <li><a href="etkinlikler.html">Etkinlikler</a></li>
+      <li><a href="yardim.html">Yardım Al</a></li>
+      <li class="theme-li">
+        <label for="themeSwitcher" class="theme-label">Tema</label>
+        <select id="themeSwitcher" class="theme-select" aria-label="Tema seç">
+          <option value="theme-green">Modern Yeşil</option>
+          <option value="theme-dark">Koyu Derin</option>
+          <option value="theme-glass">Glass / Gradient</option>
+        </select>
+      </li>
+    </ul>
+  </nav>
+</header>
 
-  <main class="container page-content page-bg">
+<main class="page-bg">
+  <section class="container quiz-wrap">
     <h1>Alışkanlık Farkındalık Testi</h1>
-    <p class="subtitle">
-      Bu test tıbbi bir teşhis değildir. Amacı yalnızca farkındalık kazandırmaktır.
-      İçerik **sigara, alkol ve genel bağımlılık davranışları** (dijital, oyun, sosyal medya, alışveriş/kumar) odaklıdır.
-    </p>
+    <p class="muted small">Bu test teşhis amacı taşımaz; yalnızca farkındalık kazandırır.</p>
 
-    <div id="quiz-container" class="quiz-container" role="region" aria-labelledby="quizTitle">
-      <div id="progress-bar-container" aria-hidden="true">
-        <div id="progress-bar"></div>
-      </div>
-      <div class="quiz-meta">
+    <div class="quiz card" id="quiz-container" role="region">
+      <div class="progress" aria-hidden="true"><div id="progress-bar"></div></div>
+      <div class="meta">
         <span id="question-counter" class="pill"></span>
         <span id="category-chip" class="pill soft"></span>
         <span id="percent-chip" class="pill soft"></span>
@@ -50,33 +47,32 @@
 
       <div id="question-container" class="question" aria-live="polite"></div>
 
-      <div id="quiz-navigation" class="quiz-nav">
-        <button id="prev-btn" class="ghost" aria-label="Önceki soru">Geri</button>
-        <div class="quiz-nav-right">
-          <button id="restart-btn" class="ghost" style="display:none">Yeniden Başlat</button>
-          <button id="next-btn" class="">Sonraki</button>
+      <div class="quiz-nav">
+        <button id="prev-btn" class="btn ghost">Geri</button>
+        <div class="right">
+          <button id="restart-btn" class="btn ghost" style="display:none">Yeniden Başlat</button>
+          <button id="next-btn" class="btn btn-primary">Sonraki</button>
         </div>
       </div>
     </div>
 
-    <div id="result-container" class="result-container" style="display:none;"></div>
-
-    <div id="history-container" class="history-container" style="display:none;">
-      <h2>Kaydedilen Sonuçların</h2>
+    <div id="result-container" class="result card" style="display:none"></div>
+    <div id="history-container" class="history" style="display:none">
+      <h3>Kaydedilen Sonuçların</h3>
       <div id="history-list" class="history-list"></div>
     </div>
 
-    <p class="disclaimer">
-      *Desteğe ihtiyaç duyarsan, <a href="yardim.html">Yardım Al</a> sayfamızdaki resmi hatlar ve danışmanlık
-      seçenekleriyle konuşabilirsin. Yalnız değilsin.
-    </p>
-  </main>
+    <p class="muted tiny">Desteğe ihtiyaç duyarsan <a class="link" href="yardim.html">Yardım Al</a> sayfamızdaki resmi hatlarla iletişime geçebilirsin.</p>
+  </section>
+</main>
 
-  <footer>
-    <div class="container">
-      <p>&copy; 2025 KontrolSende Platformu. Tüm hakları saklıdır.</p>
-    </div>
-  </footer>
-  <script src="js/main.js"></script>
+<footer class="site-footer">
+  <div class="container foot">
+    <p>© 2025 KontrolSende • Okul Projesi</p>
+    <a href="yardim.html" class="link">Yardım</a>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
 </body>
 </html>
