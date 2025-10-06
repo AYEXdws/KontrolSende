@@ -269,3 +269,16 @@ img{ max-width:100%; height:auto }
 @media (prefers-reduced-motion: reduce){
   *{ animation: none !important; transition: none !important }
 }
+/* === KS Z-INDEX FIX === */
+.ks-header{ z-index: 10050; }       /* header tüm katmanların üstüne */
+.ks-backdrop{ z-index: 10040; }     /* header’ın ALTINDA kalsın */
+@media (max-width:820px){
+  .ks-drawer{ z-index: 10060; }     /* çekmece (menü) en üstte */
+}
+
+/* === Hamburger daha belirgin & X dönüşümü keskin === */
+.ks-hamburger{ width:52px; height:52px; border-radius:14px; }
+.ks-hamburger span{ width:26px; height:2.5px; }
+.ks-hamburger span+span{ margin-top:6px; }
+.ks-hamburger.ks-active span:nth-child(1){ transform:translateY(8px) rotate(45deg); }
+.ks-hamburger.ks-active span:nth-child(3){ transform:translateY(-8px) rotate(-45deg); }
