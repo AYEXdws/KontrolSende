@@ -193,3 +193,5 @@ footer { background: #333; color: #ccc; text-align: center; padding: 20px; font-
 .history-cats { display:flex; gap:6px; flex-wrap:wrap; }
 
 .disclaimer { margin-top:24px; color:#666; font-size:.95rem; text-align:center; }
+/* Gizli rapor küçük uyumlar */
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid #e7e7e7;border-radius:999px;font-size:.9rem;background:#f5f7f9;color:#555}
