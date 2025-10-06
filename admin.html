@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gizli Rapor – KontrolSende</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .admin-wrap{max-width:900px;margin:40px auto;padding:0 20px}
+    .admin-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:18px;box-shadow:0 5px 15px rgba(0,0,0,.05);margin-bottom:16px}
+    .admin-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid #e7e7e7;border-radius:999px;font-size:.9rem;background:#f5f7f9;color:#555}
+    .bar{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px;margin-top:12px}
+    .bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .bar-bg{width:100%;height:12px;background:#f0f2f5;border-radius:999px;overflow:hidden}
+    .bar-fill{height:100%;background:var(--secondary-color)}
+    .bar-fill.mid{background:#f4b740}.bar-fill.high{background:#ff6b6b}
+    .muted{color:#666}
+    .grid{display:grid;gap:12px}
+    @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{border:1px solid #e7e7e7;border-radius:8px;padding:8px 12px;background:#fff;cursor:pointer}
+    .btn:hover{background:#f5f7f9}
+    .pin-box{display:flex;gap:8px;margin:20px 0}
+    .pin-box input{padding:10px;border:1px solid #ddd;border-radius:8px;flex:1}
+  </style>
+</head>
+<body>
+  <main class="admin-wrap">
+    <h1 style="text-align:center">Gizli Rapor</h1>
+    <p class="muted" style="text-align:center;margin-top:-6px">Bu sayfa arama motorlarına kapalıdır ve menüde görünmez.</p>
+
+    <div id="gate" class="admin-card">
+      <h3>Giriş</h3>
+      <p class="muted">Erişim anahtarını (PIN) gir.</p>
+      <div class="pin-box">
+        <input id="pin" type="password" placeholder="PIN">
+        <button id="enter" class="btn">Giriş yap</button>
+      </div>
+      <small class="muted">İpucu: URL sonunda <code>#AYEX-KEY-2025</code> yazıyorsa otomatik doğrulanır.</small>
+    </div>
+
+    <div id="content" style="display:none">
+      <div class="admin-card admin-head">
+        <h2 style="margin:0">Sonuç Özeti</h2>
+        <div class="actions">
+          <button id="refresh" class="btn">Yenile</button>
+          <button id="export" class="btn">CSV indir</button>
+          <button id="clear" class="btn">Tümünü temizle</button>
+        </div>
+      </div>
+
+      <div id="summary" class="admin-card"></div>
+
+      <div class="grid" id="items"></div>
+    </div>
+  </main>
+
+  <script>
+    // Basit “gizli” anahtar – statik sitede gerçek güvenlik sağlamaz.
+    const SECRET = 'AYEX-KEY-2025';
+
+    const gate = document.getElementById('gate');
+    const content = document.getElementById('content');
+    const pinInput = document.getElementById('pin');
+    const enterBtn = document.getElementById('enter');
+    const itemsEl = document.getElementById('items');
+    const summaryEl = document.getElementById('summary');
+    const refreshBtn = document.getElementById('refresh');
+    const exportBtn = document.getElementById('export');
+    const clearBtn = document.getElementById('clear');
+
+    function level(p){ if(p<=33) return 'Düşük'; if(p<=66) return 'Orta'; return 'Yüksek'; }
+    function tone(p){ if(p<=33) return ''; if(p<=66) return 'mid'; return 'high'; }
+
+    function getResults(){
+      try { return JSON.parse(localStorage.getItem('ks-results')||'[]'); }
+      catch(e){ return []; }
+    }
+
+    function render(){
+      const list = getResults();
+      itemsEl.innerHTML = '';
+      if(list.length===0){
+        summaryEl.innerHTML = '<p class="muted">Kayıt bulunamadı. Test sayfasında “Sonucumu Kaydet”e basmalısın.</p>';
+        return;
+      }
+
+      // Genel istatistik: ortalama toplam %, en güncel tarih vb.
+      const avg = Math.round(list.reduce((a,b)=>a+b.totalPct,0)/list.length);
+      const last = new Date(list[0].at).toLocaleString();
+      // Kategori ortalamaları
+      const catMap = {};
+      list.forEach(it=>{
+        it.cats.forEach(c=>{
+          catMap[c.cat] = catMap[c.cat] || [];
+          catMap[c.cat].push(c.pct);
+        });
+      });
+      const catAvg = Object.entries(catMap).map(([cat,arr])=>{
+        const p = Math.round(arr.reduce((a,b)=>a+b,0)/arr.length);
+        return {cat, pct:p};
+      });
+
+      summaryEl.innerHTML = `
+        <div class="admin-head" style="margin-bottom:8px">
+          <div><strong>Toplam kayıt:</strong> ${list.length}</div>
+          <span class="pill">Genel ort.: ${avg}% (${level(avg)})</span>
+          <span class="pill">Son kayıt: ${last}</span>
+        </div>
+        <div>
+          ${catAvg.map(c=>`
+            <div class="bar">
+              <div class="bar-top">
+                <strong>${c.cat}</strong>
+                <span>${c.pct}% (${level(c.pct)})</span>
+              </div>
+              <div class="bar-bg"><div class="bar-fill ${tone(c.pct)}" style="width:${c.pct}%"></div></div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      itemsEl.innerHTML = list.map(it => `
+        <div class="admin-card">
+          <div class="admin-head" style="margin-bottom:8px">
+            <strong>${new Date(it.at).toLocaleString()}</strong>
+            <span class="pill">Genel: ${it.totalPct}% (${level(it.totalPct)})</span>
+          </div>
+          ${it.cats.map(c=>`
+            <div class="bar">
+              <div class="bar-top">
+                <span>${c.cat}</span><span>${c.pct}%</span>
+              </div>
+              <div class="bar-bg"><div class="bar-fill ${tone(c.pct)}" style="width:${c.pct}%"></div></div>
+            </div>
+          `).join('')}
+        </div>
+      `).join('');
+    }
+
+    function exportCSV(){
+      const list = getResults();
+      if(list.length===0){ alert('İndirilecek kayıt yok.'); return; }
+      const rows = [];
+      // Başlık
+      const cats = Array.from(new Set(list.flatMap(it => it.cats.map(c=>c.cat))));
+      rows.push(['Tarih','Genel(%)', ...cats.map(c=>`${c}(%)`)].join(','));
+      // Satırlar
+      list.forEach(it=>{
+        const map = Object.fromEntries(it.cats.map(c=>[c.cat, c.pct]));
+        rows.push([it.at, it.totalPct, ...cats.map(c=>map[c]??'')].join(','));
+      });
+      const blob = new Blob([rows.join('\n')], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'kontrolsende_rapor.csv'; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function unlock(){
+      gate.style.display='none';
+      content.style.display='block';
+      render();
+    }
+
+    enterBtn.addEventListener('click', ()=>{
+      if(pinInput.value.trim() === SECRET){ unlock(); }
+      else alert('PIN hatalı.');
+    });
+
+    // URL hash otomatik giriş (örn: admin.html#AYEX-KEY-2025)
+    if(location.hash.replace('#','') === SECRET){ unlock(); }
+
+    refreshBtn.addEventListener('click', render);
+    exportBtn.addEventListener('click', exportCSV);
+    clearBtn.addEventListener('click', ()=>{
+      if(confirm('Tüm yerel kayıtları silmek istediğine emin misin? Bu işlem geri alınamaz.')){
+        localStorage.removeItem('ks-results'); render();
+      }
+    });
+  </script>
+</body>
+</html>
