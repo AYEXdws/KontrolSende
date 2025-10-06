@@ -1,95 +1,61 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proje Etkinlikleri - Kontrol Sende</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KontrolSende • Etkinlikler</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <nav class="container">
-            <a href="index.html" class="logo">KontrolSende</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Ana Sayfa</a></li>
-                <li><a href="test.html">Test Et</a></li>
-                <li><a href="etkinlikler.html" class="active">Etkinlikler</a></li>
-                <li><a href="yardim.html">Yardım Al</a></li>
-            </ul>
-            <select id="themeSwitcher" aria-label="Tema seç" 
-  style="padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:#fff;margin-left:10px;">
-  <option value="theme-green">Modern Yeşil</option>
-  <option value="theme-dark">Koyu Derin</option>
-  <option value="theme-glass">Glass / Gradient</option>
-</select>
-            <button class="hamburger" id="hamburger-menu"><span></span><span></span><span></span></button>
-        </nav>
-    </header>
+<header class="site-header">
+  <nav class="container nav">
+    <a class="logo" href="index.html">KontrolSende</a>
+    <button class="hamburger" id="hamburger" aria-label="Menüyü aç/kapat"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Ana Sayfa</a></li>
+      <li><a href="test.html">Test Et</a></li>
+      <li><a class="active" href="etkinlikler.html">Etkinlikler</a></li>
+      <li><a href="yardim.html">Yardım Al</a></li>
+      <li class="theme-li">
+        <label for="themeSwitcher" class="theme-label">Tema</label>
+        <select id="themeSwitcher" class="theme-select" aria-label="Tema seç">
+          <option value="theme-green">Modern Yeşil</option>
+          <option value="theme-dark">Koyu Derin</option>
+          <option value="theme-glass">Glass / Gradient</option>
+        </select>
+      </li>
+    </ul>
+  </nav>
+</header>
 
-    <main class="container page-content page-bg">
-        <h1>Proje Etkinliklerimiz</h1>
-        <p class="subtitle">Okulumuzda ve çevremizde farkındalık yaratmak için düzenlediğimiz tüm çalışmaları buradan takip edebilirsiniz.</p>
-        
-        <div class="activities-grid">
-            <article class="activity-card">
-                <img src="#"alt="Afiş Tasarımı">
-                <div class="activity-content">
-                    <h3>Afiş Tasarım Yarışması</h3>
-                    <p>#</p>
-                    <a href="#">Detayları Gör</a>
-                </div>
-            </article>
-            <article class="activity-card">
-                <img src="#">
-                <div class="activity-content">
-                    <h3>Yeşilay ile Seminer</h3>
-                    <p>Yeşilay'dan gelen uzmanlar eşliğinde okulumuzda bilinçlendirici ve interaktif bir seminer düzenledik.</p>
-                    <a href="#">Detayları Gör</a>
-                </div>
-            </article>
-            <article class="activity-card">
-                <img src="#" alt="Tiyatro">
-                <div class="activity-content">
-                    <h3>"Perde" Adlı Tiyatro Oyunu</h3>
-                    <p>Tiyatro kulübümüzün hazırladığı, bağımlılığın sosyal etkilerini konu alan oyunumuz büyük beğeni topladı.</p>
-                    <a href="#">Detayları Gör</a>
-                </div>
-            </article>
-            <article class="activity-card">
-                <img src="#" alt="Röportaj">
-                <div class="activity-content">
-                    <h3>Sokak Röportajları</h3>
-                    <p>#</p>
-                    <a href="#">Detayları Gör</a>
-                </div>
-                    </article>
-                    <article class="activity-card">
-                    <img src="#">
-                    <div /class="activity-content">
-                        <h3>Yeşilay ile Seminer</h3>
-                        <p>#</p>
-                        <a href="#">Detayları Gör</a>
-                    </div>
-                     </article>
-            <article class="activity-card">
-                <img src="#">
-                <div /class="activity-content">
-                    <h3>Yeşilay ile Seminer</h3>
-                    <p>#</p>
-                    <a href="#">Detayları Gör</a>
-                </div>
-                    </article>
-        </div>
-    </main>
+<main class="page-bg">
+  <section class="container">
+    <h1>Etkinlikler</h1>
+    <div class="grid-3">
+      <article class="card">
+        <h3>Farkındalık Atölyesi</h3>
+        <p>Okul konferans salonu • 12 Ekim</p>
+      </article>
+      <article class="card">
+        <h3>Yeşil Yaşam Sohbetleri</h3>
+        <p>Fen Laboratuvarı • 20 Ekim</p>
+      </article>
+      <article class="card">
+        <h3>Dijital Denge Günü</h3>
+        <p>Bilişim Sınıfı • 27 Ekim</p>
+      </article>
+    </div>
+  </section>
+</main>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 KontrolSende Platformu. Tüm hakları saklıdır.</p>
-        </div>
-    </footer>
-    <script src="js/main.js"></script>
+<footer class="site-footer">
+  <div class="container foot">
+    <p>© 2025 KontrolSende • Okul Projesi</p>
+    <a href="test.html" class="link">Test Et</a>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
 </body>
 </html>
