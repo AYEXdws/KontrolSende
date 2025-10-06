@@ -8,7 +8,26 @@ document.addEventListener('DOMContentLoaded', () => {
       navLinks.classList.toggle('active');
     });
   }
+// =============== THEME SWITCHER ===============
+(function(){
+  const KEY = 'ks-theme';
+  const root = document.documentElement;
+  const select = document.getElementById('themeSwitcher');
 
+  // Kaydı oku + uygula
+  const saved = localStorage.getItem(KEY) || 'theme-green';
+  root.classList.remove('theme-green','theme-dark','theme-glass');
+  root.classList.add(saved);
+  if (select) select.value = saved;
+
+  // Değişim
+  select?.addEventListener('change', (e)=>{
+    const val = e.target.value;
+    root.classList.remove('theme-green','theme-dark','theme-glass');
+    root.classList.add(val);
+    localStorage.setItem(KEY, val);
+  });
+})();
   // --- Test mantığı ---
   const quizContainer = document.getElementById('quiz-container');
   if (!quizContainer) return;
