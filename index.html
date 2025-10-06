@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KontrolSende | Bağımlılıkla Mücadele</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <!-- 🟢 Navigasyon -->
+  <nav class="container-fluid glass-nav">
+    <ul>
+      <li><strong>KontrolSende</strong></li>
+    </ul>
+    <ul>
+      <li><a href="index.html" class="active">Ana Sayfa</a></li>
+      <li><a href="test.html">Test</a></li>
+      <li><a href="etkinlikler.html">Etkinlikler</a></li>
+      <li><a href="yardim.html">Yardım</a></li>
+      <li><a href="admin.html" role="button">Admin</a></li>
+    </ul>
+  </nav>
+
+  <!-- 🏠 Ana içerik -->
+  <main class="container">
+    <div class="grid">
+      <section>
+        <hgroup>
+          <h2>Bağımlılığın Farkında Ol</h2>
+          <h3>Kontrol Sende</h3>
+        </hgroup>
+        <p>
+          Sigara, alkol ve dijital bağımlılık çağımızın en büyük sorunları arasında. 
+          Farkında ol, kendine iyi bak, kontrolü elinde tut. 
+          Bu platform bağımlılık bilinci kazandırmak için oluşturuldu.
+        </p>
+
+        <figure>
+          <img src="https://source.unsplash.com/1600x900/?awareness,health" alt="Bağımlılıkla mücadele görseli">
+          <figcaption>
+            Farkındalık seninle başlar.
+            <br>
+            <!-- TODO: Bu görseli /images klasöründen kendi fotoğrafınla değiştirebilirsin -->
+          </figcaption>
+        </figure>
+
+        <h3>Neden Önemli?</h3>
+        <p>
+          Sağlıklı bir yaşam için bağımlılıkların etkilerini bilmek ve önlem almak gerekir. 
+          Unutma, küçük farkındalıklar büyük değişimlere yol açar.
+        </p>
+
+        <a href="test.html" role="button">Testi Başlat</a>
+      </section>
+    </div>
+  </main>
+
+  <!-- 📬 Abonelik / İletişim Alanı -->
+  <section aria-label="Subscribe example">
+    <div class="container">
+      <article>
+        <hgroup>
+          <h2>Bilgilendirmeler İçin Kaydol</h2>
+          <h3>Yeni farkındalık etkinliklerinden haberdar ol</h3>
+        </hgroup>
+        <form class="grid">
+          <input type="text" id="firstname" name="firstname" placeholder="Adın" aria-label="Adın" required>
+          <input type="email" id="email" name="email" placeholder="E-posta adresin" aria-label="E-posta adresin" required>
+          <button type="submit" onclick="event.preventDefault()">Kaydol</button>
+        </form>
+      </article>
+    </div>
+  </section>
+
+  <!-- ⚙️ Altbilgi -->
+  <footer class="container">
+    <small>
+      <a href="index.html">KontrolSende</a> • 
+      <a href="https://unsplash.com" target="_blank">Görseller: Unsplash</a>
+    </small>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
