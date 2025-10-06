@@ -172,19 +172,28 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const open = ()=>{
-    drawer.classList.add('ks-open');
-    btn.classList.add('ks-active');                 // X dönüşümü
-    btn.setAttribute('aria-expanded','true');
-    backdrop.classList.add('ks-show');
-    document.documentElement.style.overflow='hidden';
-  };
-  const close = ()=>{
-    drawer.classList.remove('ks-open');
-    btn.classList.remove('ks-active');
-    btn.setAttribute('aria-expanded','false');
-    backdrop.classList.remove('ks-show');
-    document.documentElement.style.overflow='';
-  };
+  drawer.classList.add('ks-open');
+  btn.classList.add('ks-active');
+  btn.setAttribute('aria-expanded','true');
+  backdrop.classList.add('ks-show');
+  document.documentElement.style.overflow = 'hidden';
+
+  // YENİ: menü açıkken buton tıklamayı engellemesin
+  btn.style.pointerEvents = 'none';
+  document.documentElement.classList.add('menu-open');
+};
+
+const close = ()=>{
+  drawer.classList.remove('ks-open');
+  btn.classList.remove('ks-active');
+  btn.setAttribute('aria-expanded','false');
+  backdrop.classList.remove('ks-show');
+  document.documentElement.style.overflow = '';
+
+  // YENİ: menü kapanınca buton tekrar tıklanabilir
+  btn.style.pointerEvents = 'auto';
+  document.documentElement.classList.remove('menu-open');
+};
   const toggle = ()=> drawer.classList.contains('ks-open') ? close() : open();
 
   btn.addEventListener('click', toggle);
