@@ -53,7 +53,7 @@ body.theme-glass{
    HEADER / NAV
    ========================= */
 .ks-header{
-  position:sticky; top:0; z-index:100;
+  position:sticky; top:0; z-index:1010;                /* üstte kalsın */
   background:color-mix(in oklab, var(--surface) 75%, transparent);
   border-bottom:1px solid var(--border);
   backdrop-filter: blur(12px) saturate(1.1);
@@ -61,6 +61,13 @@ body.theme-glass{
 }
 .ks-nav{display:flex; align-items:center; gap:16px; padding:14px 0}
 .ks-logo{font-weight:700; font-size:20px; color:var(--text); text-decoration:none}
+
+/* Backdrop (karartma) */
+.ks-backdrop{
+  position:fixed; inset:0; background:rgba(0,0,0,.45);
+  opacity:0; pointer-events:none; transition:opacity .2s ease; z-index:1000;
+}
+.ks-backdrop.ks-show{ opacity:1; pointer-events:auto }
 
 /* Masaüstü menü */
 .ks-drawer{
@@ -75,55 +82,42 @@ body.theme-glass{
   background:rgba(255,255,255,.75);
 }
 
-/* Hamburger (dominant & estetik) */
+/* --- Klasik Hamburger (3 çizgi) + X dönüşümü --- */
 .ks-hamburger{
-  display:none; align-items:center; justify-content:center;
-  margin-left:auto; width:48px; height:48px;
-  background:rgba(255,255,255,.8); border:1px solid var(--border); border-radius:14px;
-  cursor:pointer; -webkit-appearance:none; appearance:none;
-  position:relative; z-index:10003; backdrop-filter: blur(6px);
-  transition:transform .18s ease, background .2s ease;
+  display:flex; align-items:center; justify-content:center;
+  width:48px; height:48px; margin-left:auto;
+  background:#fff; border:1px solid #eaecef; border-radius:12px; cursor:pointer;
+  position:relative; transition:background .2s;
 }
-.ks-hamburger:hover{ transform:translateY(-1px); background:rgba(255,255,255,.9) }
-.ks-hamburger:focus{ outline:2px solid var(--ring) }
+.ks-hamburger:hover{ background:#fff }
+.theme-dark .ks-hamburger{ background:#1a232c; border-color:#2a3744 }
 .ks-hamburger span{
-  width:22px; height:2px; background:var(--text);
-  border-radius:2px; display:block; transition:transform .2s, opacity .2s;
+  display:block; width:24px; height:2px; background:currentColor;
+  border-radius:2px; transition:transform .22s ease, opacity .18s ease;
 }
-.ks-hamburger span + span{ margin-top:6px }
-.ks-hamburger.ks-active span:nth-child(1){ transform:translateY(8px) rotate(40deg) }
+.ks-hamburger span+span{ margin-top:6px }
+/* X dönüşümü — merkezde pürüzsüz */
+.ks-hamburger.ks-active span:nth-child(1){ transform:translateY(6px) rotate(45deg) }
 .ks-hamburger.ks-active span:nth-child(2){ opacity:0 }
-.ks-hamburger.ks-active span:nth-child(3){ transform:translateY(-8px) rotate(-40deg) }
+.ks-hamburger.ks-active span:nth-child(3){ transform:translateY(-6px) rotate(-45deg) }
 
-/* Backdrop */
-.ks-backdrop{
-  position:fixed; inset:0; background:rgba(0,0,0,.38);
-  opacity:0; pointer-events:none; transition:opacity .2s ease; z-index:10000;
-}
-.ks-backdrop.ks-show{ opacity:1; pointer-events:auto }
-
-/* Mobil panel (performans odaklı) */
+/* --- Mobil çekmece --- */
 @media (max-width:820px){
-  .ks-hamburger{ display:flex }
   .ks-drawer{
-    position:fixed; top:0; right:0; height:100dvh;
-    width:min(78vw,360px);
-    background: linear-gradient(to bottom, rgba(255,255,255,.55), rgba(255,255,255,.30));
-    border-left:1px solid var(--border);
-    backdrop-filter: blur(12px) saturate(1.1);
-    -webkit-backdrop-filter: blur(12px) saturate(1.1);
-    box-shadow:-12px 0 30px rgba(0,0,0,.16);
-    display:flex; flex-direction:column; align-items:flex-start; gap:10px;
+    position:fixed; top:0; right:0; height:100dvh; width:min(78vw,360px);
+    background:#fff; border-left:1px solid #eaecef;
     padding:calc(var(--ks-offset, 64px) + 12px) 16px 16px;
     overflow:auto; -webkit-overflow-scrolling:touch;
-    transform:translate3d(105%,0,0); transition:transform .25s ease;
-    z-index:10002; will-change:transform;
+    transform:translateX(100%); transition:transform .25s ease; z-index:1020;
+    display:flex; flex-direction:column; gap:10px; list-style:none; margin:0;
   }
-  .ks-drawer a{ display:block; width:100%; padding:12px 10px; border-radius:12px }
-  .ks-drawer a:active{ background:rgba(255,255,255,.5) }
+  .theme-dark .ks-drawer{
+    background:#121a22; border-left-color:#1d2833;
+  }
+  .ks-drawer.ks-open{ transform:translateX(0) }
+  .ks-drawer a{ display:block; padding:12px 10px; border-radius:10px; color:inherit }
   .ks-theme{ width:100%; margin-top:8px }
   .ks-select{ width:100% }
-  .ks-drawer.ks-open{ transform:translate3d(0,0,0) }
 }
 @media (min-width:821px){
   .ks-drawer{ position:static; transform:none!important; box-shadow:none; border:0; padding:0 }
@@ -269,138 +263,3 @@ img{ max-width:100%; height:auto }
 @media (prefers-reduced-motion: reduce){
   *{ animation: none !important; transition: none !important }
 }
-/* === KS Z-INDEX FIX === */
-.ks-header{ z-index: 10050; }       /* header tüm katmanların üstüne */
-.ks-backdrop{ z-index: 10040; }     /* header’ın ALTINDA kalsın */
-@media (max-width:820px){
-  .ks-drawer{ z-index: 10060; }     /* çekmece (menü) en üstte */
-}
-
-/* === Hamburger daha belirgin & X dönüşümü keskin === */
-.ks-hamburger{ width:52px; height:52px; border-radius:14px; }
-.ks-hamburger span{ width:26px; height:2.5px; }
-.ks-hamburger span+span{ margin-top:6px; }
-.ks-hamburger.ks-active span:nth-child(1){ transform:translateY(8px) rotate(45deg); }
-.ks-hamburger.ks-active span:nth-child(3){ transform:translateY(-8px) rotate(-45deg); }
-/* === HAMBURGER: Eski span tabanlı stilleri kapat === */
-.ks-hamburger > span,
-.ks-hamburger .ks-bars,
-.ks-hamburger .ks-bars::before,
-.ks-hamburger .ks-bars::after{ display:none !important; }
-
-/* === HAMBURGER: SVG tabanlı, her tarayıcıda pürüzsüz === */
-.ks-hamburger{
-  width:54px; height:54px; border-radius:16px;
-  background:rgba(255,255,255,.92);
-  border:1px solid rgba(0,0,0,.05);
-  box-shadow:0 6px 20px rgba(0,0,0,.12);
-  display:flex; align-items:center; justify-content:center; position:relative;
-}
-.theme-dark .ks-hamburger{ background:rgba(20,24,30,.9); border-color:rgba(255,255,255,.08) }
-
-.ks-icon{ display:block }
-.ks-icon line{
-  stroke: var(--text);
-  stroke-width: 2.6;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-  shape-rendering: geometricPrecision;
-  transition: transform .24s ease, opacity .18s ease, stroke .2s ease;
-  transform-origin: 12px 12px;
-}
-/* Başlangıç pozisyonu */
-.ks-icon .k-top{ transform: translateY(-6px); }
-.ks-icon .k-mid{ opacity: 1; }
-.ks-icon .k-bot{ transform: translateY( 6px); }
-/* X durumuna dönüşüm */
-.ks-hamburger.ks-active .k-top{ transform: rotate(45deg); }
-.ks-hamburger.ks-active .k-mid{ opacity: 0; }
-.ks-hamburger.ks-active .k-bot{ transform: rotate(-45deg); }
-
-/* Z-index sıralaması */
-.ks-header{ z-index:10050; }
-.ks-backdrop{ z-index:10040; background:rgba(0,0,0,.48); }
-@media (max-width:820px){
-  .ks-drawer{
-    z-index:10060;
-    background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.68));
-    border-left:1px solid rgba(255,255,255,.75);
-    box-shadow:-18px 0 40px rgba(0,0,0,.22);
-  }
-}
-/* ==== FULLSCREEN MENÜ (tüm cihazlarda) ==== */
-
-/* Eski çekmece/backdrop kapatılsın */
-.ks-backdrop{ display:none !important; }
-
-/* Tam ekran kaplayan menü */
-.ks-drawer{
-  position:fixed; inset:0;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:18px; list-style:none; margin:0; padding:24px;
-  background:
-    radial-gradient(900px 500px at 20% 0%, rgba(163,255,214,.28), transparent 55%),
-    radial-gradient(900px 500px at 80% 10%, rgba(201,248,231,.24), transparent 55%),
-    rgba(255,255,255,.90);
-  backdrop-filter: blur(14px) saturate(1.05);
-  -webkit-backdrop-filter: blur(14px) saturate(1.05);
-  border:0;
-  opacity:0; transform:scale(.98) translateY(-6px);
-  pointer-events:none; transition:opacity .22s ease, transform .22s ease;
-  z-index:10060;
-}
-.theme-dark .ks-drawer{
-  background: rgba(12,16,22,.92);
-}
-
-/* Açık durum */
-.ks-drawer.ks-open{ opacity:1; transform:none; pointer-events:auto; }
-
-/* Menü öğeleri – büyük ve rahat tıklanır */
-.ks-drawer a{
-  display:block; padding:14px 18px; border-radius:12px;
-  font-size:clamp(18px,3.8vw,26px); font-weight:600; color:var(--text);
-}
-.ks-drawer a[aria-current="page"]{ color:var(--primary); }
-
-/* Tema seçici tam ekranda da şık görünsün */
-.ks-drawer .ks-theme{ margin-top:12px; width:min(320px,80%); }
-.ks-drawer .ks-select{ width:100%; font-size:16px; padding:12px 14px; }
-
-/* Header ve buton katmanı */
-.ks-header{ z-index:10070; }
-.ks-hamburger{ z-index:10080; }
-
-/* SVG hamburger – pürüzsüz çizgi ve X dönüşümü */
-.ks-hamburger{
-  width:54px;height:54px;border-radius:16px;
-  background:rgba(255,255,255,.92); border:1px solid rgba(0,0,0,.05);
-  box-shadow:0 6px 20px rgba(0,0,0,.12);
-  display:flex;align-items:center;justify-content:center;position:relative;
-}
-.theme-dark .ks-hamburger{background:rgba(20,24,30,.9);border-color:rgba(255,255,255,.08)}
-.ks-icon line{
-  stroke:var(--text); stroke-width:2.6; stroke-linecap:round;
-  vector-effect:non-scaling-stroke; shape-rendering:geometricPrecision;
-  transform-origin:12px 12px; transition:transform .24s ease, opacity .18s ease;
-}
-.ks-icon .k-top{ transform:translateY(-6px) }
-.ks-icon .k-mid{ opacity:1 }
-.ks-icon .k-bot{ transform:translateY(6px) }
-.ks-hamburger.ks-active .k-top{ transform:rotate(45deg) }
-.ks-hamburger.ks-active .k-mid{ opacity:0 }
-.ks-hamburger.ks-active .k-bot{ transform:rotate(-45deg) }
-/* === Hamburger → X düzgün dönüşüm === */
-.ks-hamburger{ position:relative }  /* güvenli merkezleme */
-.ks-hamburger span{
-  display:block; width:24px; height:2px; background:currentColor;
-  border-radius:2px;
-  transition:transform .22s ease, opacity .18s ease;
-  transform-origin:50% 50%;
-}
-.ks-hamburger span + span{ margin-top:6px }
-
-/* X durumunda: üst çizgi aşağı 6px + 45°, alt çizgi yukarı 6px - 45°, orta çizgi gizlenir */
-.ks-hamburger.ks-active span:nth-child(1){ transform:translateY(6px) rotate(45deg) }
-.ks-hamburger.ks-active span:nth-child(2){ opacity:0 }
-.ks-hamburger.ks-active span:nth-child(3){ transform:translateY(-6px) rotate(-45deg) }
