@@ -2,77 +2,74 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KontrolSende • Farkındalık Testi</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KontrolSende • Test</title>
+  <link rel="stylesheet" href="css/style.css?v=1">
 </head>
-<body>
-<header class="site-header">
-  <nav class="container nav">
-    <a class="logo" href="index.html">KontrolSende</a>
-    <button class="hamburger" id="hamburger" aria-label="Menüyü aç/kapat">
-      <span></span><span></span><span></span>
-    </button>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Ana Sayfa</a></li>
-      <li><a class="active" href="test.html">Test Et</a></li>
-      <li><a href="etkinlikler.html">Etkinlikler</a></li>
-      <li><a href="yardim.html">Yardım Al</a></li>
-      <li class="theme-li">
-        <label for="themeSwitcher" class="theme-label">Tema</label>
-        <select id="themeSwitcher" class="theme-select" aria-label="Tema seç">
-          <option value="theme-green">Modern Yeşil</option>
-          <option value="theme-dark">Koyu Derin</option>
-          <option value="theme-glass">Glass / Gradient</option>
-        </select>
-      </li>
-    </ul>
-  </nav>
-</header>
+<body class="theme-green">
 
-<main class="page-bg">
-  <section class="container quiz-wrap">
-    <h1>Alışkanlık Farkındalık Testi</h1>
-    <p class="muted small">Bu test teşhis amacı taşımaz; yalnızca farkındalık kazandırır.</p>
+  <!-- HEADER -->
+  <header id="ks-header" class="ks-header" data-ks-nav>
+    <nav class="ks-nav ks-container">
+      <a class="ks-logo" href="index.html">KontrolSende</a>
+      <button class="ks-hamburger" id="ks-hamburger" aria-label="Menüyü aç/kapat" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="ks-drawer" id="ks-drawer" role="menu">
+        <li><a href="index.html">Ana Sayfa</a></li>
+        <li><a href="test.html" aria-current="page">Test Et</a></li>
+        <li><a href="etkinlikler.html">Etkinlikler</a></li>
+        <li><a href="yardim.html">Yardım Al</a></li>
+        <li class="ks-theme">
+          <label for="ks-theme" class="ks-theme-label">Tema</label>
+          <select id="ks-theme" class="ks-select" aria-label="Tema seç">
+            <option value="theme-green">Modern Yeşil</option>
+            <option value="theme-dark">Koyu Derin</option>
+            <option value="theme-glass">Glass / Gradient</option>
+          </select>
+        </li>
+      </ul>
+    </nav>
+  </header>
 
-    <div class="quiz card" id="quiz-container" role="region">
-      <div class="progress" aria-hidden="true"><div id="progress-bar"></div></div>
+  <main class="ks-container quiz-wrap">
+    <div class="card quiz">
+      <div class="progress"><div id="progress-bar"></div></div>
+
       <div class="meta">
-        <span id="question-counter" class="pill"></span>
-        <span id="category-chip" class="pill soft"></span>
-        <span id="percent-chip" class="pill soft"></span>
+        <span class="pill soft" id="question-counter">Soru 1 / 15</span>
+        <span class="pill" id="category-chip">Kategori</span>
+        <span class="pill" id="percent-chip">%0</span>
       </div>
 
-      <div id="question-container" class="question" aria-live="polite"></div>
+      <div id="quiz-container">
+        <div id="question-container" class="question"></div>
 
-      <div class="quiz-nav">
-        <button id="prev-btn" class="btn ghost">Geri</button>
-        <div class="right">
-          <button id="restart-btn" class="btn ghost" style="display:none">Yeniden Başlat</button>
-          <button id="next-btn" class="btn btn-primary">Sonraki</button>
+        <div class="quiz-nav">
+          <button id="prev-btn" class="btn">Geri</button>
+          <div class="right">
+            <button id="restart-btn" class="btn ghost">Sıfırla</button>
+            <button id="next-btn" class="btn btn-primary">Sonraki</button>
+          </div>
         </div>
       </div>
+
+      <div id="result-container" class="result" style="display:none"></div>
     </div>
 
-    <div id="result-container" class="result card" style="display:none"></div>
     <div id="history-container" class="history" style="display:none">
-      <h3>Kaydedilen Sonuçların</h3>
+      <h3>Geçmiş Sonuçlar</h3>
       <div id="history-list" class="history-list"></div>
     </div>
+  </main>
 
-    <p class="muted tiny">Desteğe ihtiyaç duyarsan <a class="link" href="yardim.html">Yardım Al</a> sayfamızdaki resmi hatlarla iletişime geçebilirsin.</p>
-  </section>
-</main>
+  <footer class="site-footer">
+    <div class="ks-container foot">
+      <span class="tiny muted">© 2025 KontrolSende</span>
+      <a class="link tiny" href="yardim.html">Yardım Al</a>
+    </div>
+  </footer>
 
-<footer class="site-footer">
-  <div class="container foot">
-    <p>© 2025 KontrolSende • Okul Projesi</p>
-    <a href="yardim.html" class="link">Yardım</a>
-  </div>
-</footer>
-
-<script src="js/main.js"></script>
+  <script src="js/main.js?v=1" defer></script>
 </body>
 </html>
