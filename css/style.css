@@ -263,3 +263,8 @@ img{ max-width:100%; height:auto }
 @media (prefers-reduced-motion: reduce){
   *{ animation: none !important; transition: none !important }
 }
+
+/* Hamburger çizgiler görünmüyor düzeltmesi */
+.ks-hamburger { color: var(--text); }          /* çubuk rengi */
+.ks-hamburger span { background: currentColor; }
+.ks-hamburger.ks-active span { background: currentColor; }
