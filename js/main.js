@@ -1,79 +1,78 @@
-// ====== TEMA & NAV BAŞLATICISI ======
-(function initThemeAndNav(){
+// ===== NAV: hamburger + backdrop + iOS hizalama =====
+document.addEventListener('DOMContentLoaded', () => {
+  const btn  = document.getElementById('hamburger');
+  const list = document.getElementById('navLinks');
+  if (!btn || !list) return;
+
+  // Header yüksekliğini ölç → menü üst boşluğuna uygula (iOS hizası)
+  const header = document.querySelector('.site-header');
+  const setNavOffset = () => {
+    const h = header?.offsetHeight || 64;
+    document.documentElement.style.setProperty('--nav-offset', `${h}px`);
+  };
+  setNavOffset();
+  window.addEventListener('resize', setNavOffset);
+
+  // Backdrop'u oluştur
+  let backdrop = document.getElementById('menu-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.id = 'menu-backdrop';
+    backdrop.className = 'menu-backdrop';
+    document.body.appendChild(backdrop);
+  }
+
+  const openMenu = ()=>{
+    list.classList.add('show');
+    btn.classList.add('active');
+    btn.setAttribute('aria-expanded','true');
+    backdrop.classList.add('show');
+    document.body.classList.add('no-scroll');
+  };
+  const closeMenu = ()=>{
+    list.classList.remove('show');
+    btn.classList.remove('active');
+    btn.setAttribute('aria-expanded','false');
+    backdrop.classList.remove('show');
+    document.body.classList.remove('no-scroll');
+  };
+  const toggleMenu = ()=> list.classList.contains('show') ? closeMenu() : openMenu();
+
+  // Etkileşimler
+  btn.addEventListener('click', toggleMenu);
+  btn.addEventListener('touchend', (e)=>{ e.preventDefault(); toggleMenu(); });
+  backdrop.addEventListener('click', closeMenu);
+  document.addEventListener('click', (e)=>{
+    if (!list.classList.contains('show')) return;
+    const inside = list.contains(e.target) || btn.contains(e.target);
+    if (!inside) closeMenu();
+  });
+  list.querySelectorAll('a').forEach(a=> a.addEventListener('click', closeMenu));
+});
+
+// ===== Tema seçici (tüm sayfalarda) =====
+(function initTheme(){
   const root = document.documentElement;
   const KEY  = 'ks-theme';
-
-  // Tema uygula
-  const applyTheme = (t)=>{
+  const apply = t=>{
     root.classList.remove('theme-green','theme-dark','theme-glass');
     root.classList.add(t);
-    localStorage.setItem(KEY, t);
+    localStorage.setItem(KEY,t);
   };
-  applyTheme(localStorage.getItem(KEY) || 'theme-green');
-
-  // Tema seçiciyi senkronize et
-  const syncThemeSelects = ()=>{
+  apply(localStorage.getItem(KEY) || 'theme-green');
+  const sync = ()=>{
     document.querySelectorAll('#themeSwitcher').forEach(sel=>{
       sel.value = localStorage.getItem(KEY) || 'theme-green';
-      sel.onchange = (e)=> applyTheme(e.target.value);
+      sel.onchange = e=> apply(e.target.value);
     });
   };
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', syncThemeSelects);
-  } else { syncThemeSelects(); }
-
-  // Hamburger + Backdrop
-  const initHamburger = ()=>{
-    const btn  = document.getElementById('hamburger');
-    const list = document.getElementById('navLinks');
-    if (!btn || !list) return;
-
-    // Backdrop'u bir kez oluştur
-    let backdrop = document.getElementById('menu-backdrop');
-    if (!backdrop) {
-      backdrop = document.createElement('div');
-      backdrop.id = 'menu-backdrop';
-      backdrop.className = 'menu-backdrop';
-      document.body.appendChild(backdrop);
-    }
-
-    const openMenu = ()=>{
-      list.classList.add('show');
-      btn.classList.add('active');
-      btn.setAttribute('aria-expanded','true');
-      backdrop.classList.add('show');
-      document.body.classList.add('no-scroll');
-    };
-    const closeMenu = ()=>{
-      list.classList.remove('show');
-      btn.classList.remove('active');
-      btn.setAttribute('aria-expanded','false');
-      backdrop.classList.remove('show');
-      document.body.classList.remove('no-scroll');
-    };
-    const toggleMenu = ()=> list.classList.contains('show') ? closeMenu() : openMenu();
-
-    btn.addEventListener('click', toggleMenu);
-    btn.addEventListener('touchend', (e)=>{ e.preventDefault(); toggleMenu(); });
-    backdrop.addEventListener('click', closeMenu);
-    list.querySelectorAll('a').forEach(a=> a.addEventListener('click', closeMenu));
-
-    // Sayfa dışında tıklama güvenliği (ekstra)
-    document.addEventListener('click', (e)=>{
-      if (!list.classList.contains('show')) return;
-      const inside = list.contains(e.target) || btn.contains(e.target);
-      if (!inside) closeMenu();
-    });
-  };
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initHamburger);
-  } else { initHamburger(); }
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded',sync); else sync();
 })();
 
-// ====== QUIZ (yalnız test.html'de çalışır) ======
+// ===== QUIZ (yalnız test.html'de çalışır) =====
 document.addEventListener('DOMContentLoaded', () => {
   const quizContainer = document.getElementById('quiz-container');
-  if (!quizContainer) return; // test sayfası değilse çık
+  if (!quizContainer) return;
 
   const questions = [
     // SIGARA
@@ -134,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let i = 0;
   const picked = Array(questions.length).fill(null);
 
-  // DOM referansları
+  // DOM
   const progressBar = document.getElementById('progress-bar');
   const qWrap = document.getElementById('question-container');
   const nextBtn = document.getElementById('next-btn');
