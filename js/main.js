@@ -291,3 +291,112 @@ document.addEventListener('DOMContentLoaded', () => {
   // Init
   loadHistory(); updateProgress(); renderQuestion();
 });
+/* ===== KS NAV HOTFIX v3 ===== */
+(function(){
+  if (document.body.dataset.ksNav === 'on') return; // tekrar init etme
+  document.body.dataset.ksNav = 'on';
+
+  // 1) Elemanları bul / yoksa düzelt-oluştur
+  const header = document.querySelector('.site-header') || (()=> {
+    const h = document.createElement('header'); h.className='site-header';
+    const nav = document.createElement('nav'); nav.className='container nav';
+    const logo = document.createElement('a'); logo.className='logo'; logo.href='index.html'; logo.textContent='KontrolSende';
+    nav.appendChild(logo); h.appendChild(nav); document.body.prepend(h);
+    return h;
+  })();
+  const nav = header.querySelector('.nav') || header.querySelector('nav');
+
+  // Hamburger: varsa kullan, yoksa oluştur
+  let btn = header.querySelector('#hamburger') || header.querySelector('.hamburger');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'hamburger'; btn.className='hamburger'; btn.setAttribute('aria-label','Menüyü aç/kapat'); btn.setAttribute('aria-expanded','false');
+    btn.innerHTML = '<span></span><span></span><span></span>';
+    nav.appendChild(btn);
+  } else {
+    btn.id = 'hamburger'; btn.classList.add('hamburger');
+    if (!btn.innerHTML.trim()) btn.innerHTML = '<span></span><span></span><span></span>';
+  }
+
+  // Menü listesi: farklı adlandırılmış olabilir → normalize et
+  let list = header.querySelector('#navLinks') || header.querySelector('.nav-links') || header.querySelector('ul');
+  if (!list) {
+    list = document.createElement('ul');
+    list.innerHTML = `
+      <li><a href="index.html">Ana Sayfa</a></li>
+      <li><a href="test.html">Test Et</a></li>
+      <li><a href="etkinlikler.html">Etkinlikler</a></li>
+      <li><a href="yardim.html">Yardım Al</a></li>
+      <li class="theme-li">
+        <label for="themeSwitcher" class="theme-label">Tema</label>
+        <select id="themeSwitcher" class="theme-select" aria-label="Tema seç">
+          <option value="theme-green">Modern Yeşil</option>
+          <option value="theme-dark">Koyu Derin</option>
+          <option value="theme-glass">Glass / Gradient</option>
+        </select>
+      </li>`;
+    nav.appendChild(list);
+  }
+  list.id = 'navLinks'; list.classList.add('nav-links');
+
+  // 2) Header yüksekliğini ölç → menü üst boşluğu (iOS hizası)
+  const setNavOffset = ()=>{
+    const h = header?.offsetHeight || 64;
+    document.documentElement.style.setProperty('--nav-offset', `${h}px`);
+  };
+  setNavOffset(); window.addEventListener('resize', setNavOffset);
+
+  // 3) Backdrop'u bir kere ekle
+  let backdrop = document.getElementById('menu-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.id = 'menu-backdrop'; backdrop.className = 'menu-backdrop';
+    document.body.appendChild(backdrop);
+  }
+
+  // 4) Aç/Kapat
+  const openMenu = ()=>{
+    list.classList.add('show');
+    btn.classList.add('active');
+    btn.setAttribute('aria-expanded','true');
+    backdrop.classList.add('show');
+    document.body.classList.add('no-scroll');
+  };
+  const closeMenu = ()=>{
+    list.classList.remove('show');
+    btn.classList.remove('active');
+    btn.setAttribute('aria-expanded','false');
+    backdrop.classList.remove('show');
+    document.body.classList.remove('no-scroll');
+  };
+  const toggleMenu = ()=> list.classList.contains('show') ? closeMenu() : openMenu();
+
+  // 5) Etkileşimler (tüm kenar durumları)
+  btn.addEventListener('click', toggleMenu);
+  btn.addEventListener('touchend', (e)=>{ e.preventDefault(); toggleMenu(); });
+  backdrop.addEventListener('click', closeMenu);
+  document.addEventListener('click', (e)=>{
+    if (!list.classList.contains('show')) return;
+    const inside = list.contains(e.target) || btn.contains(e.target);
+    if (!inside) closeMenu();
+  });
+  list.querySelectorAll('a').forEach(a=> a.addEventListener('click', closeMenu));
+
+  // 6) Tema seçici senkronizasyonu (varsa)
+  const root = document.documentElement; const KEY = 'ks-theme';
+  const apply = t=>{
+    root.classList.remove('theme-green','theme-dark','theme-glass');
+    root.classList.add(t); localStorage.setItem(KEY,t);
+  };
+  apply(localStorage.getItem(KEY)||'theme-green');
+  const sync = ()=>{
+    header.querySelectorAll('#themeSwitcher').forEach(sel=>{
+      sel.value = localStorage.getItem(KEY)||'theme-green';
+      sel.onchange = e=> apply(e.target.value);
+    });
+  };
+  sync();
+
+  // 7) Teşhis (istersen konsolda gör)
+  console.log('[KS] NAV HOTFIX v3 → hamburger:', !!btn, 'navLinks:', !!list);
+})();
