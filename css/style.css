@@ -1,3 +1,127 @@
+/* =============== THEME CORE (ekle) =============== */
+:root{
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --text: #0e1320;
+  --muted: #5a6170;
+  --primary: #2b8a3e; /* varsayılan yeşil */
+  --ring: rgba(43,138,62,.25);
+  --card-radius: 14px;
+  --shadow: 0 10px 30px rgba(0,0,0,.08);
+  --border: #e9edf3;
+}
+
+/* Modern Yeşil (Minimal) */
+.theme-green{
+  --bg: #f6f9f6;
+  --surface: #ffffff;
+  --text: #101418;
+  --muted: #5b6a5f;
+  --primary: #2b8a3e;
+  --ring: rgba(43,138,62,.25);
+  --border: #e6efe6;
+}
+
+/* Koyu Derin (Dark) */
+.theme-dark{
+  --bg: #0e141a;
+  --surface: #121a22;
+  --text: #e8ecf2;
+  --muted: #9aa6b2;
+  --primary: #00bfa6;
+  --ring: rgba(0,191,166,.25);
+  --shadow: 0 10px 40px rgba(0,0,0,.45);
+  --border: #1d2833;
+}
+
+/* Glass / Gradient (Enerjik) */
+.theme-glass{
+  --bg: #eafff5;
+  --surface: rgba(255,255,255,.55);
+  --text: #0f1220;
+  --muted: #51606b;
+  --primary: #00a978;
+  --ring: rgba(0,169,120,.25);
+  --border: rgba(255,255,255,.6);
+}
+
+/* Global uygulamalar */
+html,body{height:auto; min-height:100%}
+body{
+  background: var(--bg);
+  color: var(--text);
+  transition: background .35s ease, color .25s ease;
+}
+
+/* Kayan dekoratif arka plan (temaya göre ton alır) */
+.theme-green .page-bg::before{
+  background: radial-gradient(600px 300px at 10% 5%, rgba(43,138,62,.08), transparent),
+              radial-gradient(700px 350px at 90% 10%, rgba(43,138,62,.06), transparent);
+}
+.theme-dark .page-bg::before{
+  background: radial-gradient(600px 300px at 10% 5%, rgba(0,191,166,.12), transparent),
+              radial-gradient(700px 350px at 90% 10%, rgba(0,191,166,.08), transparent);
+}
+.theme-glass .page-bg::before{
+  background: linear-gradient(135deg, rgba(163,255,214,.22), rgba(201,248,231,.2), rgba(234,255,245,.18));
+}
+.page-bg{
+  position: relative;
+}
+.page-bg::before{
+  content:"";
+  position:absolute; inset:-80px -40px -40px -40px; z-index:-1; filter: blur(30px);
+}
+
+/* Kart + butonlar için yumuşak modern görünüm (genel) */
+.card, .ks-card, .history-item, .admin-card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow);
+  transition: transform .15s ease, box-shadow .25s ease, background .35s ease, border-color .25s ease;
+}
+.card:hover, .ks-card:hover, .history-item:hover, .admin-card:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.10);
+}
+
+.btn, .ks-btn, .quiz-nav .ghost, .result-actions .ghost, .pill{
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background .2s ease, box-shadow .2s ease, transform .08s ease;
+}
+.btn:focus, .ks-btn:focus, .quiz-nav .ghost:focus{ outline: 2px solid var(--ring) }
+
+.btn-primary, .ks-btn.ks-btn-primary{
+  background: var(--primary);
+  border-color: transparent;
+  color:#fff;
+}
+.btn-primary:hover, .ks-btn.ks-btn-primary:hover{ filter: brightness(1.05); }
+
+.theme-glass .card, .theme-glass .ks-card, .theme-glass .history-item, .theme-glass .admin-card{
+  backdrop-filter: blur(8px);
+}
+
+/* Header/Navigation yumuşatma */
+header{
+  background: color-mix(in oklab, var(--surface) 85%, transparent);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(6px);
+}
+nav a, .nav-links a{ color: var(--text) }
+.nav-links a.active{ color: var(--primary); font-weight: 600; }
+
+/* Test çubukları tema renkleri */
+.bar-bg{ background: color-mix(in srgb, var(--primary) 8%, #f0f2f5) }
+.bar-fill.good{ background: var(--primary); }
+.bar-fill.mid{ background: #f4b740; }
+.bar-fill.high{ background: #ff6b6b; }
 /* --- Değişkenler ve Genel Ayarlar --- */
 :root {
     --primary-color: #0A2647;
