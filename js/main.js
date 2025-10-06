@@ -176,11 +176,10 @@ document.addEventListener('DOMContentLoaded', () => {
   btn.classList.add('ks-active');
   btn.setAttribute('aria-expanded','true');
   backdrop.classList.add('ks-show');
-  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
 
-  // YENİ: menü açıkken buton tıklamayı engellemesin
-  btn.style.pointerEvents = 'none';
-  document.documentElement.classList.add('menu-open');
+  // MENÜ AÇIKKEN:
+  document.body.classList.add('menu-open');  // <-- kritik
 };
 
 const close = ()=>{
@@ -188,7 +187,11 @@ const close = ()=>{
   btn.classList.remove('ks-active');
   btn.setAttribute('aria-expanded','false');
   backdrop.classList.remove('ks-show');
-  document.documentElement.style.overflow = '';
+  document.body.style.overflow = '';
+
+  // MENÜ KAPANIRKEN:
+  document.body.classList.remove('menu-open'); // <-- kritik
+};
 
   // YENİ: menü kapanınca buton tekrar tıklanabilir
   btn.style.pointerEvents = 'auto';
