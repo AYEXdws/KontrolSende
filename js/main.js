@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loadHistory();                     // yerel geçmişi yenile
       alert('Sonucunuz kaydedildi.');
        // 🔹 Ek olarak NeonDB'ye kaydet (Render API üzerinden)
-fetch("https://kontrolsende.onrender.com/addResult", {
+fetch("https://kontrolsende1.onrender.com/addResult", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
