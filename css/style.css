@@ -84,10 +84,16 @@ body.theme-glass{
 
 /* --- Klasik Hamburger (3 çizgi) + X dönüşümü --- */
 .ks-hamburger{
-  display:flex; align-items:center; justify-content:center;
+  display:flex;
+  flex-direction:column;          /* 🔥 çizgiler alt alta dizilir */
+  align-items:center;
+  justify-content:center;
   width:48px; height:48px; margin-left:auto;
-  background:#fff; border:1px solid #eaecef; border-radius:12px; cursor:pointer;
-  position:relative; transition:background .2s;
+  background:#fff;
+  border:1px solid #eaecef;
+  border-radius:12px;
+  cursor:pointer;
+  color:#111;
 }
 .ks-hamburger:hover{ background:#fff }
 .theme-dark .ks-hamburger{ background:#1a232c; border-color:#2a3744 }
