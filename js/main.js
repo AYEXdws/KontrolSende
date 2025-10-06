@@ -174,12 +174,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const open = ()=>{
     drawer.classList.add('ks-open');
     btn.classList.add('ks-active');
+    btn.classList.add('ks-active');
     btn.setAttribute('aria-expanded','true');
     backdrop.classList.add('ks-show');
     document.documentElement.style.overflow = 'hidden';
   };
   const close = ()=>{
     drawer.classList.remove('ks-open');
+    btn.classList.remove('ks-active');
     btn.classList.remove('ks-active');
     btn.setAttribute('aria-expanded','false');
     backdrop.classList.remove('ks-show');
