@@ -390,3 +390,17 @@ img{ max-width:100%; height:auto }
 .ks-hamburger.ks-active .k-top{ transform:rotate(45deg) }
 .ks-hamburger.ks-active .k-mid{ opacity:0 }
 .ks-hamburger.ks-active .k-bot{ transform:rotate(-45deg) }
+/* === Hamburger → X düzgün dönüşüm === */
+.ks-hamburger{ position:relative }  /* güvenli merkezleme */
+.ks-hamburger span{
+  display:block; width:24px; height:2px; background:currentColor;
+  border-radius:2px;
+  transition:transform .22s ease, opacity .18s ease;
+  transform-origin:50% 50%;
+}
+.ks-hamburger span + span{ margin-top:6px }
+
+/* X durumunda: üst çizgi aşağı 6px + 45°, alt çizgi yukarı 6px - 45°, orta çizgi gizlenir */
+.ks-hamburger.ks-active span:nth-child(1){ transform:translateY(6px) rotate(45deg) }
+.ks-hamburger.ks-active span:nth-child(2){ opacity:0 }
+.ks-hamburger.ks-active span:nth-child(3){ transform:translateY(-6px) rotate(-45deg) }
