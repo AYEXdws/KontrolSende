@@ -1,400 +1,259 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // --- Mobil menü ---
-  const hamburger = document.getElementById('hamburger-menu');
-  const navLinks = document.querySelector('.nav-links');
-  if (hamburger && navLinks) {
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('active');
-      navLinks.classList.toggle('active');
-    });
-  }
-// =============== THEME SWITCHER ===============
-(function(){
-  const KEY = 'ks-theme';
-  const root = document.documentElement;
-  const select = document.getElementById('themeSwitcher');
 
-  // Kaydı oku + uygula
+ // ====== NAV + THEME ======
+(function initNavAndTheme(){
+  const root = document.documentElement;
+  const KEY = 'ks-theme';
+
+  // Tema yükle
   const saved = localStorage.getItem(KEY) || 'theme-green';
   root.classList.remove('theme-green','theme-dark','theme-glass');
   root.classList.add(saved);
-  if (select) select.value = saved;
 
-  // Değişim
-  select?.addEventListener('change', (e)=>{
-    const val = e.target.value;
-    root.classList.remove('theme-green','theme-dark','theme-glass');
-    root.classList.add(val);
-    localStorage.setItem(KEY, val);
-  });
+  // Seçici senkronize et
+  function syncSelect(){
+    document.querySelectorAll('#themeSwitcher').forEach(sel=>{
+      sel.value = saved;
+      sel.addEventListener('change', e=>{
+        const val = e.target.value;
+        root.classList.remove('theme-green','theme-dark','theme-glass');
+        root.classList.add(val);
+        localStorage.setItem(KEY, val);
+      });
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncSelect);
+  } else { syncSelect(); }
+
+  // Hamburger
+  function initHamburger(){
+    const btn = document.getElementById('hamburger');
+    const list = document.getElementById('navLinks');
+    if(!btn || !list) return;
+    btn.addEventListener('click', ()=> list.classList.toggle('show'));
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHamburger);
+  } else { initHamburger(); }
 })();
-  // --- Test mantığı ---
+
+// ====== QUIZ (yalnız test.html'de çalışır) ======
+document.addEventListener('DOMContentLoaded', () => {
   const quizContainer = document.getElementById('quiz-container');
-  if (!quizContainer) return;
+  if (!quizContainer) return; // sadece test sayfası
 
-  // Kategoriler ve sorular (uyuşturucu YOK; sigara + alkol + genel alanlar)
-  // Skor: 0 (düşük risk) → 3 (yüksek eğilim)
   const questions = [
-    // SIGARA (4)
-    { cat: 'Sigara', question: 'Sigara içme düşüncesi gün içinde ne sıklıkla aklına geliyor?', answers: [
-      { text: 'Hiç gelmiyor.', score: 0 },
-      { text: 'Ara sıra aklıma gelir.', score: 1 },
-      { text: 'Sık aklıma geliyor.', score: 2 },
-      { text: 'Çoğu zaman aklımdan çıkmıyor.', score: 3 }
+    // SIGARA
+    { cat:'Sigara', q:'Sigara içme düşüncesi gün içinde ne sıklıkla aklına geliyor?', a:[
+      ['Hiç gelmiyor.',0],['Ara sıra aklıma gelir.',1],['Sık aklıma geliyor.',2],['Çoğu zaman aklımdan çıkmıyor.',3]
     ]},
-    { cat: 'Sigara', question: 'Sigara içilen ortamlarda bulunmak seni nasıl etkiler?', answers: [
-      { text: 'Etkilenmem, nötrüm.', score: 0 },
-      { text: 'Biraz etkilenirim.', score: 1 },
-      { text: 'Canım çekebilir.', score: 2 },
-      { text: 'Dayanmakta zorlanırım.', score: 3 }
+    { cat:'Sigara', q:'Sigara içilen ortamlarda bulunmak seni nasıl etkiler?', a:[
+      ['Etkilenmem, nötrüm.',0],['Biraz etkilenirim.',1],['Canım çekebilir.',2],['Dayanmakta zorlanırım.',3]
     ]},
-    { cat: 'Sigara', question: 'Daha önce bırakmayı denedin mi?', answers: [
-      { text: 'İhtiyaç duymadım/İçmiyorum.', score: 0 },
-      { text: 'Denemedim ama düşünüyorum.', score: 1 },
-      { text: 'Denedim, kısa süreli bırakabildim.', score: 2 },
-      { text: 'Birçok kez denedim ama sürdüremedim.', score: 3 }
+    { cat:'Sigara', q:'Daha önce bırakmayı denedin mi?', a:[
+      ['İhtiyaç duymadım/İçmiyorum.',0],['Denemedim ama düşünüyorum.',1],['Kısa süreli bırakabildim.',2],['Birçok kez denedim.',3]
     ]},
-    { cat: 'Sigara', question: 'Okul/ev gibi yerlerde “yasak” olduğunda ne hissedersin?', answers: [
-      { text: 'Normal, problem yaşamam.', score: 0 },
-      { text: 'Biraz huzursuz olurum.', score: 1 },
-      { text: 'Gergin/huzursuz olurum.', score: 2 },
-      { text: 'Yoğun istek ve sinirlilik yaşarım.', score: 3 }
+    { cat:'Sigara', q:'Yasak ortamlarda (okul/ev) ne hissedersin?', a:[
+      ['Normal, problem yaşamam.',0],['Biraz huzursuz.',1],['Gergin olurum.',2],['Yoğun istek/sinirlilik.',3]
     ]},
-
-    // ALKOL (4)
-    { cat: 'Alkol', question: 'Alkol tüketme sıklığın nasıldır?', answers: [
-      { text: 'Hiç/çok nadir.', score: 0 },
-      { text: 'Sosyal ortamlarda ara sıra.', score: 1 },
-      { text: 'Düzenli (haftalık vb.).', score: 2 },
-      { text: 'Sık ve kontrol zorlayıcı.', score: 3 }
+    // ALKOL
+    { cat:'Alkol', q:'Alkol tüketme sıklığın nasıldır?', a:[
+      ['Hiç/çok nadir.',0],['Ara sıra.',1],['Düzenli.',2],['Sık ve kontrol zor.',3]
     ]},
-    { cat: 'Alkol', question: 'Moralin bozukken alkolü çözüm gibi görür müsün?', answers: [
-      { text: 'Hayır, başka yollar denerim.', score: 0 },
-      { text: 'Bazen aklımdan geçer.', score: 1 },
-      { text: 'Çoğu zaman öyle olur.', score: 2 },
-      { text: 'Genelde ilk seçeneğimdir.', score: 3 }
+    { cat:'Alkol', q:'Moralin bozukken alkolü çözüm gibi görür müsün?', a:[
+      ['Hayır.',0],['Bazen aklımdan geçer.',1],['Çoğu zaman öyle olur.',2],['Genelde ilk seçeneğimdir.',3]
     ]},
-    { cat: 'Alkol', question: 'Alkol sonrası ertesi gün planlarını/sorumluluklarını etkiler mi?', answers: [
-      { text: 'Hayır.', score: 0 },
-      { text: 'Nadiren ufak etkiler.', score: 1 },
-      { text: 'Bazen ciddi etkiler.', score: 2 },
-      { text: 'Sıklıkla olumsuz etkiler.', score: 3 }
+    { cat:'Alkol', q:'Alkol sonrası sorumluluklar etkilenir mi?', a:[
+      ['Hayır.',0],['Nadiren ufak etkiler.',1],['Bazen ciddi etkiler.',2],['Sıklıkla olumsuz etkiler.',3]
     ]},
-    { cat: 'Alkol', question: 'Kaç kadehle duracağını kontrol etmek zorlaşır mı?', answers: [
-      { text: 'Hayır, rahatça dururum.', score: 0 },
-      { text: 'Bazen.', score: 1 },
-      { text: 'Sık zorlanırım.', score: 2 },
-      { text: 'Genelde kontrol edemem.', score: 3 }
+    { cat:'Alkol', q:'Kaç kadehle duracağını kontrol etmek zorlaşır mı?', a:[
+      ['Hayır.',0],['Bazen.',1],['Sık zorlanırım.',2],['Genelde kontrol edemem.',3]
     ]},
-
-    // DİJİTAL (4)
-    { cat: 'Dijital', question: 'Telefon/sosyal medya/oyun yüzünden uykunu ertelediğin olur mu?', answers: [
-      { text: 'Hayır.', score: 0 },
-      { text: 'Nadiren.', score: 1 },
-      { text: 'Bazen sık.', score: 2 },
-      { text: 'Çoğu zaman/alışkanlık oldu.', score: 3 }
+    // DİJİTAL
+    { cat:'Dijital', q:'Telefon/sosyal medya/oyun yüzünden uykunu ertelediğin olur mu?', a:[
+      ['Hayır.',0],['Nadiren.',1],['Bazen sık.',2],['Çoğu zaman.',3]
     ]},
-    { cat: 'Dijital', question: 'Gerçek planları dijital aktivite için iptal ettiğin olur mu?', answers: [
-      { text: 'Asla.', score: 0 },
-      { text: 'Nadiren.', score: 1 },
-      { text: 'Bazen.', score: 2 },
-      { text: 'Sıklıkla.', score: 3 }
+    { cat:'Dijital', q:'Gerçek planları dijital aktivite için iptal ettiğin olur mu?', a:[
+      ['Asla.',0],['Nadiren.',1],['Bazen.',2],['Sıklıkla.',3]
     ]},
-    { cat: 'Dijital', question: 'Ekran başında geçen süreyi azaltmakta zorlanır mısın?', answers: [
-      { text: 'Kolay azaltırım.', score: 0 },
-      { text: 'Biraz zorlanırım.', score: 1 },
-      { text: 'Zorlanırım.', score: 2 },
-      { text: 'Çok zorlanırım.', score: 3 }
+    { cat:'Dijital', q:'Ekran süresini azaltmakta zorlanır mısın?', a:[
+      ['Kolay azaltırım.',0],['Biraz zorlanırım.',1],['Zorlanırım.',2],['Çok zorlanırım.',3]
     ]},
-    { cat: 'Dijital', question: 'Bildirim gelmediğinde bile sık kontrol eder misin?', answers: [
-      { text: 'Hayır.', score: 0 },
-      { text: 'Ara sıra.', score: 1 },
-      { text: 'Sık sık.', score: 2 },
-      { text: 'Sürekli kontrol ederim.', score: 3 }
+    { cat:'Dijital', q:'Bildirim gelmese de sık kontrol eder misin?', a:[
+      ['Hayır.',0],['Ara sıra.',1],['Sık sık.',2],['Sürekli kontrol ederim.',3]
     ]},
-
-    // ALIŞVERİŞ/KUMAR (2)
-    { cat: 'Alışveriş/Kumar', question: 'Planladığından fazla para harcadığın olur mu (alışveriş/oyun içi harcama vb.)?', answers: [
-      { text: 'Hayır.', score: 0 },
-      { text: 'Nadiren.', score: 1 },
-      { text: 'Bazen.', score: 2 },
-      { text: 'Sıklıkla.', score: 3 }
+    // ALIŞVERİŞ/KUMAR
+    { cat:'Alışveriş/Kumar', q:'Planladığından fazla para harcar mısın?', a:[
+      ['Hayır.',0],['Nadiren.',1],['Bazen.',2],['Sıklıkla.',3]
     ]},
-    { cat: 'Alışveriş/Kumar', question: 'Harcamadan sonra pişmanlık ve telafi etme düşüncesi (kayıp kovalamak) yaşar mısın?', answers: [
-      { text: 'Hayır.', score: 0 },
-      { text: 'Ara sıra.', score: 1 },
-      { text: 'Sık.', score: 2 },
-      { text: 'Çoğu zaman.', score: 3 }
+    { cat:'Alışveriş/Kumar', q:'Pişman olup “telafi/kayıp kovalamak” düşüncesi olur mu?', a:[
+      ['Hayır.',0],['Ara sıra.',1],['Sık.',2],['Çoğu zaman.',3]
     ]},
-
-    // GENEL ÖZ-DÜZENLEME (2)
-    { cat: 'Genel', question: '“Kontrol bende” duygunu ne kadar güçlü hissediyorsun?', answers: [
-      { text: 'Güçlü hissediyorum.', score: 0 },
-      { text: 'Genelde iyi.', score: 1 },
-      { text: 'Sık dalgalanıyor.', score: 2 },
-      { text: 'Çoğu zaman zayıf.', score: 3 }
+    // GENEL
+    { cat:'Genel', q:'“Kontrol bende” duygun ne kadar güçlü?', a:[
+      ['Güçlü hissediyorum.',0],['Genelde iyi.',1],['Sık dalgalanıyor.',2],['Çoğu zaman zayıf.',3]
     ]},
-    { cat: 'Genel', question: 'Duygusal zorlanmalarda sağlıklı başa çıkma yollarını kullanma sıklığın nedir?', answers: [
-      { text: 'Sıklıkla kullanırım.', score: 0 },
-      { text: 'Ara sıra.', score: 1 },
-      { text: 'Nadiren.', score: 2 },
-      { text: 'Kullanmakta zorlanırım.', score: 3 }
-    ]},
+    { cat:'Genel', q:'Zorlanmalarda sağlıklı başa çıkma yollarını kullanma sıklığın?', a:[
+      ['Sıklıkla.',0],['Ara sıra.',1],['Nadiren.',2],['Zorlanırım.',3]
+    ]}
   ];
 
-  // Durumlar
-  let current = 0;
-  const answersPicked = Array(questions.length).fill(null);
+  let i = 0;
+  const picked = Array(questions.length).fill(null);
 
-  // Elemanlar
+  // DOM
   const progressBar = document.getElementById('progress-bar');
-  const questionContainer = document.getElementById('question-container');
+  const qWrap = document.getElementById('question-container');
   const nextBtn = document.getElementById('next-btn');
   const prevBtn = document.getElementById('prev-btn');
   const restartBtn = document.getElementById('restart-btn');
-  const resultContainer = document.getElementById('result-container');
-  const questionCounter = document.getElementById('question-counter');
-  const categoryChip = document.getElementById('category-chip');
-  const percentChip = document.getElementById('percent-chip');
-  const historyContainer = document.getElementById('history-container');
+  const result = document.getElementById('result-container');
+  const qCounter = document.getElementById('question-counter');
+  const catChip = document.getElementById('category-chip');
+  const pctChip = document.getElementById('percent-chip');
+  const history = document.getElementById('history-container');
   const historyList = document.getElementById('history-list');
 
-  function updateProgress() {
-    const answered = answersPicked.filter(v => v !== null).length;
-    const pct = Math.round((answered / questions.length) * 100);
-    progressBar.style.width = `${pct}%`;
-    percentChip.textContent = `%${pct}`;
+  function updateProgress(){
+    const answered = picked.filter(v=>v!==null).length;
+    const pct = Math.round(answered / questions.length * 100);
+    if (progressBar) progressBar.style.width = pct + '%';
+    if (pctChip) pctChip.textContent = '%' + pct;
   }
 
-  function renderQuestion() {
-    const q = questions[current];
-    questionCounter.textContent = `Soru ${current + 1} / ${questions.length}`;
-    categoryChip.textContent = q.cat;
+  function renderQuestion(){
+    const q = questions[i];
+    if (qCounter) qCounter.textContent = `Soru ${i+1} / ${questions.length}`;
+    if (catChip) catChip.textContent = q.cat;
 
-    // Soru + seçenekler
-    questionContainer.innerHTML = `
-      <p>${q.question}</p>
-      <div class="options" role="listbox" aria-label="Seçenekler">
-        ${q.answers.map((a, i) => `
-          <button class="option${answersPicked[current] === i ? ' selected':''}" role="option"
-                  data-index="${i}" data-score="${a.score}" tabindex="0">
-            ${a.text}
+    qWrap.innerHTML = `
+      <p>${q.q}</p>
+      <div class="options">
+        ${q.a.map((pair,idx)=>`
+          <button class="option ${picked[i]===idx?'selected':''}" data-i="${idx}">
+            ${pair[0]}
           </button>
         `).join('')}
       </div>
     `;
-
-    // Seçim olayları
-    questionContainer.querySelectorAll('.option').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const idx = Number(e.currentTarget.dataset.index);
-        answersPicked[current] = idx;
-        // görsel seçim
-        questionContainer.querySelectorAll('.option').forEach(b => b.classList.remove('selected'));
+    qWrap.querySelectorAll('.option').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        const idx = Number(e.currentTarget.dataset.i);
+        picked[i] = idx;
+        qWrap.querySelectorAll('.option').forEach(b=>b.classList.remove('selected'));
         e.currentTarget.classList.add('selected');
         updateProgress();
       });
-
-      btn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
-      });
     });
 
-    // Navigasyon buton durumları
-    if (prevBtn) prevBtn.disabled = current === 0;
-    if (nextBtn) nextBtn.textContent = (current === questions.length - 1) ? 'Bitir' : 'Sonraki';
+    if (prevBtn) prevBtn.disabled = (i===0);
+    if (nextBtn) nextBtn.textContent = (i===questions.length-1) ? 'Bitir' : 'Sonraki';
   }
 
-  function computeStats() {
-    const catTotals = {};
-    const catMax = {};
-    questions.forEach((q, i) => {
-      const ansIdx = answersPicked[i];
-      if (ansIdx === null) return;
-      const s = q.answers[ansIdx].score;
-      catTotals[q.cat] = (catTotals[q.cat] || 0) + s;
-      catMax[q.cat] = (catMax[q.cat] || 0) + 3;
+  function computeStats(){
+    const totals = {}, maxs = {};
+    questions.forEach((q,idx)=>{
+      const p = picked[idx];
+      if (p===null) return;
+      const score = q.a[p][1];
+      totals[q.cat] = (totals[q.cat]||0) + score;
+      maxs[q.cat] = (maxs[q.cat]||0) + 3;
     });
-
-    // Toplam skor
-    const totalScore = Object.values(catTotals).reduce((a,b) => a + b, 0);
+    const totalScore = Object.values(totals).reduce((a,b)=>a+b,0);
     const maxScore = questions.length * 3;
-    const totalPct = Math.round((totalScore / maxScore) * 100);
-
-    // Kategori yüzdeleri
-    const cats = Object.keys(catMax).map(cat => {
-      const pct = Math.round(((catTotals[cat] || 0) / catMax[cat]) * 100);
-      return { cat, pct, raw: catTotals[cat] || 0, max: catMax[cat] };
+    const totalPct = Math.round(totalScore / maxScore * 100);
+    const cats = Object.keys(maxs).map(cat=>{
+      const pct = Math.round((totals[cat]||0) / maxs[cat] * 100);
+      return { cat, pct };
     });
-
-    return { totalScore, maxScore, totalPct, cats };
+    return { totalPct, cats };
   }
-
-  function levelText(pct) {
-    if (pct <= 33) return { label: 'Düşük eğilim', tone: 'good' };
-    if (pct <= 66) return { label: 'Orta eğilim', tone: 'mid' };
-    return { label: 'Yüksek eğilim', tone: 'high' };
-  }
-
-  function adviceFor(cat, pct) {
-    // Kısa, okul-uyumlu öneriler
-    const base = {
-      good: 'Denge iyi görünüyor. Bu çizgiyi koruyabilirsin.',
-      mid: 'Bazen zorlayıcı olabilir. Küçük planlar ve sınırlar işe yarar.',
-      high: 'Güvenilir bir yetişkin/rehber öğretmenle görüşmek iyi gelebilir.'
+  const level = p => p<=33 ? {label:'Düşük eğilim',tone:'good'} : (p<=66 ? {label:'Orta eğilim',tone:'mid'} : {label:'Yüksek eğilim',tone:'high'});
+  function advice(cat,p){
+    const tone = level(p).tone;
+    const base = {good:'Denge iyi. Böyle devam.', mid:'Küçük sınırlar koy.', high:'Rehber öğretmenle konuşmak iyi gelir.'};
+    const catMap = {
+      'Sigara':{good:'“Hayır” deme kasını koru.', mid:'Tetikleyici ortamlardan uzak dur.', high:'Bırakma planını konuş.'},
+      'Alkol':{good:'Sınırlarını koru.', mid:'Önceden kadeh sınırı belirle.', high:'Duygu düzenleme desteği al.'},
+      'Dijital':{good:'Süre dengesi iyi.', mid:'Bildirim sessizlerini dene.', high:'Günlük süre hedefi koy.'},
+      'Alışveriş/Kumar':{good:'Bütçe planı iyi.', mid:'Listeyle alışveriş yap.', high:'Harcamaları kısıtla, destek al.'},
+      'Genel':{good:'Başa çıkma becerilerin çalışıyor.', mid:'Nefes/yürüyüş/yazma dene.', high:'Küçük hedefler belirle.'}
     };
-    const tone = levelText(pct).tone;
-
-    const catLines = {
-      'Sigara': {
-        good: 'Davetkâr ortamlarda da “hayır” demeyi sürdür.',
-        mid:  'Tetikleyici ortamlarda durmayı ve temiz hava/mini yürüyüş gibi alternatifleri dene.',
-        high: 'Bırakma planı için (nikotin yerine) davranışsal destek konuşulabilir.'
-      },
-      'Alkol': {
-        good: 'Sosyal ortamlarda sınırlarını koruman çok değerli.',
-        mid:  '“Önceden belirlenmiş kural” (örn. max 1 kadeh) ve eşlikçi içecek kullan.',
-        high: 'Duygu düzenleme becerilerini pekiştirmek için profesyonel destek yararlı olur.'
-      },
-      'Dijital': {
-        good: 'Ekran/vakit dengesi yerinde.',
-        mid:  'Bildirim sessizleri, yatmadan 1 saat ekran bırakma işe yarar.',
-        high: 'Günlük ekran süresi hedefi ve aile/öğretmen desteğiyle plan çiz.'
-      },
-      'Alışveriş/Kumar': {
-        good: 'Bütçe planı ve takip iyi gidiyor.',
-        mid:  'Listeyle alışveriş ve “24 saat bekleme kuralı” dene.',
-        high: 'Harcamaları kısıtlayacak çevresel önlemler ve güvenilir bir rehberle plan kur.'
-      },
-      'Genel': {
-        good: 'Sağlıklı başa çıkma becerilerin çalışıyor.',
-        mid:  'Nefes, kısa yürüyüş, yazma gibi araçları düzenli dene.',
-        high: 'Rehberlik servisiyle küçük, uygulanabilir hedefler koymak iyi gelir.'
-      }
-    };
-
-    const line = (catLines[cat] && catLines[cat][tone]) || base[tone];
-    return `${levelText(pct).label}. ${line}`;
+    return (catMap[cat] && catMap[cat][tone]) || base[tone];
   }
-
-  function renderBars(cats) {
+  function barsHTML(cats){
     return `
       <div class="bars">
-        ${cats.map(c => `
+        ${cats.map(c=>`
           <div class="bar">
-            <div class="bar-top">
-              <strong>${c.cat}</strong>
-              <span class="bar-val">${c.pct}%</span>
-            </div>
-            <div class="bar-bg" aria-hidden="true">
-              <div class="bar-fill ${levelText(c.pct).tone}" style="width:${c.pct}%"></div>
-            </div>
-            <p class="bar-note">${adviceFor(c.cat, c.pct)}</p>
+            <div class="bar-top"><strong>${c.cat}</strong><span>${c.pct}%</span></div>
+            <div class="bar-bg"><div class="bar-fill ${level(c.pct).tone}" style="width:${c.pct}%"></div></div>
+            <p class="bar-note">${level(c.pct).label}. ${advice(c.cat,c.pct)}</p>
           </div>
         `).join('')}
       </div>
     `;
   }
 
-  function showResults() {
+  function showResults(){
     const stats = computeStats();
-    const lvl = levelText(stats.totalPct);
+    const lv = level(stats.totalPct);
     quizContainer.style.display = 'none';
-    resultContainer.style.display = 'block';
-
-    resultContainer.innerHTML = `
-      <h2>Genel Görünüm: ${lvl.label} (${stats.totalPct}%)</h2>
-      <p>Bu sonuç bir teşhis değildir; yalnızca farkındalık sağlar. Dengeyi güçlendirmek için küçük adımlar atabilirsin.
-      Daha fazla destek için <a href="yardim.html">Yardım Al</a> sayfamızı ziyaret et.</p>
-
-      ${renderBars(stats.cats)}
-
-      <div class="result-actions">
-        <button id="save-result" class="">Sonucumu Kaydet</button>
-        <a class="ghost" href="yardim.html">Yardım ve Destek Noktaları</a>
-        <button id="restart-from-result" class="ghost">Testi Yeniden Başlat</button>
+    result.style.display = 'block';
+    result.innerHTML = `
+      <h2>Genel Görünüm: ${lv.label} (${stats.totalPct}%)</h2>
+      <p class="muted small">Bu sonuç teşhis değildir; farkındalık sağlar. Daha fazla destek için <a class="link" href="yardim.html">Yardım Al</a>.</p>
+      ${barsHTML(stats.cats)}
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+        <button id="save-result" class="btn btn-primary">Sonucumu Kaydet</button>
+        <button id="restart-from-result" class="btn ghost">Testi Yeniden Başlat</button>
       </div>
     `;
-
     document.getElementById('restart-from-result')?.addEventListener('click', restart);
-
-    // KAYDET → LocalStorage + gizli rapora yönlendir
-    document.getElementById('save-result')?.addEventListener('click', () => {
-      const payload = {
-        at: new Date().toISOString(),
-        totalPct: stats.totalPct,
-        cats: stats.cats
-      };
-      const key = 'ks-results';
-      const list = JSON.parse(localStorage.getItem(key) || '[]');
-      list.unshift(payload);
+    document.getElementById('save-result')?.addEventListener('click', ()=>{
+      const key='ks-results';
+      const list = JSON.parse(localStorage.getItem(key)||'[]');
+      list.unshift({at:new Date().toISOString(), totalPct:stats.totalPct, cats:stats.cats});
       localStorage.setItem(key, JSON.stringify(list));
       loadHistory();
-
-      // Kayıt sonrası gizli rapora yönlendirme (hash içinde anahtar)
-      window.location.href = 'admin.html#AYEX-KEY-2025';
+      alert('Sonucunuz kaydedildi (bu cihazda).');
     });
   }
 
-  function loadHistory() {
-    const list = JSON.parse(localStorage.getItem('ks-results') || '[]');
-    if (list.length === 0) {
-      historyContainer.style.display = 'none';
-      return;
-    }
-    historyContainer.style.display = 'block';
-    historyList.innerHTML = list.slice(0, 5).map(item => `
+  function loadHistory(){
+    const list = JSON.parse(localStorage.getItem('ks-results')||'[]');
+    if (!list.length){ history.style.display='none'; return; }
+    history.style.display='block';
+    historyList.innerHTML = list.slice(0,5).map(it=>`
       <div class="history-item">
-        <div class="history-head">
-          <strong>${new Date(item.at).toLocaleString()}</strong>
-          <span class="pill">Genel: ${item.totalPct}%</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <strong>${new Date(it.at).toLocaleString()}</strong>
+          <span class="pill">Genel: ${it.totalPct}%</span>
         </div>
-        <div class="history-cats">
-          ${item.cats.map(c => `<span class="pill soft">${c.cat}: ${c.pct}%</span>`).join('')}
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${it.cats.map(c=>`<span class="pill">${c.cat}: ${c.pct}%</span>`).join('')}
         </div>
       </div>
     `).join('');
   }
 
-  function next() {
-    // Seçim yoksa uyarı
-    if (answersPicked[current] === null) {
-      alert('Lütfen bir seçenek belirleyin.');
-      return;
-    }
-    if (current < questions.length - 1) {
-      current++;
-      renderQuestion();
-    } else {
-      showResults();
-    }
+  function next(){
+    if (picked[i]===null){ alert('Lütfen bir seçenek seç.'); return; }
+    if (i<questions.length-1){ i++; renderQuestion(); }
+    else { showResults(); }
+  }
+  function prev(){ if(i>0){ i--; renderQuestion(); } }
+  function restart(){
+    for (let k=0;k<picked.length;k++) picked[k]=null;
+    i=0; quizContainer.style.display='block'; result.style.display='none';
+    updateProgress(); renderQuestion(); window.scrollTo({top:0,behavior:'smooth'});
   }
 
-  function prev() {
-    if (current > 0) {
-      current--;
-      renderQuestion();
-    }
-  }
+  // Events
+  document.getElementById('next-btn')?.addEventListener('click', next);
+  document.getElementById('prev-btn')?.addEventListener('click', prev);
+  document.getElementById('restart-btn')?.addEventListener('click', restart);
 
-  function restart() {
-    for (let i = 0; i < answersPicked.length; i++) answersPicked[i] = null;
-    current = 0;
-    quizContainer.style.display = 'block';
-    resultContainer.style.display = 'none';
-    if (restartBtn) restartBtn.style.display = 'none';
-    updateProgress();
-    renderQuestion();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // Event bağlama
-  nextBtn?.addEventListener('click', next);
-  prevBtn?.addEventListener('click', prev);
-  restartBtn?.addEventListener('click', restart);
-
-  // Başlangıç
-  loadHistory();
-  updateProgress();
-  renderQuestion();
+  // Init
+  loadHistory(); updateProgress(); renderQuestion();
 });
