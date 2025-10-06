@@ -344,3 +344,17 @@ img{ max-width:100%; height:auto }
   .ks-backdrop{ z-index: 1000 !important; }
   .ks-header{ z-index: 900 !important; }  /* artık buton sabit, header geride kalabilir */
 }
+.ks-hamburger{
+  width:48px !important; height:48px !important;
+  overflow: visible; /* taşma yok */
+}
+/* Menü açıkken hamburger klik yakalamasın */
+.menu-open .ks-hamburger{
+  z-index: 900 !important;      /* çekmecenin altında kalsın */
+  pointer-events: none !important;
+}
+
+/* Çekmece menü hamburgerin ÜSTÜNDE olsun */
+.ks-drawer{ z-index: 1200 !important; }
+.ks-backdrop{ z-index: 1100 !important; }
+.ks-header{ z-index: 1000 !important; } /* buton sabitse header geride kalabilir */
