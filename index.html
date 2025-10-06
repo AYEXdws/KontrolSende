@@ -2,81 +2,85 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>KontrolSende • Ana Sayfa</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=1">
 </head>
-<body>
-  <header class="site-header">
-  <nav class="container nav">
-    <a class="logo" href="index.html">KontrolSende</a>
+<body class="theme-green">
 
-    <button class="hamburger" id="hamburger" aria-label="Menüyü aç/kapat" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
+  <!-- HEADER (TÜM SAYFALARDA AYNI) -->
+  <header id="ks-header" class="ks-header" data-ks-nav>
+    <nav class="ks-nav ks-container">
+      <a class="ks-logo" href="index.html">KontrolSende</a>
 
-    <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Ana Sayfa</a></li>
-      <li><a href="test.html">Test Et</a></li>
-      <li><a href="etkinlikler.html">Etkinlikler</a></li>
-      <li><a href="yardim.html">Yardım Al</a></li>
-      <li class="theme-li">
-        <label for="themeSwitcher" class="theme-label">Tema</label>
-        <select id="themeSwitcher" class="theme-select" aria-label="Tema seç">
-          <option value="theme-green">Modern Yeşil</option>
-          <option value="theme-dark">Koyu Derin</option>
-          <option value="theme-glass">Glass / Gradient</option>
-        </select>
-      </li>
-    </ul>
-  </nav>
-</header>
+      <button class="ks-hamburger" id="ks-hamburger" aria-label="Menüyü aç/kapat" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="ks-drawer" id="ks-drawer" role="menu">
+        <li><a href="index.html" aria-current="page">Ana Sayfa</a></li>
+        <li><a href="test.html">Test Et</a></li>
+        <li><a href="etkinlikler.html">Etkinlikler</a></li>
+        <li><a href="yardim.html">Yardım Al</a></li>
+        <li class="ks-theme">
+          <label for="ks-theme" class="ks-theme-label">Tema</label>
+          <select id="ks-theme" class="ks-select" aria-label="Tema seç">
+            <option value="theme-green">Modern Yeşil</option>
+            <option value="theme-dark">Koyu Derin</option>
+            <option value="theme-glass">Glass / Gradient</option>
+          </select>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
   <main class="page-bg">
-    <section class="hero container">
-      <div class="hero-text">
-        <h1>Kontrol sende: <span>farkındalık</span> ile güçlü kal.</h1>
-        <p>Sigara, alkol ve dijital alışkanlıklar hakkında farkındalık kazan. Hızlı testle kendi dengenin fotoğrafını çek.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="test.html">Farkındalık Testine Başla</a>
-          <a class="btn" href="yardim.html">Yardım ve Destek</a>
+    <section class="ks-container hero">
+      <div>
+        <h1>Bağımlılığın <span>farkında</span> ol. Kontrol <span>sende</span>.</h1>
+        <p class="muted">Sigara, alkol, dijital, alışveriş ve diğer bağımlılıklar için kısa bir farkındalık taraması yap; güçlü yönlerini ve gelişime açık noktalarını keşfet.</p>
+        <div class="actions" style="margin-top:12px">
+          <a class="btn btn-primary" href="test.html">Testi Başlat</a>
+          <a class="btn ghost" href="yardim.html">Yardım Al</a>
         </div>
       </div>
-      <div class="hero-card card">
-        <h3>Bugünün Sözü</h3>
-        <p class="muted">“Küçük adımlar, büyük değişimlerin başlangıcıdır.”</p>
+      <div class="card hero-card">
+        <h3>Kısa Bilgi</h3>
+        <p class="small muted">Bu sitedeki test bir teşhis aracı değildir; sadece farkındalık amaçlıdır. Sonuçlara göre destek kaynakları sayfamıza gidebilirsin.</p>
         <ul class="checklist">
-          <li>Net ve anlaşılır dil</li>
-          <li>Güvenli ve gizlilik odaklı yaklaşım</li>
-          <li>Mobil uyumlu arayüz</li>
+          <li>15 soru • 2-3 dakika</li>
+          <li>Kategorik analiz (Sigara/Alkol/Dijital vb.)</li>
+          <li>Cihazında geçmiş kaydı</li>
         </ul>
       </div>
     </section>
 
-    <section class="container grid-3 info">
-      <div class="card">
-        <h3>Sigara</h3>
-        <p>Çevrenin etkisi ve tetikleyicileri tanı. “Hayır” deme kasını güçlendir.</p>
-      </div>
-      <div class="card">
+    <section class="ks-container grid-3">
+      <article class="card">
+        <h3>Sigara & Nikotin</h3>
+        <p class="small muted">Tetikleyici ortamları tanımak, “hayır” deme kasını güçlendirir.</p>
+        <a class="btn" href="test.html">Kendini Test Et</a>
+      </article>
+      <article class="card">
         <h3>Alkol</h3>
-        <p>Sınır koymak güçtür. Önceden belirlenen kurallar işini kolaylaştırır.</p>
-      </div>
-      <div class="card">
-        <h3>Dijital</h3>
-        <p>Bildirim sessizleri ve ekran süresi hedefi ile dengeyi kur.</p>
-      </div>
+        <p class="small muted">Duygu düzenleme ve sınır koyma pratikleriyle kontrol sende.</p>
+        <a class="btn" href="test.html">Kendini Test Et</a>
+      </article>
+      <article class="card">
+        <h3>Dijital Kullanım</h3>
+        <p class="small muted">Bildirim yönetimi ve ekran süresi hedefleri işini kolaylaştırır.</p>
+        <a class="btn" href="test.html">Kendini Test Et</a>
+      </article>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="container foot">
-      <p>© 2025 KontrolSende • Okul Projesi</p>
-      <a href="test.html" class="link">Testi dene</a>
+    <div class="ks-container foot">
+      <span class="tiny muted">© 2025 KontrolSende</span>
+      <a class="link tiny" href="test.html">Testi Dene</a>
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=1" defer></script>
 </body>
 </html>
