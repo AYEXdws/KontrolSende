@@ -182,8 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Navigasyon buton durumları
-    prevBtn.disabled = current === 0;
-    nextBtn.textContent = (current === questions.length - 1) ? 'Bitir' : 'Sonraki';
+    if (prevBtn) prevBtn.disabled = current === 0;
+    if (nextBtn) nextBtn.textContent = (current === questions.length - 1) ? 'Bitir' : 'Sonraki';
   }
 
   function computeStats() {
@@ -297,21 +297,25 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
-    document.getElementById('save-result')?.addEventListener('click', () => {
-  const payload = {
-    at: new Date().toISOString(),
-    totalPct: stats.totalPct,
-    cats: stats.cats
-  };
-  const key = 'ks-results';
-  const list = JSON.parse(localStorage.getItem(key) || '[]');
-  list.unshift(payload);
-  localStorage.setItem(key, JSON.stringify(list));
-  loadHistory();
+    document.getElementById('restart-from-result')?.addEventListener('click', restart);
 
-  // Kayıt sonrası gizli rapora yönlendir (hash içinde gizli anahtar)
-  window.location.href = 'admin.html#AYEX-KEY-2025';
-});
+    // KAYDET → LocalStorage + gizli rapora yönlendir
+    document.getElementById('save-result')?.addEventListener('click', () => {
+      const payload = {
+        at: new Date().toISOString(),
+        totalPct: stats.totalPct,
+        cats: stats.cats
+      };
+      const key = 'ks-results';
+      const list = JSON.parse(localStorage.getItem(key) || '[]');
+      list.unshift(payload);
+      localStorage.setItem(key, JSON.stringify(list));
+      loadHistory();
+
+      // Kayıt sonrası gizli rapora yönlendirme (hash içinde anahtar)
+      window.location.href = 'admin.html#AYEX-KEY-2025';
+    });
+  }
 
   function loadHistory() {
     const list = JSON.parse(localStorage.getItem('ks-results') || '[]');
@@ -359,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
     current = 0;
     quizContainer.style.display = 'block';
     resultContainer.style.display = 'none';
-    restartBtn.style.display = 'none';
+    if (restartBtn) restartBtn.style.display = 'none';
     updateProgress();
     renderQuestion();
     window.scrollTo({ top: 0, behavior: 'smooth' });
