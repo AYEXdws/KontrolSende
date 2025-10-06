@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>KontrolSende • Ana Sayfa</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="theme-glass">
+  <header id="ks-header" class="ks-header">
+    <nav class="ks-nav ks-container">
+      <a class="ks-logo" href="index.html">KontrolSende</a>
+      <button class="ks-hamburger" id="ks-hamburger" aria-label="Menüyü aç/kapat" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="ks-drawer" id="ks-drawer" role="menu">
+        <li><a href="index.html" aria-current="page">Ana Sayfa</a></li>
+        <li><a href="test.html">Test Et</a></li>
+        <li><a href="etkinlikler.html">Etkinlikler</a></li>
+        <li><a href="yardim.html">Yardım Al</a></li>
+        <li><a href="admin.html">Admin</a></li>
+        <li class="ks-theme">
+          <label for="ks-theme" class="ks-theme-label">Tema</label>
+          <select id="ks-theme" class="ks-select">
+            <option value="theme-glass">Glass</option>
+            <option value="theme-green">Modern Yeşil</option>
+            <option value="theme-dark">Koyu</option>
+          </select>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="page-bg">
+    <section class="ks-container hero">
+      <div>
+        <h1>Bağımlılığın <span>farkında</span> ol. Kontrol <span>sende</span>.</h1>
+        <p class="muted">Sigara, alkol, dijital alışkanlıklar ve daha fazlası... kısa bir test ile farkındalığını ölç.</p>
+        <div class="actions" style="margin-top:12px">
+          <a class="btn btn-primary" href="test.html">Testi Başlat</a>
+          <a class="btn ghost" href="yardim.html">Yardım Al</a>
+        </div>
+      </div>
+      <div class="card hero-card">
+        <h3>Neden bu site?</h3>
+        <p class="small muted">Bu test bir teşhis aracı değildir; farkındalık amaçlıdır.</p>
+        <ul class="checklist">
+          <li>Hızlı ve anonim</li>
+          <li>Kategorik analiz</li>
+          <li>Yerel veya çevrim içi kayıt</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ks-container grid-3">
+      <article class="card"><h3>Sigara & Nikotin</h3><p class="small muted">“Hayır” deme kasını güçlendir.</p></article>
+      <article class="card"><h3>Alkol</h3><p class="small muted">Sınırlarını koru, farkında kal.</p></article>
+      <article class="card"><h3>Dijital Kullanım</h3><p class="small muted">Süre ve dikkat yönetimi sende.</p></article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="ks-container foot">
+      <span class="tiny muted">© 2025 KontrolSende</span>
+      <a class="link tiny" href="test.html">Testi Dene</a>
+    </div>
+  </footer>
+  <script src="js/main.js" defer></script>
+</body>
+</html>
