@@ -382,7 +382,31 @@ fetch("https://kontrolsende-1.onrender.com/addResult", {
   .catch((err) => console.error("❌ NeonDB kaydı başarısız:", err));
     });
   }
+  console.log("📤 API'ye gönderilen veri:", {
+    total_pct: stats.totalPct,
+    cats: stats.cats
+  });
 
+  fetch("https://kontrolsende-1.onrender.com/addResult", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      total_pct: stats.totalPct,
+      cats: stats.cats
+    })
+  })
+    .then((res) => {
+      console.log("📡 API yanıt durumu:", res.status);
+      return res.json();
+    })
+    .then((data) => {
+      console.log("✅ API cevabı:", data);
+      alert("✅ API'ye başarıyla gönderildi!");
+    })
+    .catch((err) => {
+      console.error("❌ API gönderim hatası:", err);
+      alert("⚠️ API'ye gönderim başarısız! Konsolu kontrol et.");
+    });
   function loadHistory(){
     // Yereldeki (DB mock) sonuçların son 5 kaydını göster
     DB.getResults().then(list => {
