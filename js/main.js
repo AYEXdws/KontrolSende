@@ -1,8 +1,16 @@
 
- // ====== NAV + THEME ======
-(function initNavAndTheme(){
-  const root = document.documentElement;
-  const KEY = 'ks-theme';
+ // ============ Mobil menü (dayanıklı) ============
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('hamburger') || document.getElementById('hamburger-menu');
+  const list = document.getElementById('navLinks') || document.querySelector('.nav-links');
+  if (!btn || !list) return;
+
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('active');
+    list.classList.toggle('show');   // yeni
+    list.classList.toggle('active'); // eski sayfalar için
+  });
+});
 
   // Tema yükle
   const saved = localStorage.getItem(KEY) || 'theme-green';
