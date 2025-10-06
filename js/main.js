@@ -151,20 +151,20 @@ const DB = (() => {
    2) NAVBAR + TEMA
    ========================= */
 document.addEventListener('DOMContentLoaded', () => {
-  const header = $('#ks-header');
-  const btn    = $('#ks-hamburger');
-  const drawer = $('#ks-drawer');
+  const header = document.getElementById('ks-header');
+  const btn    = document.getElementById('ks-hamburger');
+  const drawer = document.getElementById('ks-drawer');
   if (!header || !btn || !drawer) return;
 
-  // Header yüksekliği → menü üst boşluğu (iOS hizası)
+  // Header yüksekliği → mobil menü üst boşluk
   const setOffset = ()=>{
     const h = header.offsetHeight || 64;
     document.documentElement.style.setProperty('--ks-offset', `${h}px`);
   };
   setOffset(); addEventListener('resize', setOffset);
 
-  // Backdrop (bir kere üret)
-  let backdrop = $('.ks-backdrop');
+  // Backdrop (bir kez oluştur)
+  let backdrop = document.querySelector('.ks-backdrop');
   if (!backdrop){
     backdrop = document.createElement('div');
     backdrop.className = 'ks-backdrop';
@@ -173,46 +173,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const open = ()=>{
     drawer.classList.add('ks-open');
-    btn.classList.add('ks-active');
-    btn.classList.add('ks-active');
+    btn.classList.add('ks-active');                 // X dönüşümü
     btn.setAttribute('aria-expanded','true');
     backdrop.classList.add('ks-show');
-    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.overflow='hidden';
   };
   const close = ()=>{
     drawer.classList.remove('ks-open');
     btn.classList.remove('ks-active');
-    btn.classList.remove('ks-active');
     btn.setAttribute('aria-expanded','false');
     backdrop.classList.remove('ks-show');
-    document.documentElement.style.overflow = '';
+    document.documentElement.style.overflow='';
   };
   const toggle = ()=> drawer.classList.contains('ks-open') ? close() : open();
 
   btn.addEventListener('click', toggle);
-  btn.addEventListener('touchend', e=>{ e.preventDefault(); toggle(); }, {passive:false});
   backdrop.addEventListener('click', close);
-  document.addEventListener('click', e=>{
-    if (!drawer.classList.contains('ks-open')) return;
-    const inside = drawer.contains(e.target) || btn.contains(e.target);
-    if (!inside) close();
-  });
   drawer.querySelectorAll('a').forEach(a=> a.addEventListener('click', close));
-
-  // Tema seçici (kalıcı)
-  const KEY = 'ks-theme', root = document.documentElement;
-  const applyTheme = t => {
-    root.classList.remove('theme-glass','theme-green','theme-dark');
-    root.classList.add(t);
-    localStorage.setItem(KEY, t);
-  };
-  applyTheme(localStorage.getItem(KEY) || 'theme-glass');
-  $$('#ks-theme').forEach(sel=>{
-    sel.value = localStorage.getItem(KEY) || 'theme-glass';
-    sel.onchange = e=> applyTheme(e.target.value);
-  });
 });
-
 /* =========================
    3) TEST (quiz) — sadece test.html'de çalışır
    ========================= */
