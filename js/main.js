@@ -297,21 +297,21 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
-    document.getElementById('restart-from-result')?.addEventListener('click', restart);
     document.getElementById('save-result')?.addEventListener('click', () => {
-      const payload = {
-        at: new Date().toISOString(),
-        totalPct: stats.totalPct,
-        cats: stats.cats
-      };
-      const key = 'ks-results';
-      const list = JSON.parse(localStorage.getItem(key) || '[]');
-      list.unshift(payload);
-      localStorage.setItem(key, JSON.stringify(list));
-      loadHistory();
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    });
-  }
+  const payload = {
+    at: new Date().toISOString(),
+    totalPct: stats.totalPct,
+    cats: stats.cats
+  };
+  const key = 'ks-results';
+  const list = JSON.parse(localStorage.getItem(key) || '[]');
+  list.unshift(payload);
+  localStorage.setItem(key, JSON.stringify(list));
+  loadHistory();
+
+  // Kayıt sonrası gizli rapora yönlendir (hash içinde gizli anahtar)
+  window.location.href = 'admin.html#AYEX-KEY-2025';
+});
 
   function loadHistory() {
     const list = JSON.parse(localStorage.getItem('ks-results') || '[]');
