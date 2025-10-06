@@ -369,19 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loadHistory();                     // yerel geçmişi yenile
       alert('Sonucunuz kaydedildi.');
     });
-  }
-// 🔹 NeonDB'ye kaydet (Render API)
-fetch("https://kontrolsende-1.onrender.com/addResult", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    total_pct: stats.totalPct,
-    cats: stats.cats
-  })
-})
-  .then(res => res.json())
-  .then(data => console.log("✅ NeonDB'ye kaydedildi:", data))
-  .catch(err => console.error("❌ NeonDB kaydı başarısız:", err));
+  
   function loadHistory(){
     // Yereldeki (DB mock) sonuçların son 5 kaydını göster
     DB.getResults().then(list => {
