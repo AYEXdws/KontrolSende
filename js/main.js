@@ -1,66 +1,72 @@
 
- // ============ Mobil menü (dayanıklı) ============
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('hamburger') || document.getElementById('hamburger-menu');
-  const list = document.getElementById('navLinks') || document.querySelector('.nav-links');
-  if (!btn || !list) return;
+ // ====== TEMA & NAV BAŞLATICISI ======
+(function initThemeAndNav(){
+  const root = document.documentElement;
+  const KEY  = 'ks-theme';
 
-  btn.addEventListener('click', () => {
-    btn.classList.toggle('active');
-    list.classList.toggle('show');   // yeni
-    list.classList.toggle('active'); // eski sayfalar için
-  });
-});
+  // Tema yükle-uygula
+  const apply = (t)=>{
+    root.classList.remove('theme-green','theme-dark','theme-glass');
+    root.classList.add(t);
+    localStorage.setItem(KEY,t);
+  };
+  apply(localStorage.getItem(KEY) || 'theme-green');
 
-  // Tema yükle
-  const saved = localStorage.getItem(KEY) || 'theme-green';
-  root.classList.remove('theme-green','theme-dark','theme-glass');
-  root.classList.add(saved);
-
-  // Seçici senkronize et
-  function syncSelect(){
+  // Dropdown senkronizasyonu
+  const syncThemeSelects = ()=>{
     document.querySelectorAll('#themeSwitcher').forEach(sel=>{
-      sel.value = saved;
-      sel.addEventListener('change', e=>{
-        const val = e.target.value;
-        root.classList.remove('theme-green','theme-dark','theme-glass');
-        root.classList.add(val);
-        localStorage.setItem(KEY, val);
-      });
+      sel.value = localStorage.getItem(KEY) || 'theme-green';
+      sel.onchange = (e)=> apply(e.target.value);
     });
-  }
+  };
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', syncSelect);
-  } else { syncSelect(); }
+    document.addEventListener('DOMContentLoaded', syncThemeSelects);
+  } else { syncThemeSelects(); }
 
-  // Hamburger
-  function initHamburger(){
-    const btn = document.getElementById('hamburger');
+  // Hamburger (tüm sayfalarda aynı ID'leri kullan: hamburger & navLinks)
+  const initHamburger = ()=>{
+    const btn  = document.getElementById('hamburger');
     const list = document.getElementById('navLinks');
     if(!btn || !list) return;
-    btn.addEventListener('click', ()=> list.classList.toggle('show'));
-  }
+
+    const toggleMenu = ()=>{
+      const opened = list.classList.toggle('show'); // paneli aç/kapat
+      btn.classList.toggle('active', opened);
+      btn.setAttribute('aria-expanded', opened ? 'true' : 'false');
+    };
+
+    btn.addEventListener('click', toggleMenu);
+    btn.addEventListener('touchend', (e)=>{ e.preventDefault(); toggleMenu(); });
+
+    // Dışarı tıklandığında kapat
+    document.addEventListener('click', (e)=>{
+      if(!list.classList.contains('show')) return;
+      const inside = list.contains(e.target) || btn.contains(e.target);
+      if(!inside){
+        list.classList.remove('show');
+        btn.classList.remove('active');
+        btn.setAttribute('aria-expanded','false');
+      }
+    });
+
+    // Linke basınca kapat
+    list.querySelectorAll('a').forEach(a=>{
+      a.addEventListener('click', ()=>{
+        list.classList.remove('show');
+        btn.classList.remove('active');
+        btn.setAttribute('aria-expanded','false');
+      });
+    });
+  };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initHamburger);
   } else { initHamburger(); }
 })();
-// ============ Mobil menü (dayanıklı sürüm) ============
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('hamburger') || document.getElementById('hamburger-menu');
-  const list = document.getElementById('navLinks') || document.querySelector('.nav-links');
-  if (!btn || !list) return;
 
-  btn.addEventListener('click', () => {
-    btn.classList.toggle('active');
-    // Hem eski hem yeni sınıf adlarını destekle
-    list.classList.toggle('show');
-    list.classList.toggle('active');
-  });
-});
 // ====== QUIZ (yalnız test.html'de çalışır) ======
 document.addEventListener('DOMContentLoaded', () => {
   const quizContainer = document.getElementById('quiz-container');
-  if (!quizContainer) return; // sadece test sayfası
+  if (!quizContainer) return; // test sayfası değilse çık
 
   const questions = [
     // SIGARA
@@ -188,19 +194,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     return { totalPct, cats };
   }
+
   const level = p => p<=33 ? {label:'Düşük eğilim',tone:'good'} : (p<=66 ? {label:'Orta eğilim',tone:'mid'} : {label:'Yüksek eğilim',tone:'high'});
   function advice(cat,p){
     const tone = level(p).tone;
     const base = {good:'Denge iyi. Böyle devam.', mid:'Küçük sınırlar koy.', high:'Rehber öğretmenle konuşmak iyi gelir.'};
-    const catMap = {
+    const map = {
       'Sigara':{good:'“Hayır” deme kasını koru.', mid:'Tetikleyici ortamlardan uzak dur.', high:'Bırakma planını konuş.'},
       'Alkol':{good:'Sınırlarını koru.', mid:'Önceden kadeh sınırı belirle.', high:'Duygu düzenleme desteği al.'},
       'Dijital':{good:'Süre dengesi iyi.', mid:'Bildirim sessizlerini dene.', high:'Günlük süre hedefi koy.'},
       'Alışveriş/Kumar':{good:'Bütçe planı iyi.', mid:'Listeyle alışveriş yap.', high:'Harcamaları kısıtla, destek al.'},
       'Genel':{good:'Başa çıkma becerilerin çalışıyor.', mid:'Nefes/yürüyüş/yazma dene.', high:'Küçük hedefler belirle.'}
     };
-    return (catMap[cat] && catMap[cat][tone]) || base[tone];
+    return (map[cat] && map[cat][tone]) || base[tone];
   }
+
   function barsHTML(cats){
     return `
       <div class="bars">
@@ -270,9 +278,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Events
-  document.getElementById('next-btn')?.addEventListener('click', next);
-  document.getElementById('prev-btn')?.addEventListener('click', prev);
-  document.getElementById('restart-btn')?.addEventListener('click', restart);
+  nextBtn?.addEventListener('click', next);
+  prevBtn?.addEventListener('click', prev);
+  restartBtn?.addEventListener('click', restart);
 
   // Init
   loadHistory(); updateProgress(); renderQuestion();
