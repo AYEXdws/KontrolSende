@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loadHistory();                     // yerel geçmişi yenile
       alert('Sonucunuz kaydedildi.');
     });
-  
+     {
   function loadHistory(){
     // Yereldeki (DB mock) sonuçların son 5 kaydını göster
     DB.getResults().then(list => {
