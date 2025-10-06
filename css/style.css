@@ -327,3 +327,20 @@ img{ max-width:100%; height:auto }
     padding-top: calc(var(--ks-offset, 64px) + 12px) !important;
   }
 }
+/* === HAMBURGER Sabitleme: Menü üstünde kalsın === */
+@media (max-width:820px){
+  .ks-hamburger{
+    position: fixed !important;
+    top: 12px;          /* gerekirse 8–16px arası oynatabilirsin */
+    right: 12px;
+    z-index: 9999 !important; /* her şeyin üstünde */
+    margin-left: 0 !important;
+  }
+  /* Menü paneli butonun altında başlasın */
+  .ks-drawer{
+    padding-top: calc(var(--ks-offset, 64px) + 20px) !important;
+    z-index: 1020 !important;
+  }
+  .ks-backdrop{ z-index: 1000 !important; }
+  .ks-header{ z-index: 900 !important; }  /* artık buton sabit, header geride kalabilir */
+}
