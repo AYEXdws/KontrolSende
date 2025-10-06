@@ -439,3 +439,19 @@ body.menu-open .ks-hamburger{ display: none !important; }
   }
   .ks-backdrop.ks-show{ opacity:1; pointer-events:auto }
 }
+/* --- Sağdaki beyaz şerit fix --- */
+html, body { overflow-x: hidden; }  /* yatay taşmayı kapat */
+
+/* Çekmece tamamen ekran dışına çıksın, kenar görünmesin */
+@media (max-width:820px){
+  .ks-drawer{
+    transform: translate3d(110%,0,0);  /* 100% yerine 110% = garanti */
+    right: -1px;                        /* sub-pixel sızıntıyı gizler */
+    border-left: none;                  /* kenar çizgisi açıkken verilecek */
+  }
+  .ks-drawer.ks-open{
+    transform: translate3d(0,0,0);
+    right: 0;
+    border-left: 1px solid #eaecef;     /* sadece açıkken kenar */
+  }
+}
