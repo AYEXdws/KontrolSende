@@ -1,101 +1,68 @@
-
- // ====== TEMA & NAV BAŞLATICISI ======
+// ====== TEMA & NAV BAŞLATICISI ======
 (function initThemeAndNav(){
   const root = document.documentElement;
   const KEY  = 'ks-theme';
-// ============ Mobil menü + backdrop ============
-document.addEventListener('DOMContentLoaded', () => {
-  const btn  = document.getElementById('hamburger');
-  const list = document.getElementById('navLinks');
-  if (!btn || !list) return;
 
-  // backdrop'u bir kere oluştur
-  let backdrop = document.getElementById('menu-backdrop');
-  if (!backdrop) {
-    backdrop = document.createElement('div');
-    backdrop.id = 'menu-backdrop';
-    backdrop.className = 'menu-backdrop';
-    document.body.appendChild(backdrop);
-  }
-
-  const openMenu = () => {
-    list.classList.add('show');
-    btn.classList.add('active');
-    btn.setAttribute('aria-expanded','true');
-    backdrop.classList.add('show');
-    document.body.classList.add('no-scroll');
-  };
-  const closeMenu = () => {
-    list.classList.remove('show');
-    btn.classList.remove('active');
-    btn.setAttribute('aria-expanded','false');
-    backdrop.classList.remove('show');
-    document.body.classList.remove('no-scroll');
-  };
-  const toggleMenu = () => list.classList.contains('show') ? closeMenu() : openMenu();
-
-  // tık/dokun
-  btn.addEventListener('click', toggleMenu);
-  btn.addEventListener('touchend', (e)=>{ e.preventDefault(); toggleMenu(); });
-
-  // backdrop'a tıklayınca kapat
-  backdrop.addEventListener('click', closeMenu);
-
-  // menüden linke tıklanınca kapat
-  list.querySelectorAll('a').forEach(a=> a.addEventListener('click', closeMenu));
-});
-  // Tema yükle-uygula
-  const apply = (t)=>{
+  // Tema uygula
+  const applyTheme = (t)=>{
     root.classList.remove('theme-green','theme-dark','theme-glass');
     root.classList.add(t);
-    localStorage.setItem(KEY,t);
+    localStorage.setItem(KEY, t);
   };
-  apply(localStorage.getItem(KEY) || 'theme-green');
+  applyTheme(localStorage.getItem(KEY) || 'theme-green');
 
-  // Dropdown senkronizasyonu
+  // Tema seçiciyi senkronize et
   const syncThemeSelects = ()=>{
     document.querySelectorAll('#themeSwitcher').forEach(sel=>{
       sel.value = localStorage.getItem(KEY) || 'theme-green';
-      sel.onchange = (e)=> apply(e.target.value);
+      sel.onchange = (e)=> applyTheme(e.target.value);
     });
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', syncThemeSelects);
   } else { syncThemeSelects(); }
 
-  // Hamburger (tüm sayfalarda aynı ID'leri kullan: hamburger & navLinks)
+  // Hamburger + Backdrop
   const initHamburger = ()=>{
     const btn  = document.getElementById('hamburger');
     const list = document.getElementById('navLinks');
-    if(!btn || !list) return;
+    if (!btn || !list) return;
 
-    const toggleMenu = ()=>{
-      const opened = list.classList.toggle('show'); // paneli aç/kapat
-      btn.classList.toggle('active', opened);
-      btn.setAttribute('aria-expanded', opened ? 'true' : 'false');
+    // Backdrop'u bir kez oluştur
+    let backdrop = document.getElementById('menu-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.id = 'menu-backdrop';
+      backdrop.className = 'menu-backdrop';
+      document.body.appendChild(backdrop);
+    }
+
+    const openMenu = ()=>{
+      list.classList.add('show');
+      btn.classList.add('active');
+      btn.setAttribute('aria-expanded','true');
+      backdrop.classList.add('show');
+      document.body.classList.add('no-scroll');
     };
+    const closeMenu = ()=>{
+      list.classList.remove('show');
+      btn.classList.remove('active');
+      btn.setAttribute('aria-expanded','false');
+      backdrop.classList.remove('show');
+      document.body.classList.remove('no-scroll');
+    };
+    const toggleMenu = ()=> list.classList.contains('show') ? closeMenu() : openMenu();
 
     btn.addEventListener('click', toggleMenu);
     btn.addEventListener('touchend', (e)=>{ e.preventDefault(); toggleMenu(); });
+    backdrop.addEventListener('click', closeMenu);
+    list.querySelectorAll('a').forEach(a=> a.addEventListener('click', closeMenu));
 
-    // Dışarı tıklandığında kapat
+    // Sayfa dışında tıklama güvenliği (ekstra)
     document.addEventListener('click', (e)=>{
-      if(!list.classList.contains('show')) return;
+      if (!list.classList.contains('show')) return;
       const inside = list.contains(e.target) || btn.contains(e.target);
-      if(!inside){
-        list.classList.remove('show');
-        btn.classList.remove('active');
-        btn.setAttribute('aria-expanded','false');
-      }
-    });
-
-    // Linke basınca kapat
-    list.querySelectorAll('a').forEach(a=>{
-      a.addEventListener('click', ()=>{
-        list.classList.remove('show');
-        btn.classList.remove('active');
-        btn.setAttribute('aria-expanded','false');
-      });
+      if (!inside) closeMenu();
     });
   };
   if (document.readyState === 'loading') {
@@ -167,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let i = 0;
   const picked = Array(questions.length).fill(null);
 
-  // DOM
+  // DOM referansları
   const progressBar = document.getElementById('progress-bar');
   const qWrap = document.getElementById('question-container');
   const nextBtn = document.getElementById('next-btn');
