@@ -36,7 +36,19 @@
     document.addEventListener('DOMContentLoaded', initHamburger);
   } else { initHamburger(); }
 })();
+// ============ Mobil menü (dayanıklı sürüm) ============
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('hamburger') || document.getElementById('hamburger-menu');
+  const list = document.getElementById('navLinks') || document.querySelector('.nav-links');
+  if (!btn || !list) return;
 
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('active');
+    // Hem eski hem yeni sınıf adlarını destekle
+    list.classList.toggle('show');
+    list.classList.toggle('active');
+  });
+});
 // ====== QUIZ (yalnız test.html'de çalışır) ======
 document.addEventListener('DOMContentLoaded', () => {
   const quizContainer = document.getElementById('quiz-container');
