@@ -1,64 +1,69 @@
 <!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KontrolSende • Yardım Al</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KontrolSende • Yardım</title>
+  <link rel="stylesheet" href="css/style.css?v=1">
 </head>
-<body>
-<header class="site-header">
-  <nav class="container nav">
-    <a class="logo" href="index.html">KontrolSende</a>
-    <button class="hamburger" id="hamburger" aria-label="Menüyü aç/kapat"><span></span><span></span><span></span></button>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Ana Sayfa</a></li>
-      <li><a href="test.html">Test Et</a></li>
-      <li><a href="etkinlikler.html">Etkinlikler</a></li>
-      <li><a class="active" href="yardim.html">Yardım Al</a></li>
-      <li class="theme-li">
-        <label for="themeSwitcher" class="theme-label">Tema</label>
-        <select id="themeSwitcher" class="theme-select" aria-label="Tema seç">
-          <option value="theme-green">Modern Yeşil</option>
-          <option value="theme-dark">Koyu Derin</option>
-          <option value="theme-glass">Glass / Gradient</option>
-        </select>
-      </li>
-    </ul>
-  </nav>
-</header>
+<body class="theme-green">
 
-<main class="page-bg">
-  <section class="container grid-2">
-    <div class="card">
-      <h1>Yardım ve Destek</h1>
-      <p class="muted">Yalnız değilsin. Resmî hatlar ve okul rehberlik birimi her zaman yanında.</p>
-      <ul class="help">
-        <li><strong>Yeşilay Danışmanlık Merkezi (YEDAM):</strong> 115</li>
-        <li><strong>ALO 183:</strong> Sosyal Destek Hattı</li>
-        <li><strong>ALO 191:</strong> Danışma ve Destek</li>
+  <!-- HEADER -->
+  <header id="ks-header" class="ks-header" data-ks-nav>
+    <nav class="ks-nav ks-container">
+      <a class="ks-logo" href="index.html">KontrolSende</a>
+      <button class="ks-hamburger" id="ks-hamburger" aria-label="Menüyü aç/kapat" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="ks-drawer" id="ks-drawer" role="menu">
+        <li><a href="index.html">Ana Sayfa</a></li>
+        <li><a href="test.html">Test Et</a></li>
+        <li><a href="etkinlikler.html">Etkinlikler</a></li>
+        <li><a href="yardim.html" aria-current="page">Yardım Al</a></li>
+        <li class="ks-theme">
+          <label for="ks-theme" class="ks-theme-label">Tema</label>
+          <select id="ks-theme" class="ks-select" aria-label="Tema seç">
+            <option value="theme-green">Modern Yeşil</option>
+            <option value="theme-dark">Koyu Derin</option>
+            <option value="theme-glass">Glass / Gradient</option>
+          </select>
+        </li>
       </ul>
-    </div>
-    <div class="card">
-      <h3>Küçük Adımlar</h3>
-      <ul class="bullets">
-        <li>Tetikleyicileri not al.</li>
-        <li>Kısa yürüyüş ve derin nefes molaları.</li>
-        <li>Güvendiğin bir yetişkinle konuş.</li>
-      </ul>
-      <a class="btn btn-primary" href="test.html">Testi Dene</a>
-    </div>
-  </section>
-</main>
+    </nav>
+  </header>
 
-<footer class="site-footer">
-  <div class="container foot">
-    <p>© 2025 KontrolSende • Okul Projesi</p>
-    <a href="index.html" class="link">Ana sayfa</a>
-  </div>
-</footer>
+  <main class="ks-container" style="padding:28px 0">
+    <h1>Yardım ve Destek</h1>
+    <p class="muted small">Bu kaynaklar bilgilendirme amaçlıdır; acil durumlarda 112’yi arayın.</p>
 
-<script src="js/main.js"></script>
+    <div class="grid-2">
+      <article class="card">
+        <h3>Okul Rehberliği</h3>
+        <p class="small muted">Rehber öğretmeninle görüşerek kişisel bir plan yap.</p>
+        <ul class="help">
+          <li>Gizlilik esastır.</li>
+          <li>Hedef belirleme ve takip.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>Sağlık Kurumları</h3>
+        <p class="small muted">Aile hekimi ve ilgili polikliniklerden randevu al.</p>
+        <ul class="help">
+          <li>Nikotini bırakma poliklinikleri</li>
+          <li>Psikolojik danışmanlık</li>
+        </ul>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="ks-container foot">
+      <span class="tiny muted">© 2025 KontrolSende</span>
+      <a class="link tiny" href="test.html">Testi Dene</a>
+    </div>
+  </footer>
+
+  <script src="js/main.js?v=1" defer></script>
 </body>
 </html>
