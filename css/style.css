@@ -1,0 +1,122 @@
+/* 🎨 KontrolSende - Genel Stil Ayarları */
+:root {
+  --accent: #00a978;
+  --bg-blur: rgba(255, 255, 255, 0.15);
+  --glass-border: rgba(255, 255, 255, 0.25);
+}
+
+body {
+  background: linear-gradient(135deg, #e9f7ef 0%, #d3f1e0 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 🔹 Navigasyon Bar */
+nav.container-fluid {
+  backdrop-filter: blur(12px);
+  background-color: var(--bg-blur);
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+nav ul li a.active {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+/* 🧊 Glass Container */
+main.container,
+section.container,
+article {
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  margin-top: 2rem;
+}
+
+/* 🖼️ Görseller */
+figure img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+figcaption {
+  text-align: center;
+  color: #333;
+  font-style: italic;
+  margin-top: 0.5rem;
+}
+
+/* 💡 Başlıklar */
+h2, h3 {
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+/* 🔘 Butonlar */
+button, [role="button"], a[role="button"] {
+  background-color: var(--accent);
+  border: none;
+  color: white;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+button:hover, [role="button"]:hover, a[role="button"]:hover {
+  background-color: #007f5f;
+}
+
+/* 📱 Responsive Düzen */
+@media (max-width: 768px) {
+  main.container, section.container, article {
+    padding: 1.2rem;
+  }
+
+  nav ul:first-child strong {
+    font-size: 1rem;
+  }
+
+  nav ul:last-child li {
+    margin: 0.25rem 0;
+  }
+}
+
+/* 🦶 Altbilgi */
+footer {
+  text-align: center;
+  padding: 2rem 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* 🧭 Özel: Glass Navbar Hover Efekti */
+.glass-nav a:hover {
+  color: var(--accent);
+}
+
+/* 📊 Admin Tablosu (ileride admin.html’de kullanılacak) */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+table th, table td {
+  padding: 0.6rem;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+table th {
+  background-color: rgba(0, 169, 120, 0.15);
+  color: #006f4a;
+}
