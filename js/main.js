@@ -554,7 +554,15 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 });
-
+// Aktif sayfayı otomatik yeşil yap
+document.addEventListener('DOMContentLoaded', () => {
+  const current = location.pathname.split('/').pop(); // örn: 'test.html'
+  document.querySelectorAll('.ks-drawer a').forEach(a=>{
+    const href = a.getAttribute('href');
+    if (href === current) a.setAttribute('aria-current','page');
+    else a.removeAttribute('aria-current');
+  });
+});
 /* =========================
    6) NOT: Firebase'e geçiş
    =========================
