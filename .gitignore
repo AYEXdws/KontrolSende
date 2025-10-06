@@ -1,17 +1,42 @@
-# Sistem dosyaları
+# --- Sistem dosyaları ---
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# IDE / editör ayarları
+# --- VSCode / editör ---
 .vscode/
 .idea/
+*.code-workspace
 
-# Log dosyaları
+# --- Geçici derleme dosyaları ---
 *.log
+*.tmp
+*.bak
 
-# Geçici build klasörleri
+# --- Node / Paket yönetimi (ileride eklersen) ---
+node_modules/
+package-lock.json
+yarn.lock
+
+# --- SASS/LESS geçici dosyaları ---
+.sass-cache/
+*.scssc
+
+# --- Çıktı / derleme klasörleri (şimdilik boş) ---
 dist/
 build/
+.cache/
 
-# Node.js modülleri (ileride gerekirse)
-node_modules/
+# --- GitHub Pages özel ---
+_site/
+*.map
+
+# --- Ortam dosyaları (kullanıcıya özel ayarlar) ---
+.env
+.env.local
+.env.production
+.env.development
+
+# --- Kişisel notlar ---
+notes.txt
+todo.txt
