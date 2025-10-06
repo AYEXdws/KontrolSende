@@ -26,32 +26,35 @@
     </ul>
   </nav>
 </header>
-  <main class="ks-container quiz-wrap">
-    <div class="card quiz">
-      <div class="progress"><div id="progress-bar"></div></div>
-      <div class="meta">
-        <span class="pill soft" id="question-counter">Soru 1</span>
-        <span class="pill" id="category-chip">Kategori</span>
-        <span class="pill" id="percent-chip">%0</span>
+ <main class="ks-container">
+  <section id="quiz-container" class="quiz-wrap">
+    <div id="question-container"></div>
+
+    <div class="quiz-nav">
+      <button id="prev-btn" class="btn ghost">Önceki</button>
+      <div class="right">
+        <button id="next-btn" class="btn btn-primary">Sonraki</button>
       </div>
-      <div id="quiz-container">
-        <div id="question-container" class="question"></div>
-        <div class="quiz-nav">
-          <button id="prev-btn" class="btn">Geri</button>
-          <div class="right">
-            <button id="restart-btn" class="btn ghost">Sıfırla</button>
-            <button id="next-btn" class="btn btn-primary">Sonraki</button>
-          </div>
-        </div>
-      </div>
-      <div id="result-container" class="result" style="display:none"></div>
     </div>
 
-    <div id="history-container" class="history" style="display:none">
-      <h3>Geçmiş Sonuçlar</h3>
-      <div id="history-list" class="history-list"></div>
+    <div class="progress">
+      <div id="progress-bar"></div>
     </div>
-  </main>
+
+    <div class="meta">
+      <span id="category-chip" class="pill soft">Kategori</span>
+      <span id="percent-chip" class="pill soft">%0</span>
+      <span id="question-counter" class="pill soft">Soru 1 / ?</span>
+    </div>
+  </section>
+
+  <section id="result-container" class="card" style="display:none"></section>
+
+  <section id="history-container" style="display:none; margin-top:24px">
+    <h3>Sonuç Geçmişi</h3>
+    <div id="history-list" class="history-list"></div>
+  </section>
+</main>
   <footer class="site-footer">
     <div class="ks-container foot">
       <span class="tiny muted">© 2025 KontrolSende</span>
