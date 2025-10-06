@@ -150,6 +150,7 @@ const DB = (() => {
 /* =========================
    2) NAVBAR + TEMA
    ========================= */
+// NAV: Hamburger menü – sade ve stabil
 document.addEventListener('DOMContentLoaded', () => {
   const header = document.getElementById('ks-header');
   const btn    = document.getElementById('ks-hamburger');
@@ -163,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   setOffset(); addEventListener('resize', setOffset);
 
-  // Backdrop (bir kez oluştur)
+  // Backdrop (bir kere oluştur)
   let backdrop = document.querySelector('.ks-backdrop');
   if (!backdrop){
     backdrop = document.createElement('div');
@@ -172,36 +173,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const open = ()=>{
-  drawer.classList.add('ks-open');
-  btn.classList.add('ks-active');
-  btn.setAttribute('aria-expanded','true');
-  backdrop.classList.add('ks-show');
-  document.body.style.overflow = 'hidden';
-
-  // MENÜ AÇIKKEN:
-  document.body.classList.add('menu-open');  // <-- kritik
-};
-
-const close = ()=>{
-  drawer.classList.remove('ks-open');
-  btn.classList.remove('ks-active');
-  btn.setAttribute('aria-expanded','false');
-  backdrop.classList.remove('ks-show');
-  document.body.style.overflow = '';
-
-  // MENÜ KAPANIRKEN:
-  document.body.classList.remove('menu-open'); // <-- kritik
-};
-
-  // YENİ: menü kapanınca buton tekrar tıklanabilir
-  btn.style.pointerEvents = 'auto';
-  document.documentElement.classList.remove('menu-open');
-};
+    drawer.classList.add('ks-open');
+    btn.classList.add('ks-active');                 // X dönüşümü
+    btn.setAttribute('aria-expanded','true');
+    backdrop.classList.add('ks-show');
+    document.documentElement.style.overflow = 'hidden';
+  };
+  const close = ()=>{
+    drawer.classList.remove('ks-open');
+    btn.classList.remove('ks-active');
+    btn.setAttribute('aria-expanded','false');
+    backdrop.classList.remove('ks-show');
+    document.documentElement.style.overflow = '';
+  };
   const toggle = ()=> drawer.classList.contains('ks-open') ? close() : open();
 
   btn.addEventListener('click', toggle);
   backdrop.addEventListener('click', close);
   drawer.querySelectorAll('a').forEach(a=> a.addEventListener('click', close));
+
+  // Aktif sayfayı otomatik vurgula (yeşil)
+  const current = location.pathname.split('/').pop() || 'index.html';
+  drawer.querySelectorAll('a').forEach(a=>{
+    a.removeAttribute('aria-current');
+    if (a.getAttribute('href') === current) a.setAttribute('aria-current','page');
+  });
 });
 /* =========================
    3) TEST (quiz) — sadece test.html'de çalışır
