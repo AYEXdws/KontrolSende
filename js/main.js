@@ -364,10 +364,16 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     $('#restart-from-result')?.addEventListener('click', restart);
     $('#save-result')?.addEventListener('click', async ()=>{
-      const payload = { at: nowISO(), totalPct: stats.totalPct, cats: stats.cats, from: 'test' };
-      await DB.addResult(payload);       // veritabanına (şimdilik local)
-      loadHistory();                     // yerel geçmişi yenile
-        alert('Sonucunuz kaydedildi.');
+  const payload = { 
+    at: nowISO(), 
+    totalPct: stats.totalPct, 
+    cats: stats.cats, 
+    from: 'test' 
+  };
+  
+  await DB.addResult(payload);       // LocalStorage’a kaydet
+  loadHistory();                     // Yerel geçmişi yenile
+  alert('Sonucunuz kaydedildi.');
 
   // 🔹 Ek olarak NeonDB'ye kaydet (Render API üzerinden)
   fetch("https://kontrolsende-1.onrender.com/addResult", {
@@ -378,9 +384,9 @@ document.addEventListener('DOMContentLoaded', () => {
       cats: stats.cats
     })
   })
-    .then((res) => res.json())
-    .then((data) => console.log("✅ NeonDB'ye kaydedildi:", data))
-    .catch((err) => console.error("❌ NeonDB kaydı başarısız:", err));
+  .then(res => res.json())
+  .then(data => console.log("✅ NeonDB'ye kaydedildi:", data))
+  .catch(err => console.error("❌ NeonDB kaydı başarısız:", err));
 });
   function loadHistory(){
     // Yereldeki (DB mock) sonuçların son 5 kaydını göster
