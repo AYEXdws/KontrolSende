@@ -328,3 +328,65 @@ img{ max-width:100%; height:auto }
     box-shadow:-18px 0 40px rgba(0,0,0,.22);
   }
 }
+/* ==== FULLSCREEN MENÜ (tüm cihazlarda) ==== */
+
+/* Eski çekmece/backdrop kapatılsın */
+.ks-backdrop{ display:none !important; }
+
+/* Tam ekran kaplayan menü */
+.ks-drawer{
+  position:fixed; inset:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:18px; list-style:none; margin:0; padding:24px;
+  background:
+    radial-gradient(900px 500px at 20% 0%, rgba(163,255,214,.28), transparent 55%),
+    radial-gradient(900px 500px at 80% 10%, rgba(201,248,231,.24), transparent 55%),
+    rgba(255,255,255,.90);
+  backdrop-filter: blur(14px) saturate(1.05);
+  -webkit-backdrop-filter: blur(14px) saturate(1.05);
+  border:0;
+  opacity:0; transform:scale(.98) translateY(-6px);
+  pointer-events:none; transition:opacity .22s ease, transform .22s ease;
+  z-index:10060;
+}
+.theme-dark .ks-drawer{
+  background: rgba(12,16,22,.92);
+}
+
+/* Açık durum */
+.ks-drawer.ks-open{ opacity:1; transform:none; pointer-events:auto; }
+
+/* Menü öğeleri – büyük ve rahat tıklanır */
+.ks-drawer a{
+  display:block; padding:14px 18px; border-radius:12px;
+  font-size:clamp(18px,3.8vw,26px); font-weight:600; color:var(--text);
+}
+.ks-drawer a[aria-current="page"]{ color:var(--primary); }
+
+/* Tema seçici tam ekranda da şık görünsün */
+.ks-drawer .ks-theme{ margin-top:12px; width:min(320px,80%); }
+.ks-drawer .ks-select{ width:100%; font-size:16px; padding:12px 14px; }
+
+/* Header ve buton katmanı */
+.ks-header{ z-index:10070; }
+.ks-hamburger{ z-index:10080; }
+
+/* SVG hamburger – pürüzsüz çizgi ve X dönüşümü */
+.ks-hamburger{
+  width:54px;height:54px;border-radius:16px;
+  background:rgba(255,255,255,.92); border:1px solid rgba(0,0,0,.05);
+  box-shadow:0 6px 20px rgba(0,0,0,.12);
+  display:flex;align-items:center;justify-content:center;position:relative;
+}
+.theme-dark .ks-hamburger{background:rgba(20,24,30,.9);border-color:rgba(255,255,255,.08)}
+.ks-icon line{
+  stroke:var(--text); stroke-width:2.6; stroke-linecap:round;
+  vector-effect:non-scaling-stroke; shape-rendering:geometricPrecision;
+  transform-origin:12px 12px; transition:transform .24s ease, opacity .18s ease;
+}
+.ks-icon .k-top{ transform:translateY(-6px) }
+.ks-icon .k-mid{ opacity:1 }
+.ks-icon .k-bot{ transform:translateY(6px) }
+.ks-hamburger.ks-active .k-top{ transform:rotate(45deg) }
+.ks-hamburger.ks-active .k-mid{ opacity:0 }
+.ks-hamburger.ks-active .k-bot{ transform:rotate(-45deg) }
