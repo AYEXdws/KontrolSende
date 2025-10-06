@@ -3,7 +3,47 @@
 (function initThemeAndNav(){
   const root = document.documentElement;
   const KEY  = 'ks-theme';
+// ============ Mobil menü + backdrop ============
+document.addEventListener('DOMContentLoaded', () => {
+  const btn  = document.getElementById('hamburger');
+  const list = document.getElementById('navLinks');
+  if (!btn || !list) return;
 
+  // backdrop'u bir kere oluştur
+  let backdrop = document.getElementById('menu-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.id = 'menu-backdrop';
+    backdrop.className = 'menu-backdrop';
+    document.body.appendChild(backdrop);
+  }
+
+  const openMenu = () => {
+    list.classList.add('show');
+    btn.classList.add('active');
+    btn.setAttribute('aria-expanded','true');
+    backdrop.classList.add('show');
+    document.body.classList.add('no-scroll');
+  };
+  const closeMenu = () => {
+    list.classList.remove('show');
+    btn.classList.remove('active');
+    btn.setAttribute('aria-expanded','false');
+    backdrop.classList.remove('show');
+    document.body.classList.remove('no-scroll');
+  };
+  const toggleMenu = () => list.classList.contains('show') ? closeMenu() : openMenu();
+
+  // tık/dokun
+  btn.addEventListener('click', toggleMenu);
+  btn.addEventListener('touchend', (e)=>{ e.preventDefault(); toggleMenu(); });
+
+  // backdrop'a tıklayınca kapat
+  backdrop.addEventListener('click', closeMenu);
+
+  // menüden linke tıklanınca kapat
+  list.querySelectorAll('a').forEach(a=> a.addEventListener('click', closeMenu));
+});
   // Tema yükle-uygula
   const apply = (t)=>{
     root.classList.remove('theme-green','theme-dark','theme-glass');
