@@ -1,9 +1,10 @@
 /* =========================================================
-   KontrolSende • main.js (v4 - API entegre)
-   - Glass menü (hamburger → X)
-   - Test (quiz) + sonuç kaydı (Render + NeonDB)
-   - Etkinlikler herkese açık liste (DB)
-   - Admin: Etkinlik Ekle/Sil + Sonuçları gör (DB)
+   KontrolSende • main.js (v5 – API entegre)
+   - DB katmanı: Render API + NeonDB
+   - Hamburger menü
+   - Test (yalnızca test.html)
+   - Etkinlikler (DB’den herkese açık)
+   - Admin: Etkinlik Ekle/Sil + Sonuçları Gör/Sil + İstatistik/Grafikler
    ========================================================= */
 
 /* =========================
@@ -19,37 +20,27 @@ const nowISO = () => new Date().toISOString();
 const API_BASE = "https://kontrolsende-api.onrender.com"; // Render URL’in
 
 const DB = {
-  // ... (events aynı)
-
-  async addResult({ totalPct, cats }) {
-    const r = await fetch(`${API_BASE}/addResult`, {
+  // ---- EVENTS ----
+  async getEvents() {
+    const r = await fetch(`${API_BASE}/getEvents`);
+    const j = await r.json().catch(()=>({success:false}));
+    return j && j.success ? j.rows : [];
+  },
+  async addEvent({ title, desc, img }) {
+    const r = await fetch(`${API_BASE}/addEvent`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ total_pct: totalPct, cats })
+      body: JSON.stringify({ title, description: desc || "", image_url: img })
     });
     const j = await r.json().catch(()=>({success:false}));
     return !!(j && j.success);
   },
-
-  async getResults() {
-    const r = await fetch(`${API_BASE}/getResults`);
-    const j = await r.json().catch(()=>({success:false, rows:[]}));
-    return j && j.success
-      ? j.rows.map(x => ({
-          id: x.id,                 // 👈 id'yi koru
-          at: x.created_at,
-          totalPct: x.total_pct,
-          cats: x.cats
-        }))
-      : [];
-  },
-
-  async deleteResult(id) {
-    const r = await fetch(`${API_BASE}/deleteResult/${id}`, { method:"DELETE" });
+  async deleteEvent(id) {
+    const r = await fetch(`${API_BASE}/deleteEvent/${id}`, { method: "DELETE" });
     const j = await r.json().catch(()=>({success:false}));
     return !!(j && j.success);
   },
-};
+
   // ---- RESULTS ----
   async addResult({ totalPct, cats }) {
     const r = await fetch(`${API_BASE}/addResult`, {
@@ -64,10 +55,19 @@ const DB = {
     const r = await fetch(`${API_BASE}/getResults`);
     const j = await r.json().catch(()=>({success:false, rows:[]}));
     return j && j.success
-      ? j.rows.map(x => ({ at: x.created_at, totalPct: x.total_pct, cats: x.cats }))
+      ? j.rows.map(x => ({
+          id: x.id,
+          at: x.created_at,
+          totalPct: x.total_pct,
+          cats: x.cats
+        }))
       : [];
   },
-  async clearResults(){ return true; } // (gerekirse endpoint ekleriz)
+  async deleteResult(id) {
+    const r = await fetch(`${API_BASE}/deleteResult/${id}`, { method:"DELETE" });
+    const j = await r.json().catch(()=>({success:false}));
+    return !!(j && j.success);
+  }
 };
 
 /* =========================
@@ -123,31 +123,27 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* =========================
-   3) TEST (quiz) — sadece test.html'de
+   3) TEST (quiz) — sadece test.html
    ========================= */
 document.addEventListener('DOMContentLoaded', () => {
-  // Sadece test.html'de çalış
   const isTestPage = /(^|\/)test\.html(\?|#|$)/.test(location.pathname + location.search + location.hash);
   if (!isTestPage) return;
 
-  // Test iskeletinin test.html içinde hazır olması gerekir
-  const quizContainer = document.querySelector('#quiz-container');
-  if (!quizContainer) return; // güvenlik: iskelet yoksa çalıştırma
+  const quizContainer = $('#quiz-container');
+  if (!quizContainer) return;
 
-  // Referanslar
-  const qWrap       = document.querySelector('#question-container');
-  const nextBtn     = document.querySelector('#next-btn');
-  const prevBtn     = document.querySelector('#prev-btn');
-  const resultBox   = document.querySelector('#result-container');
-  const progressBar = document.querySelector('#progress-bar');
-  const qCounter    = document.querySelector('#question-counter');
-  const catChip     = document.querySelector('#category-chip');
-  const pctChip     = document.querySelector('#percent-chip');
-  const historyBox  = document.querySelector('#history-container');
-  const historyList = document.querySelector('#history-list');
+  const qWrap       = $('#question-container');
+  const nextBtn     = $('#next-btn');
+  const prevBtn     = $('#prev-btn');
+  const resultBox   = $('#result-container');
+  const progressBar = $('#progress-bar');
+  const qCounter    = $('#question-counter');
+  const catChip     = $('#category-chip');
+  const pctChip     = $('#percent-chip');
+  const historyBox  = $('#history-container');
+  const historyList = $('#history-list');
   if (!qWrap || !nextBtn || !prevBtn || !resultBox) return;
 
-  // Sorular
   const questions = [
     { cat:'Sigara', q:'Sigara içme düşüncesi gün içinde ne sıklıkla aklına geliyor?', a:[
       ['Hiç gelmiyor.',0],['Ara sıra aklıma gelir.',1],['Sık aklıma geliyor.',2],['Çoğu zaman aklımdan çıkmıyor.',3]
@@ -275,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function showResults(){
     const stats = computeStats();
     const lv = level(stats.totalPct);
-    document.querySelector('#quiz-container').style.display = 'none';
+    $('#quiz-container').style.display = 'none';
     resultBox.style.display = 'block';
     resultBox.innerHTML = `
       <h2>Genel Görünüm: ${lv.label} (${stats.totalPct}%)</h2>
@@ -287,13 +283,12 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
-    const restartFromResult = document.querySelector('#restart-from-result');
-    if (restartFromResult) restartFromResult.addEventListener('click', restart);
+    $('#restart-from-result')?.addEventListener('click', restart);
 
-    const saveBtn = document.querySelector('#save-result');
+    const saveBtn = $('#save-result');
     if (saveBtn) saveBtn.addEventListener('click', async ()=>{
-      const stats2 = computeStats(); // güvenlik: en güncel state
-      const ok = await DB.addResult({ totalPct: stats2.totalPct, cats: stats2.cats });
+      const latest = computeStats(); // en güncel state
+      const ok = await DB.addResult({ totalPct: latest.totalPct, cats: latest.cats });
       if (ok) { loadHistory(); alert('Sonucunuz kaydedildi.'); }
       else { alert('Kaydetme başarısız. Lütfen tekrar deneyin.'); }
     });
@@ -325,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function prev(){ if (i>0){ i--; renderQuestion(); } }
   function restart(){
     for (let k=0;k<picked.length;k++) picked[k]=null;
-    i=0; document.querySelector('#quiz-container').style.display='block'; resultBox.style.display='none';
+    i=0; $('#quiz-container').style.display='block'; resultBox.style.display='none';
     updateProgress(); renderQuestion(); window.scrollTo({top:0,behavior:'smooth'});
   }
 
@@ -334,6 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   loadHistory(); updateProgress(); renderQuestion();
 });
+
 /* =========================
    4) ETKİNLİKLER (herkese açık)
    ========================= */
@@ -369,7 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const panelBox = $('#admin-panel');
   if (!loginBox || !panelBox) return;
 
-  const ADMIN_PIN = '29391354'; // İstersen değiştir
+  const ADMIN_PIN = '29391354'; // PIN sayfada gösterilmiyor
   const pinInput = $('#admin-pin');
   const enterBtn = $('#admin-enter');
 
@@ -378,6 +374,91 @@ document.addEventListener('DOMContentLoaded', () => {
   const eventsPanel = $('#events-panel');
   const resultsPanel = $('#results-panel');
 
+  // === İstatistik/Grafik yardımcıları ===
+  function buildStats(rows){
+    const total = rows.length;
+    const avg = total ? Math.round(rows.reduce((s,r)=>s+(r.totalPct||r.total_pct||0),0)/total) : 0;
+
+    const todayStr = new Date().toLocaleDateString();
+    let today = 0, week = 0;
+    const dayCounts = {};
+    const days = [];
+    for (let d=6; d>=0; d--){
+      const dt = new Date(); dt.setDate(dt.getDate()-d);
+      const key = dt.toLocaleDateString();
+      days.push(key); dayCounts[key]=0;
+    }
+
+    const catsAgg = {};
+
+    rows.forEach(r=>{
+      const at = new Date(r.at || r.created_at);
+      const dkey = at.toLocaleDateString();
+      if (dkey === todayStr) today++;
+      if (days.includes(dkey)) dayCounts[dkey]++;
+      const diff = (Date.now() - at.getTime()) / 86400000;
+      if (diff <= 7) week++;
+
+      (r.cats||[]).forEach(c=>{
+        const k = c.cat || c.category || 'Diğer';
+        if (!catsAgg[k]) catsAgg[k] = { sum:0, count:0 };
+        catsAgg[k].sum += Number(c.pct||0);
+        catsAgg[k].count += 1;
+      });
+    });
+
+    const catLabels = Object.keys(catsAgg);
+    const catValues = catLabels.map(k => Math.round(catsAgg[k].sum / catsAgg[k].count));
+    const trendLabels = days;
+    const trendValues = days.map(k=>dayCounts[k]||0);
+
+    return { total, avg, today, week, catLabels, catValues, trendLabels, trendValues };
+  }
+
+  async function ensureChartJs(){
+    if (window.Chart) return;
+    await new Promise(res=>{
+      const s=document.createElement('script');
+      s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
+      s.onload=res; document.head.appendChild(s);
+    });
+  }
+
+  let chartCats, chartTrend;
+  async function renderAdminDashboard(){
+    const rows = await DB.getResults();
+    const { total, avg, today, week, catLabels, catValues, trendLabels, trendValues } = buildStats(rows);
+
+    const $id = id => document.getElementById(id);
+    if ($id('stat-total')) $id('stat-total').textContent = String(total);
+    if ($id('stat-avg'))   $id('stat-avg').textContent   = (avg||0) + '%';
+    if ($id('stat-today')) $id('stat-today').textContent = String(today);
+    if ($id('stat-week'))  $id('stat-week').textContent  = String(week);
+
+    await ensureChartJs();
+
+    const ctx1 = document.getElementById('chart-cats');
+    if (ctx1){
+      chartCats && chartCats.destroy();
+      chartCats = new Chart(ctx1, {
+        type: 'bar',
+        data: { labels: catLabels, datasets: [{ label: 'Ortalama %', data: catValues }] },
+        options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, max:100 } } }
+      });
+    }
+
+    const ctx2 = document.getElementById('chart-trend');
+    if (ctx2){
+      chartTrend && chartTrend.destroy();
+      chartTrend = new Chart(ctx2, {
+        type: 'line',
+        data: { labels: trendLabels, datasets: [{ label: 'Test Adedi', data: trendValues, tension:.35, fill:false }] },
+        options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, precision:0 } } }
+      });
+    }
+  }
+
+  // === Giriş ===
   enterBtn.addEventListener('click', ()=>{
     const val = (pinInput.value||'').trim();
     if (val !== ADMIN_PIN) return alert('Hatalı PIN');
@@ -385,60 +466,10 @@ document.addEventListener('DOMContentLoaded', () => {
     panelBox.style.display='block';
     tabEvents.classList.add('btn-primary');
     eventsPanel.style.display='block'; resultsPanel.style.display='none';
-    renderAdminEvents(); renderAdminResults();renderAdminDashboard();
+    renderAdminEvents(); renderAdminResults(); renderAdminDashboard();
   });
-let chartCats, chartTrend;
 
-async function renderAdminDashboard(){
-  const rows = await DB.getResults();
-  const { total, avg, today, week, catLabels, catValues, trendLabels, trendValues } = buildStats(rows);
-
-  // Kart değerleri
-  const $id = id => document.getElementById(id);
-  if ($id('stat-total')) $id('stat-total').textContent = String(total);
-  if ($id('stat-avg'))   $id('stat-avg').textContent   = (avg||0) + '%';
-  if ($id('stat-today')) $id('stat-today').textContent = String(today);
-  if ($id('stat-week'))  $id('stat-week').textContent  = String(week);
-
-  // Chart.js
-  await ensureChartJs();
-
-  // Kategori ortalama %
-  const ctx1 = document.getElementById('chart-cats');
-  if (ctx1){
-    chartCats && chartCats.destroy();
-    chartCats = new Chart(ctx1, {
-      type: 'bar',
-      data: {
-        labels: catLabels,
-        datasets: [{ label: 'Ortalama %', data: catValues }]
-      },
-      options: {
-        responsive:true,
-        plugins:{ legend:{ display:false } },
-        scales:{ y:{ beginAtZero:true, max:100 } }
-      }
-    });
-  }
-
-  // Günlük trend (7 gün)
-  const ctx2 = document.getElementById('chart-trend');
-  if (ctx2){
-    chartTrend && chartTrend.destroy();
-    chartTrend = new Chart(ctx2, {
-      type: 'line',
-      data: {
-        labels: trendLabels,
-        datasets: [{ label: 'Test Adedi', data: trendValues, tension:.35, fill:false }]
-      },
-      options: {
-        responsive:true,
-        plugins:{ legend:{ display:false } },
-        scales:{ y:{ beginAtZero:true, precision:0 } }
-      }
-    });
-  }
-}
+  // === Sekmeler ===
   tabEvents?.addEventListener('click', ()=>{
     tabEvents.classList.add('btn-primary'); tabResults.classList.remove('btn-primary');
     eventsPanel.style.display='block'; resultsPanel.style.display='none';
@@ -447,70 +478,10 @@ async function renderAdminDashboard(){
   tabResults?.addEventListener('click', ()=>{
     tabResults.classList.add('btn-primary'); tabEvents.classList.remove('btn-primary');
     eventsPanel.style.display='none'; resultsPanel.style.display='block';
-    renderAdminResults();
-  });
-// === Admin İstatistik: veri -> metrikler ===
-function buildStats(rows){
-  const total = rows.length;
-
-  // Ortalama skor
-  const avg = total ? Math.round(rows.reduce((s,r)=>s+(r.totalPct||r.total_pct||0),0)/total) : 0;
-
-  // Bugün ve son 7 gün
-  const todayStr = new Date().toLocaleDateString();
-  let today = 0, week = 0;
-  const dayCounts = {}; // trend için
-  const catsAgg = {};   // {Sigara:{sum,count}, ...}
-
-  // Son 7 gün tarih dizisi
-  const days = [];
-  for (let d=6; d>=0; d--){
-    const dt = new Date(); dt.setDate(dt.getDate()-d);
-    const key = dt.toLocaleDateString();
-    days.push(key); dayCounts[key]=0;
-  }
-
-  rows.forEach(r=>{
-    const at = new Date(r.at || r.created_at);
-    const dkey = at.toLocaleDateString();
-
-    if (dkey === todayStr) today++;
-    // 7 gün içinde mi?
-    if (days.includes(dkey)) dayCounts[dkey]++;
-
-    // genel 7g toplami
-    const diff = (Date.now() - at.getTime()) / 86400000;
-    if (diff <= 7) week++;
-
-    // kategori ortalamaları için topla
-    (r.cats||[]).forEach(c=>{
-      const k = c.cat || c.category || 'Diğer';
-      if (!catsAgg[k]) catsAgg[k] = { sum:0, count:0 };
-      catsAgg[k].sum += Number(c.pct||0); catsAgg[k].count += 1;
-    });
+    renderAdminResults(); renderAdminDashboard();
   });
 
-  // Kategori ortalamalarını çıkar
-  const catLabels = Object.keys(catsAgg);
-  const catValues = catLabels.map(k => Math.round(catsAgg[k].sum / catsAgg[k].count));
-
-  // Trend dizileri (günlük adet)
-  const trendLabels = days;
-  const trendValues = days.map(k=>dayCounts[k]||0);
-
-  return { total, avg, today, week, catLabels, catValues, trendLabels, trendValues };
-}
-
-// === Chart.js hazır mı? değilse bekle
-async function ensureChartJs(){
-  if (window.Chart) return;
-  await new Promise(res=>{
-    const s=document.createElement('script');
-    s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
-    s.onload=res; document.head.appendChild(s);
-  });
-}
-  // Etkinlik ekleme
+  // === Etkinlik ekleme ===
   const titleIn = $('#event-title');
   const descIn  = $('#event-desc');
   const imgIn   = $('#event-img');
@@ -526,6 +497,7 @@ async function ensureChartJs(){
     else alert('Eklenemedi. Lütfen tekrar deneyin.');
   });
 
+  // === Admin: Etkinlik listesi + silme ===
   async function renderAdminEvents(){
     const wrap = $('#admin-event-list');
     const list = await DB.getEvents();
@@ -547,26 +519,44 @@ async function ensureChartJs(){
         const id = btn.getAttribute('data-del');
         if (!confirm('Silinsin mi?')) return;
         const ok = await DB.deleteEvent(id);
-        if (ok) renderAdminEvents();
-        else alert('Silme başarısız.');
+        if (ok) renderAdminEvents(); else alert('Silme başarısız.');
       };
     });
   }
 
+  // === Admin: Sonuç listesi + tek tek silme ===
   async function renderAdminResults(){
     const wrap = $('#admin-result-list');
     const list = await DB.getResults();
-    wrap.innerHTML = !list.length ? `<p class="muted">Kayıtlı sonuç yok.</p>` :
-      list.map(it=>`
-        <div class="history-item">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <strong>${new Date(it.at).toLocaleString()}</strong>
+
+    if (!list.length) {
+      wrap.innerHTML = `<p class="muted">Kayıtlı sonuç yok.</p>`;
+      return;
+    }
+
+    wrap.innerHTML = list.map(it=>`
+      <div class="history-item">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <strong>${new Date(it.at).toLocaleString()}</strong>
+          <div style="display:flex;gap:6px;align-items:center">
             <span class="pill">Genel: ${it.totalPct}%</span>
-          </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            ${it.cats.map(c=>`<span class="pill">${c.cat}: ${c.pct}%</span>`).join('')}
+            <button class="btn ghost" data-del-result="${it.id}">Sil</button>
           </div>
         </div>
-      `).join('');
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${it.cats.map(c=>`<span class="pill">${c.cat}: ${c.pct}%</span>`).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    $$('#admin-result-list [data-del-result]').forEach(btn=>{
+      btn.onclick = async ()=>{
+        const id = Number(btn.getAttribute('data-del-result'));
+        if (!confirm('Bu sonucu silmek istiyor musun?')) return;
+        const ok = await DB.deleteResult(id);
+        if (ok) { renderAdminResults(); renderAdminDashboard(); }
+        else { alert('Silme başarısız.'); }
+      };
+    });
   }
 });
