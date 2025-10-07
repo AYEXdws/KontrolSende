@@ -351,40 +351,82 @@ document.addEventListener('DOMContentLoaded', () => {
 /* =========================
    4) ETKİNLİKLER SAYFASI (API'den liste)
    ========================= */
-document.addEventListener('DOMContentLoaded', async () => {
-  const listEl = document.getElementById('event-list');
-  if (!listEl) return; // bu sayfa etkinlikler değilse çık
-
-  try {
-    const res = await fetch('https://kontrolsende-api.onrender.com/events?t=' + Date.now(), {
-      headers: { 'Accept':'application/json' },
-      cache: 'no-store'
-    });
-    if (!res.ok) throw new Error('API yanıtı başarısız: ' + res.status);
-
-    const events = await res.json(); // [{id,title,description,image_url,created_at},...]
-    if (!Array.isArray(events) || events.length === 0) {
-      listEl.innerHTML = `<p class="muted">Henüz etkinlik yok.</p>`;
-      return;
+// Yardımcı: YouTube/Vimeo linkini embed’e çevir
+function toEmbed(url){
+  if (!url) return null;
+  try{
+    const u = new URL(url);
+    // YouTube
+    if (u.hostname.includes('youtube.com')) {
+      const v = u.searchParams.get('v');
+      if (v) return `https://www.youtube.com/embed/${v}`;
     }
+    if (u.hostname === 'youtu.be') {
+      const id = u.pathname.replace('/','');
+      if (id) return `https://www.youtube.com/embed/${id}`;
+    }
+    // Vimeo
+    if (u.hostname.includes('vimeo.com')) {
+      const id = u.pathname.split('/').filter(Boolean)[0];
+      if (id) return `https://player.vimeo.com/video/${id}`;
+    }
+    return null;
+  }catch{ return null; }
+}
 
-    listEl.innerHTML = events.map(ev => `
-      <article class="event-card">
-        <div class="event-media">
-          <img src="${ev.image_url}" alt="${ev.title}" loading="lazy">
-        </div>
-        <div class="event-meta">
-          <span class="event-title">${ev.title}</span>
-          <span class="tiny muted">${new Date(ev.created_at).toLocaleDateString()}</span>
-        </div>
-        <p class="event-desc">${ev.description || ''}</p>
-      </article>
-    `).join('');
-  } catch (err) {
-    console.error('[Etkinlikler] Yükleme hatası:', err);
-    listEl.innerHTML = `<p class="muted">Etkinlikler yüklenemedi.</p>`;
+function mediaHTML(ev){
+  const img = ev.image_url;
+  const vid = ev.video_url;
+
+  if (vid) {
+    // .mp4 gibi direkt video dosyası
+    if (/\.(mp4|webm|ogg)$/i.test(vid)) {
+      // poster olarak image_url kullanır (varsa)
+      const poster = img ? ` poster="${img}"` : '';
+      return `
+        <video controls playsinline${poster} style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
+          <source src="${vid}">
+          Tarayıcınız video öğesini desteklemiyor.
+        </video>
+      `;
+    }
+    // YouTube/Vimeo ise iframe embed
+    const emb = toEmbed(vid);
+    if (emb) {
+      return `
+        <iframe
+          src="${emb}"
+          title="Etkinlik videosu"
+          style="width:100%;height:100%;border:0;border-radius:12px;"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          loading="lazy"></iframe>
+      `;
+    }
   }
-});
+
+  // Video yoksa görseli göster
+  if (img) {
+    return `<img src="${img}" alt="${ev.title}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:12px;">`;
+  }
+
+  // Hiçbiri yoksa boş placeholder
+  return `<div style="width:100%;height:100%;display:grid;place-items:center;color:#667085">Medya yok</div>`;
+}
+
+// ... events fetch ettikten sonra listEl.innerHTML üretiminde:
+listEl.innerHTML = events.map(ev => `
+  <article class="event-card">
+    <div class="event-media">
+      ${mediaHTML(ev)}
+    </div>
+    <div class="event-meta">
+      <span class="event-title">${ev.title}</span>
+      <span class="tiny muted">${ev.created_at ? new Date(ev.created_at).toLocaleDateString() : ''}</span>
+    </div>
+    <p class="event-desc">${ev.description || ''}</p>
+  </article>
+`).join('');
 /* =========================
    5) ADMIN PANELİ
    ========================= */
