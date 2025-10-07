@@ -377,7 +377,58 @@ document.addEventListener('DOMContentLoaded', () => {
     eventsPanel.style.display='block'; resultsPanel.style.display='none';
     renderAdminEvents(); renderAdminResults();
   });
+let chartCats, chartTrend;
 
+async function renderAdminDashboard(){
+  const rows = await DB.getResults();
+  const { total, avg, today, week, catLabels, catValues, trendLabels, trendValues } = buildStats(rows);
+
+  // Kart değerleri
+  const $id = id => document.getElementById(id);
+  if ($id('stat-total')) $id('stat-total').textContent = String(total);
+  if ($id('stat-avg'))   $id('stat-avg').textContent   = (avg||0) + '%';
+  if ($id('stat-today')) $id('stat-today').textContent = String(today);
+  if ($id('stat-week'))  $id('stat-week').textContent  = String(week);
+
+  // Chart.js
+  await ensureChartJs();
+
+  // Kategori ortalama %
+  const ctx1 = document.getElementById('chart-cats');
+  if (ctx1){
+    chartCats && chartCats.destroy();
+    chartCats = new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: catLabels,
+        datasets: [{ label: 'Ortalama %', data: catValues }]
+      },
+      options: {
+        responsive:true,
+        plugins:{ legend:{ display:false } },
+        scales:{ y:{ beginAtZero:true, max:100 } }
+      }
+    });
+  }
+
+  // Günlük trend (7 gün)
+  const ctx2 = document.getElementById('chart-trend');
+  if (ctx2){
+    chartTrend && chartTrend.destroy();
+    chartTrend = new Chart(ctx2, {
+      type: 'line',
+      data: {
+        labels: trendLabels,
+        datasets: [{ label: 'Test Adedi', data: trendValues, tension:.35, fill:false }]
+      },
+      options: {
+        responsive:true,
+        plugins:{ legend:{ display:false } },
+        scales:{ y:{ beginAtZero:true, precision:0 } }
+      }
+    });
+  }
+}
   tabEvents?.addEventListener('click', ()=>{
     tabEvents.classList.add('btn-primary'); tabResults.classList.remove('btn-primary');
     eventsPanel.style.display='block'; resultsPanel.style.display='none';
