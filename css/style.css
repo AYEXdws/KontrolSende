@@ -521,3 +521,4 @@ html, body{ overflow-x:hidden } /* yatay taşma kapalı */
   box-shadow: 0 6px 16px rgba(15,23,42,.06);
 }
 .chart-card h4{ margin:0 0 8px; font-size:14px; color:#334155 }
+#admin-result-list .btn.ghost{ padding:6px 10px; }
