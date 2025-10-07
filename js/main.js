@@ -113,50 +113,28 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* =========================
-   3) TEST (quiz)
+   3) TEST (quiz) — sadece test.html'de
    ========================= */
 document.addEventListener('DOMContentLoaded', () => {
-  // Gerekli iskelet yoksa otomatik oluştur
-  let quizContainer = $('#quiz-container');
-  if (!quizContainer) {
-    const host = $('main') || document.body;
-    host.insertAdjacentHTML('beforeend', `
-      <section id="quiz-container" class="quiz-wrap">
-        <div id="question-container"></div>
-        <div class="quiz-nav">
-          <button id="prev-btn" class="btn ghost">Önceki</button>
-          <div class="right"><button id="next-btn" class="btn btn-primary">Sonraki</button></div>
-        </div>
-        <div class="progress"><div id="progress-bar"></div></div>
-        <div class="meta">
-          <span id="category-chip" class="pill soft">Kategori</span>
-          <span id="percent-chip" class="pill soft">%0</span>
-          <span id="question-counter" class="pill soft">Soru 1 / ?</span>
-        </div>
-      </section>
-      <section id="result-container" class="card" style="display:none"></section>
-      <section id="history-container" style="display:none;margin-top:24px">
-        <h3>Sonuç Geçmişi</h3>
-        <div id="history-list" class="history-list"></div>
-      </section>
-    `);
-    quizContainer = $('#quiz-container');
-  }
+  // Sadece test.html'de çalış
+  const isTestPage = /(^|\/)test\.html(\?|#|$)/.test(location.pathname + location.search + location.hash);
+  if (!isTestPage) return;
 
-  // Sayfa test değilse çık
-  if (!quizContainer) return;
+  // Test iskeletinin test.html içinde hazır olması gerekir
+  const quizContainer = document.querySelector('#quiz-container');
+  if (!quizContainer) return; // güvenlik: iskelet yoksa çalıştırma
 
-  // Refler
-  const qWrap       = $('#question-container');
-  const nextBtn     = $('#next-btn');
-  const prevBtn     = $('#prev-btn');
-  const resultBox   = $('#result-container');
-  const progressBar = $('#progress-bar');
-  const qCounter    = $('#question-counter');
-  const catChip     = $('#category-chip');
-  const pctChip     = $('#percent-chip');
-  const historyBox  = $('#history-container');
-  const historyList = $('#history-list');
+  // Referanslar
+  const qWrap       = document.querySelector('#question-container');
+  const nextBtn     = document.querySelector('#next-btn');
+  const prevBtn     = document.querySelector('#prev-btn');
+  const resultBox   = document.querySelector('#result-container');
+  const progressBar = document.querySelector('#progress-bar');
+  const qCounter    = document.querySelector('#question-counter');
+  const catChip     = document.querySelector('#category-chip');
+  const pctChip     = document.querySelector('#percent-chip');
+  const historyBox  = document.querySelector('#history-container');
+  const historyList = document.querySelector('#history-list');
   if (!qWrap || !nextBtn || !prevBtn || !resultBox) return;
 
   // Sorular
@@ -214,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let i = 0;
   const picked = Array(questions.length).fill(null);
 
-  // UI helpers
   function updateProgress(){
     const answered = picked.filter(v=>v!==null).length;
     const pct = Math.round(answered / questions.length * 100);
@@ -288,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function showResults(){
     const stats = computeStats();
     const lv = level(stats.totalPct);
-    $('#quiz-container').style.display = 'none';
+    document.querySelector('#quiz-container').style.display = 'none';
     resultBox.style.display = 'block';
     resultBox.innerHTML = `
       <h2>Genel Görünüm: ${lv.label} (${stats.totalPct}%)</h2>
@@ -300,12 +277,13 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
-    $('#restart-from-result')?.addEventListener('click', restart);
+    const restartFromResult = document.querySelector('#restart-from-result');
+    if (restartFromResult) restartFromResult.addEventListener('click', restart);
 
-    const saveBtn = $('#save-result');
+    const saveBtn = document.querySelector('#save-result');
     if (saveBtn) saveBtn.addEventListener('click', async ()=>{
-      const payload = { at: nowISO(), totalPct: stats.totalPct, cats: stats.cats, from: 'test' };
-      const ok = await DB.addResult(payload);
+      const stats2 = computeStats(); // güvenlik: en güncel state
+      const ok = await DB.addResult({ totalPct: stats2.totalPct, cats: stats2.cats });
       if (ok) { loadHistory(); alert('Sonucunuz kaydedildi.'); }
       else { alert('Kaydetme başarısız. Lütfen tekrar deneyin.'); }
     });
@@ -337,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function prev(){ if (i>0){ i--; renderQuestion(); } }
   function restart(){
     for (let k=0;k<picked.length;k++) picked[k]=null;
-    i=0; $('#quiz-container').style.display='block'; resultBox.style.display='none';
+    i=0; document.querySelector('#quiz-container').style.display='block'; resultBox.style.display='none';
     updateProgress(); renderQuestion(); window.scrollTo({top:0,behavior:'smooth'});
   }
 
@@ -346,7 +324,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   loadHistory(); updateProgress(); renderQuestion();
 });
-
 /* =========================
    4) ETKİNLİKLER (herkese açık)
    ========================= */
