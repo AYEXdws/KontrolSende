@@ -1,65 +1,58 @@
 <!doctype html>
 <html lang="tr">
 <head>
-  <base href="https://ayexdws.github.io/KontrolSende/">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>KontrolSende • Ana Sayfa</title>
-  <link rel="stylesheet" href="css/style.css?v=200">
+  <title>KontrolSende</title>
+  <link rel="stylesheet" href="css/style.css?v=1">
 </head>
 <body class="theme-glass">
-  <header id="ks-header" class="ks-header">
+<header id="ks-header" class="ks-header">
   <nav class="ks-nav ks-container">
     <a class="ks-logo" href="index.html">KontrolSende</a>
-
-    <!-- Hamburger -->
-    <button id="ks-hamburger" class="ks-hamburger" aria-label="Menüyü aç/kapat" aria-expanded="false">
+    <button id="ks-hamburger" class="ks-hamburger" aria-label="Menü" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
-
-    <!-- Menü -->
     <ul id="ks-drawer" class="ks-drawer" role="menu">
       <li><a href="index.html">Ana Sayfa</a></li>
       <li><a href="test.html">Test Et</a></li>
       <li><a href="etkinlikler.html">Etkinlikler</a></li>
       <li><a href="yardim.html">Yardım Al</a></li>
+      <li><a href="admin.html">Admin</a></li>
     </ul>
   </nav>
 </header>
-  <main class="page-bg">
-    <section class="ks-container hero">
-      <div>
-        <h1>Bağımlılığın <span>farkında</span> ol. Kontrol <span>sende</span>.</h1>
-        <p class="muted">Sigara, alkol, dijital alışkanlıklar ve daha fazlası... kısa bir test ile farkındalığını ölç.</p>
-        <div class="actions" style="margin-top:12px">
-          <a class="btn btn-primary" href="test.html">Testi Başlat</a>
-          <a class="btn ghost" href="yardim.html">Yardım Al</a>
-        </div>
-      </div>
-      <div class="card hero-card">
-        <h3>Neden bu site?</h3>
-        <p class="small muted">Bu test bir teşhis aracı değildir; farkındalık amaçlıdır.</p>
-        <ul class="checklist">
-          <li>Hızlı ve anonim</li>
-          <li>Kategorik analiz</li>
-          <li>Yerel veya çevrim içi kayıt</li>
-        </ul>
-      </div>
-    </section>
 
-    <section class="ks-container grid-3">
-      <article class="card"><h3>Sigara & Nikotin</h3><p class="small muted">“Hayır” deme kasını güçlendir.</p></article>
-      <article class="card"><h3>Alkol</h3><p class="small muted">Sınırlarını koru, farkında kal.</p></article>
-      <article class="card"><h3>Dijital Kullanım</h3><p class="small muted">Süre ve dikkat yönetimi sende.</p></article>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="ks-container foot">
-      <span class="tiny muted">© 2025 KontrolSende</span>
-      <a class="link tiny" href="test.html">Testi Dene</a>
+<main class="ks-container page-bg" style="padding:28px 0">
+  <section class="hero">
+    <div class="card hero-card">
+      <h1>Bağımlılık Farkındalığı: <span>Kontrol Sende</span></h1>
+      <p class="muted">Sigara, alkol ve dijital bağımlılıkta riskini gör, destek yollarını keşfet.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="test.html">Hızlı Test</a>
+        <a class="btn" href="etkinlikler.html">Etkinlikler</a>
+      </div>
     </div>
-  </footer>
-  <script src="js/main.js?v=200" defer></script>
+    <div class="card">
+      <h3>Proje Amacı</h3>
+      <p>Okul projemiz; sağlıklı alışkanlıklar, destek hatları ve etkinliklerle farkındalığı artırır.</p>
+      <ul class="checklist">
+        <li>Bilimsel ama anlaşılır içerik</li>
+        <li>Gizlilik ve güvenlik</li>
+        <li>Topluluk ve danışman desteği</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="ks-container foot">
+    <span class="tiny muted">© 2025 KontrolSende</span>
+    <a class="link tiny" href="test.html">Test</a>
+  </div>
+</footer>
+
+<script>window.API_BASE="https://kontrolsende-api.onrender.com";</script>
+<script src="js/main.js?v=1" defer></script>
 </body>
 </html>
