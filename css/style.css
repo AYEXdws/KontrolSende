@@ -557,3 +557,7 @@ html, body{ overflow-x:hidden } /* yatay taşma kapalı */
 /* Küçük ekranlarda full-screen mod seviyorsan (opsiyonel):
 .ks-drawer{ width:100vw; } 
 */
+/* === HAMBURGER COLOR OVERRIDE === */
+.ks-header .ks-hamburger{ color:#0f172a; }          /* açık tema */
+html.dark .ks-header .ks-hamburger{ color:#f8fafc; }/* karanlık temada */
+
