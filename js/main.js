@@ -359,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const panelBox = $('#admin-panel');
   if (!loginBox || !panelBox) return;
 
-  const ADMIN_PIN = '2468'; // İstersen değiştir
+  const ADMIN_PIN = '29391354'; // İstersen değiştir
   const pinInput = $('#admin-pin');
   const enterBtn = $('#admin-enter');
 
