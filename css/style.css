@@ -265,3 +265,19 @@ img{ max-width:100%; height:auto }
 @media (prefers-reduced-motion: reduce){
   *{ animation: none !important; transition: none !important }
 }
+/* ==== NAV CLICK HOTFIX (drawer linkleri çalışmıyor) ==== */
+.ks-backdrop{ z-index: 900 !important; }        /* karartma daha altta */
+.ks-drawer  { z-index: 1000 !important; pointer-events: auto !important; }
+.ks-hamburger{ z-index: 1100 !important; }      /* ikon en üstte */
+
+.ks-drawer a{
+  position: relative; 
+  z-index: 1;                 /* olası üst kaplamalara karşı */
+  pointer-events: auto !important;
+}
+
+/* Bazı tarayıcılarda stacking context karmaşasına karşı */
+.ks-header, .ks-container{ isolation: isolate; }
+
+/* iOS/WebKit dokunma optimizasyonu */
+.ks-drawer{ -webkit-overflow-scrolling: touch; }
