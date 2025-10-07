@@ -78,6 +78,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const btn    = $('#ks-hamburger');
   const drawer = $('#ks-drawer');
   if (!header || !btn || !drawer) return;
+   // Eğer admin sayfasındaysak HTML’e sınıf ekle
+if (document.getElementById('admin-panel')) {
+  document.documentElement.classList.add('page-admin');
+}
+
+// Başlangıçta menü simgesi temiz başlasın
+btn.classList.remove('ks-active');
+drawer.classList.remove('ks-open');
+btn.setAttribute('aria-expanded','false');
    // İlk yüklemede temiz başla (bazı sayfalarda class kalıntısı olabiliyor)
 btn.className = btn.className.replace('ks-active','');
 drawer.className = drawer.className.replace('ks-open','');
