@@ -349,20 +349,30 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* =========================
-   4) ETKİNLİKLER (herkese açık)
+   4) ETKİNLİKLER SAYFASI (API'den liste)
    ========================= */
 document.addEventListener('DOMContentLoaded', async () => {
-  const listEl = $('#event-list');
-  if (!listEl) return;
-  try{
-    const events = await DB.getEvents();
-    if (!events.length) {
+  const listEl = document.getElementById('event-list');
+  if (!listEl) return; // bu sayfa etkinlikler değilse çık
+
+  try {
+    const res = await fetch('https://kontrolsende-api.onrender.com/events?t=' + Date.now(), {
+      headers: { 'Accept':'application/json' },
+      cache: 'no-store'
+    });
+    if (!res.ok) throw new Error('API yanıtı başarısız: ' + res.status);
+
+    const events = await res.json(); // [{id,title,description,image_url,created_at},...]
+    if (!Array.isArray(events) || events.length === 0) {
       listEl.innerHTML = `<p class="muted">Henüz etkinlik yok.</p>`;
       return;
     }
+
     listEl.innerHTML = events.map(ev => `
       <article class="event-card">
-        <div class="event-media"><img src="${ev.image_url}" alt="${ev.title}" loading="lazy"></div>
+        <div class="event-media">
+          <img src="${ev.image_url}" alt="${ev.title}" loading="lazy">
+        </div>
         <div class="event-meta">
           <span class="event-title">${ev.title}</span>
           <span class="tiny muted">${new Date(ev.created_at).toLocaleDateString()}</span>
@@ -370,11 +380,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         <p class="event-desc">${ev.description || ''}</p>
       </article>
     `).join('');
-  }catch(e){
+  } catch (err) {
+    console.error('[Etkinlikler] Yükleme hatası:', err);
     listEl.innerHTML = `<p class="muted">Etkinlikler yüklenemedi.</p>`;
   }
 });
-
 /* =========================
    5) ADMIN PANELİ
    ========================= */
