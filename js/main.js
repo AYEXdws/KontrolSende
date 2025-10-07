@@ -388,7 +388,67 @@ document.addEventListener('DOMContentLoaded', () => {
     eventsPanel.style.display='none'; resultsPanel.style.display='block';
     renderAdminResults();
   });
+// === Admin İstatistik: veri -> metrikler ===
+function buildStats(rows){
+  const total = rows.length;
 
+  // Ortalama skor
+  const avg = total ? Math.round(rows.reduce((s,r)=>s+(r.totalPct||r.total_pct||0),0)/total) : 0;
+
+  // Bugün ve son 7 gün
+  const todayStr = new Date().toLocaleDateString();
+  let today = 0, week = 0;
+  const dayCounts = {}; // trend için
+  const catsAgg = {};   // {Sigara:{sum,count}, ...}
+
+  // Son 7 gün tarih dizisi
+  const days = [];
+  for (let d=6; d>=0; d--){
+    const dt = new Date(); dt.setDate(dt.getDate()-d);
+    const key = dt.toLocaleDateString();
+    days.push(key); dayCounts[key]=0;
+  }
+
+  rows.forEach(r=>{
+    const at = new Date(r.at || r.created_at);
+    const dkey = at.toLocaleDateString();
+
+    if (dkey === todayStr) today++;
+    // 7 gün içinde mi?
+    if (days.includes(dkey)) dayCounts[dkey]++;
+
+    // genel 7g toplami
+    const diff = (Date.now() - at.getTime()) / 86400000;
+    if (diff <= 7) week++;
+
+    // kategori ortalamaları için topla
+    (r.cats||[]).forEach(c=>{
+      const k = c.cat || c.category || 'Diğer';
+      if (!catsAgg[k]) catsAgg[k] = { sum:0, count:0 };
+      catsAgg[k].sum += Number(c.pct||0); catsAgg[k].count += 1;
+    });
+  });
+
+  // Kategori ortalamalarını çıkar
+  const catLabels = Object.keys(catsAgg);
+  const catValues = catLabels.map(k => Math.round(catsAgg[k].sum / catsAgg[k].count));
+
+  // Trend dizileri (günlük adet)
+  const trendLabels = days;
+  const trendValues = days.map(k=>dayCounts[k]||0);
+
+  return { total, avg, today, week, catLabels, catValues, trendLabels, trendValues };
+}
+
+// === Chart.js hazır mı? değilse bekle
+async function ensureChartJs(){
+  if (window.Chart) return;
+  await new Promise(res=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
+    s.onload=res; document.head.appendChild(s);
+  });
+}
   // Etkinlik ekleme
   const titleIn = $('#event-title');
   const descIn  = $('#event-desc');
