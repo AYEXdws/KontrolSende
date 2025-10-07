@@ -1,47 +1,43 @@
-<!doctype html>
-<html lang="tr">
-<head>
-  <base href="https://ayexdws.github.io/KontrolSende/">
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>KontrolSende • Yardım</title>
-  <link rel="stylesheet" href="css/style.css?v=200">
-</head>
-<body class="theme-glass">
-  <header id="ks-header" class="ks-header">
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Yardım Al • KontrolSende</title>
+<link rel="stylesheet" href="css/style.css?v=1">
+</head><body class="theme-glass">
+<header id="ks-header" class="ks-header">
   <nav class="ks-nav ks-container">
     <a class="ks-logo" href="index.html">KontrolSende</a>
-
-    <!-- Hamburger -->
-    <button id="ks-hamburger" class="ks-hamburger" aria-label="Menüyü aç/kapat" aria-expanded="false">
+    <button id="ks-hamburger" class="ks-hamburger" aria-label="Menü" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
-
-    <!-- Menü -->
     <ul id="ks-drawer" class="ks-drawer" role="menu">
       <li><a href="index.html">Ana Sayfa</a></li>
       <li><a href="test.html">Test Et</a></li>
       <li><a href="etkinlikler.html">Etkinlikler</a></li>
       <li><a href="yardim.html">Yardım Al</a></li>
+      <li><a href="admin.html">Admin</a></li>
     </ul>
   </nav>
 </header>
-  <main class="ks-container" style="padding:28px 0">
-    <h1>Yardım ve Destek</h1>
-    <p class="muted small">Acil durumlarda 112’yi arayın. Aşağıdaki kaynaklar bilgilendirme amaçlıdır.</p>
-    <div class="grid-3">
-      <article class="card"><h3>Okul Rehberliği</h3><p class="small muted">Rehber öğretmenle görüş.</p></article>
-      <article class="card"><h3>Sağlık Kurumları</h3><p class="small muted">Aile hekimi / poliklinikler.</p></article>
-      <article class="card"><h3>Güvenli İletişim</h3><p class="small muted">Aile ve arkadaş desteği.</p></article>
-    </div>
-  </main>
 
-  <footer class="site-footer">
-    <div class="ks-container foot">
-      <span class="tiny muted">© 2025 KontrolSende</span>
-      <a class="link tiny" href="test.html">Test</a>
+<main class="ks-container" style="padding:28px 0">
+  <div class="grid-2">
+    <div class="card">
+      <h2>Okul Rehberlik</h2>
+      <p>Rehberlik servisine başvurarak ilk adımı atabilirsin.</p>
+      <ul class="checklist"><li>Gizlilik ilkesi</li><li>Randevu sistemi</li></ul>
     </div>
-  </footer>
-  <script src="js/main.js?v=200" defer></script>
-</body>
-</html>
+    <div class="card">
+      <h2>Destek Hatları</h2>
+      <p><strong>ALO 191</strong> Uyuşturucu ile Mücadele Danışma ve Destek Hattı.</p>
+      <p><strong>ALO 171</strong> Sigara Bırakma Danışma Hattı.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="ks-container foot">
+  <span class="tiny muted">© 2025 KontrolSende</span>
+</div></footer>
+
+<script>window.API_BASE="https://kontrolsende-api.onrender.com";</script>
+<script src="js/main.js?v=1" defer></script>
+</body></html>
