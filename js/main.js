@@ -1,3 +1,9 @@
+// main.js'in en başına:
+if (location.pathname.includes('admin.html')) {
+  console.log('Admin sayfası: genel JS pasif');
+  // Admin özel kodları harici dosyada çalışacak
+  throw null; // geri kalan kodu durdurur
+}
 /* =========================================================
    KontrolSende • main.js (v5 – API entegre)
    - DB katmanı: Render API + NeonDB
