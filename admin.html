@@ -117,6 +117,13 @@
     .a-result{ background:#fff; border:1px solid var(--a-border); border-radius:12px; padding:10px }
 
     footer{ margin:28px 0; text-align:center; color:var(--a-muted) }
+    /* Admin overlay sırası: tıklamalar çalışsın */
+.a-backdrop{ z-index: 1090 !important; }
+.a-drawer  { z-index: 1100 !important; pointer-events:auto !important; }
+.a-hamb    { z-index: 1110 !important; }
+.a-drawer a{ position:relative; z-index:1; }
+
+#a-login .a-card, #a-panel .a-card, #a-panel .a-btn { pointer-events:auto; }
   </style>
 
   <!-- Chart.js grafikleri için -->
