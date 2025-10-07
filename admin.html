@@ -452,5 +452,62 @@
       }
     })();
   </script>
+  <script>
+(function(){
+  // ===== PIN sabiti (frontend) =====
+  const PIN = '29391354';
+
+  // ===== Menü (hamburger) =====
+  const hamb = document.getElementById('a-hamb');
+  const drawer = document.getElementById('a-drawer');
+  const backdrop = document.getElementById('a-backdrop');
+
+  function openMenu(){
+    hamb?.classList.add('is-open'); hamb?.setAttribute('aria-expanded','true');
+    drawer?.classList.add('is-open'); drawer?.setAttribute('aria-hidden','false');
+    backdrop?.classList.add('is-show');
+    document.documentElement.style.overflow = 'hidden';
+  }
+  function closeMenu(){
+    hamb?.classList.remove('is-open'); hamb?.setAttribute('aria-expanded','false');
+    drawer?.classList.remove('is-open'); drawer?.setAttribute('aria-hidden','true');
+    backdrop?.classList.remove('is-show');
+    document.documentElement.style.overflow = '';
+  }
+  function toggleMenu(){ drawer?.classList.contains('is-open') ? closeMenu() : openMenu(); }
+
+  hamb?.addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); toggleMenu(); });
+  backdrop?.addEventListener('click', closeMenu);
+  drawer?.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', e=>{ if (e.key === 'Escape' && drawer?.classList.contains('is-open')) closeMenu(); });
+
+  // ===== Giriş / PIN =====
+  const loginBox = document.getElementById('a-login');
+  const panelBox = document.getElementById('a-panel');
+  const pinIn    = document.getElementById('a-pin');
+  const enterBtn = document.getElementById('a-enter');
+
+  function openPanel(){
+    loginBox.style.display = 'none';
+    panelBox.style.display = 'block';
+    // Panel açıldığında varsa bu fonksiyonları çağır
+    if (typeof renderEvents  === 'function') renderEvents();
+    if (typeof renderResults === 'function') renderResults();
+    if (typeof renderStats   === 'function') renderStats();
+  }
+
+  enterBtn?.addEventListener('click', (e)=>{
+    e.preventDefault();
+    const val = (pinIn?.value || '').trim();
+    if (val !== PIN) { alert('Hatalı PIN'); return; }
+    openPanel();
+  });
+
+  // Enter tuşu ile giriş
+  pinIn?.addEventListener('keydown', (e)=>{
+    if (e.key === 'Enter') { enterBtn?.click(); }
+  });
+})();
+</script>
 </body>
 </html>
