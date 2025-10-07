@@ -560,4 +560,58 @@ html, body{ overflow-x:hidden } /* yatay taşma kapalı */
 /* === HAMBURGER COLOR OVERRIDE === */
 .ks-header .ks-hamburger{ color:#0f172a; }          /* açık tema */
 html.dark .ks-header .ks-hamburger{ color:#f8fafc; }/* karanlık temada */
+/* === HAMBURGER — SAĞLAM YAPI (absolute) === */
+.ks-hamburger{
+  position: relative;
+  width: 40px; height: 40px;
+  display: inline-flex; align-items:center; justify-content:center;
+  color:#0f172a; /* açık tema */
+  z-index: 1101;
+}
+html.dark .ks-hamburger{ color:#f8fafc; }
 
+.ks-hamburger .bar{
+  position: absolute;
+  left: 50%; width: 24px; height: 2px;
+  background: currentColor;
+  transform: translateX(-50%);
+  transition: transform .25s ease, opacity .2s ease, top .25s ease;
+  border-radius: 2px;
+}
+
+/* Üç çizginin yerleri */
+.ks-hamburger .bar:nth-child(1){ top: 12px; }
+.ks-hamburger .bar:nth-child(2){ top: 19px; }
+.ks-hamburger .bar:nth-child(3){ top: 26px; }
+
+/* X animasyonu – aktifken */
+.ks-hamburger.ks-active .bar:nth-child(1){
+  top: 19px; transform: translateX(-50%) rotate(45deg);
+}
+.ks-hamburger.ks-active .bar:nth-child(2){
+  opacity: 0;
+}
+.ks-hamburger.ks-active .bar:nth-child(3){
+  top: 19px; transform: translateX(-50%) rotate(-45deg);
+}
+
+/* Çekmece ve katmanlar – görünürlük/üstte kalma */
+.ks-header{ position: sticky; top:0; z-index: 1000; background:rgba(255,255,255,.75); backdrop-filter: blur(8px); }
+.ks-drawer{
+  position: fixed; inset: var(--ks-offset,56px) 0 0 auto; right:0;
+  width:min(320px, 90vw);
+  background: rgba(255,255,255,.92); backdrop-filter: blur(12px);
+  border-left:1px solid #e8edf3;
+  transform: translateX(100%); transition: transform .28s ease;
+  z-index: 1100; padding:14px; box-shadow:-18px 0 40px rgba(15,23,42,.12);
+}
+.ks-drawer.ks-open{ transform: translateX(0); }
+.ks-backdrop{
+  position: fixed; inset:0; background:rgba(0,0,0,.35);
+  opacity:0; pointer-events:none; transition: opacity .25s ease; z-index: 1090;
+}
+.ks-backdrop.ks-show{ opacity:1; pointer-events: all; }
+
+/* Menü linkleri (aktif sayfa vurgusu) */
+.ks-drawer a{ display:block; padding:10px 8px; border-radius:10px; color:#0f172a; text-decoration:none; }
+.ks-drawer a[aria-current="page"]{ background:#e9f7ef; color:#066e3c; font-weight:600; }
