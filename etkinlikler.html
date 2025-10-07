@@ -1,91 +1,36 @@
-<!doctype html>
-<html lang="tr">
-<head>
-  <base href="https://ayexdws.github.io/KontrolSende/">
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>KontrolSende • Etkinlikler</title>
-  <!-- CSS sürümünü yükselttim -->
-  <link rel="stylesheet" href="css/style.css?v=700">
-</head>
-<body class="theme-glass">
-  <!-- HEADER -->
-  <header id="ks-header" class="ks-header">
-    <nav class="ks-nav ks-container">
-      <a class="ks-logo" href="index.html">KontrolSende</a>
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Etkinlikler • KontrolSende</title>
+<link rel="stylesheet" href="css/style.css?v=1">
+</head><body class="theme-glass">
+<header id="ks-header" class="ks-header">
+  <nav class="ks-nav ks-container">
+    <a class="ks-logo" href="index.html">KontrolSende</a>
+    <button id="ks-hamburger" class="ks-hamburger" aria-label="Menü" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul id="ks-drawer" class="ks-drawer" role="menu">
+      <li><a href="index.html">Ana Sayfa</a></li>
+      <li><a href="test.html">Test Et</a></li>
+      <li><a href="etkinlikler.html">Etkinlikler</a></li>
+      <li><a href="yardim.html">Yardım Al</a></li>
+      <li><a href="admin.html">Admin</a></li>
+    </ul>
+  </nav>
+</header>
 
-      <!-- Hamburger -->
-      <button id="ks-hamburger" class="ks-hamburger" aria-label="Menüyü aç/kapat" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
+<main class="ks-container" style="padding:28px 0">
+  <h1>Etkinlikler</h1>
+  <p class="muted small">Seminerler, söyleşiler ve atölyeler.</p>
+  <section id="event-list" class="grid-3"></section>
+</main>
 
-      <!-- Menü -->
-      <ul id="ks-drawer" class="ks-drawer" role="menu">
-        <li><a href="index.html">Ana Sayfa</a></li>
-        <li><a href="test.html">Test Et</a></li>
-        <li><a href="etkinlikler.html">Etkinlikler</a></li>
-        <li><a href="yardim.html">Yardım Al</a></li>
-      </ul>
-    </nav>
-  </header>
+<footer class="site-footer">
+  <div class="ks-container foot">
+    <span class="tiny muted">© 2025 KontrolSende</span>
+  </div>
+</footer>
 
-  <!-- MAIN -->
-  <main class="ks-container" style="padding:28px 0">
-    <h1>Etkinlikler</h1>
-    <p class="muted small">Okul içi seminerler, söyleşiler ve atölyeler.</p>
-
-    <!-- Dinamik liste -->
-    <section id="event-list" class="grid-3"></section>
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="site-footer">
-    <div class="ks-container foot">
-      <span class="tiny muted">© 2025 KontrolSende</span>
-      <a class="link tiny" href="test.html">Test</a>
-    </div>
-  </footer>
-
-  <!-- JS -->
-  <!-- main.js’in yeni sürümü: Etkinlikleri API’den çeker -->
-  <script src="js/main.js?v=710" defer></script>
-
-  <!-- Sayfaya özel mini yama: API'den listeleme (main.js yoksa güvence) -->
-  <script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const listEl = document.getElementById('event-list');
-    if (!listEl) return;
-
-    try {
-      const res = await fetch('https://kontrolsende-api.onrender.com/events?t=' + Date.now(), {
-        headers: { 'Accept':'application/json' },
-        cache: 'no-store'
-      });
-      if (!res.ok) throw new Error('API yanıtı başarısız: ' + res.status);
-      const events = await res.json();
-
-      if (!Array.isArray(events) || events.length === 0) {
-        listEl.innerHTML = `<p class="muted">Henüz etkinlik yok.</p>`;
-        return;
-      }
-
-      listEl.innerHTML = events.map(ev => `
-        <article class="event-card">
-          <div class="event-media">
-            <img src="${ev.image_url}" alt="${ev.title}" loading="lazy">
-          </div>
-          <div class="event-meta">
-            <span class="event-title">${ev.title}</span>
-            <span class="tiny muted">${ev.created_at ? new Date(ev.created_at).toLocaleDateString() : ''}</span>
-          </div>
-          <p class="event-desc">${ev.description || ''}</p>
-        </article>
-      `).join('');
-    } catch (err) {
-      console.error('[Etkinlikler] Yükleme hatası:', err);
-      listEl.innerHTML = `<p class="muted">Etkinlikler yüklenemedi.</p>`;
-    }
-  });
-  </script>
-</body>
-</html>
+<script>window.API_BASE="https://kontrolsende-api.onrender.com";</script>
+<script src="js/main.js?v=1" defer></script>
+</body></html>
