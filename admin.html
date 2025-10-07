@@ -7,8 +7,51 @@
   <base href="https://ayexdws.github.io/KontrolSende/">
 
   <!-- Stil & Script -->
-  <link rel="stylesheet" href="css/style.css?v=432">
+  <link rel="stylesheet" href="css/style.css?v=431">
   <script src="js/main.js?v=431" defer></script>
+
+  <style>
+    /* Sayfaya özel ufak dokunuşlar */
+    .admin-hero{
+      text-align:center; margin:24px auto 16px; max-width:840px;
+      padding:18px; border-radius:16px;
+      background:linear-gradient(135deg, rgba(255,255,255,.70), rgba(255,255,255,.55));
+      backdrop-filter: blur(10px);
+      border:1px solid #e6ebf0;
+      box-shadow: 0 10px 28px rgba(15,23,42,.08);
+    }
+    .admin-hero h1{ margin:6px 0 6px; font-size:28px }
+    .admin-hero p{ margin:0; color:#475467 }
+    .admin-hero .grid{
+      display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:14px;
+    }
+    .admin-hero .poster{
+      aspect-ratio: 16/9; border-radius:12px; overflow:hidden;
+      border:1px solid #e8edf3; background:#fff;
+    }
+    .admin-hero .poster img{ width:100%; height:100%; object-fit:cover; display:block }
+
+    /* Login kartı */
+    #admin-login .card{
+      max-width:420px; margin:16px auto; padding:18px; border-radius:16px;
+      background:#fff; border:1px solid #eaecef;
+      box-shadow: 0 12px 30px rgba(2,6,23,.10);
+    }
+    #admin-login .hint{ font-size:12px; color:#667085; margin-top:8px }
+
+    /* Panel düzeni */
+    #admin-panel{ display:none; max-width:1100px; margin:0 auto }
+    .tabs{ display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap }
+    .form-grid{ display:grid; gap:10px; grid-template-columns: 2fr 3fr 3fr auto }
+    @media (max-width:800px){
+      .form-grid{ grid-template-columns: 1fr; }
+    }
+    .event-card{ display:flex; gap:12px; align-items:flex-start }
+    .event-media{ width:160px; min-width:160px; aspect-ratio: 16/10; overflow:hidden; border-radius:12px; border:1px solid #eaecef; background:#fff }
+    .event-media img{ width:100%; height:100%; object-fit:cover }
+    .event-actions{ margin-top:6px }
+    .history-item{ background:#fff; border:1px solid #eaecef; border-radius:12px; padding:10px }
+  </style>
 </head>
 <body>
 
