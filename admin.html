@@ -1,77 +1,144 @@
 <!doctype html>
 <html lang="tr">
 <head>
-  <!-- Chart.js (grafikler) -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <meta charset="utf-8">
+  <title>KontrolSende — Yönetim</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <base href="https://ayexdws.github.io/KontrolSende/">
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>KontrolSende • Admin Panel</title>
-  <link rel="stylesheet" href="css/style.css?v=200">
+
+  <!-- Stil & Script -->
+  <link rel="stylesheet" href="css/style.css?v=431">
+  <script src="js/main.js?v=431" defer></script>
+
+  <style>
+    /* Sayfaya özel ufak dokunuşlar */
+    .admin-hero{
+      text-align:center; margin:24px auto 16px; max-width:840px;
+      padding:18px; border-radius:16px;
+      background:linear-gradient(135deg, rgba(255,255,255,.70), rgba(255,255,255,.55));
+      backdrop-filter: blur(10px);
+      border:1px solid #e6ebf0;
+      box-shadow: 0 10px 28px rgba(15,23,42,.08);
+    }
+    .admin-hero h1{ margin:6px 0 6px; font-size:28px }
+    .admin-hero p{ margin:0; color:#475467 }
+    .admin-hero .grid{
+      display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:14px;
+    }
+    .admin-hero .poster{
+      aspect-ratio: 16/9; border-radius:12px; overflow:hidden;
+      border:1px solid #e8edf3; background:#fff;
+    }
+    .admin-hero .poster img{ width:100%; height:100%; object-fit:cover; display:block }
+
+    /* Login kartı */
+    #admin-login .card{
+      max-width:420px; margin:16px auto; padding:18px; border-radius:16px;
+      background:#fff; border:1px solid #eaecef;
+      box-shadow: 0 12px 30px rgba(2,6,23,.10);
+    }
+    #admin-login .hint{ font-size:12px; color:#667085; margin-top:8px }
+
+    /* Panel düzeni */
+    #admin-panel{ display:none; max-width:1100px; margin:0 auto }
+    .tabs{ display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap }
+    .form-grid{ display:grid; gap:10px; grid-template-columns: 2fr 3fr 3fr auto }
+    @media (max-width:800px){
+      .form-grid{ grid-template-columns: 1fr; }
+    }
+    .event-card{ display:flex; gap:12px; align-items:flex-start }
+    .event-media{ width:160px; min-width:160px; aspect-ratio: 16/10; overflow:hidden; border-radius:12px; border:1px solid #eaecef; background:#fff }
+    .event-media img{ width:100%; height:100%; object-fit:cover }
+    .event-actions{ margin-top:6px }
+    .history-item{ background:#fff; border:1px solid #eaecef; border-radius:12px; padding:10px }
+  </style>
 </head>
-<body class="theme-glass">
+<body>
+
+  <!-- Üst Bar -->
   <header id="ks-header" class="ks-header">
-  <nav class="ks-nav ks-container">
-    <a class="ks-logo" href="index.html">KontrolSende</a>
+    <div class="ks-nav">
+      <a class="brand" href="index.html">KontrolSende</a>
+      <button id="ks-hamburger" class="ks-hamburger" aria-label="Menü" aria-expanded="false">
+        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+      </button>
+      <nav id="ks-drawer" class="ks-drawer">
+        <a href="index.html">Anasayfa</a>
+        <a href="test.html">Test</a>
+        <a href="etkinlikler.html">Etkinlikler</a>
+        <a href="yardim.html">Yardım Al</a>
+        <a href="admin.html" aria-current="page">Yönetim</a>
+      </nav>
+    </div>
+  </header>
+  <div class="ks-backdrop"></div>
 
-    <!-- Hamburger -->
-    <button id="ks-hamburger" class="ks-hamburger" aria-label="Menüyü aç/kapat" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
+  <main class="ks-container">
 
-    <!-- Menü -->
-    <ul id="ks-drawer" class="ks-drawer" role="menu">
-      <li><a href="index.html">Ana Sayfa</a></li>
-      <li><a href="test.html">Test Et</a></li>
-      <li><a href="etkinlikler.html">Etkinlikler</a></li>
-      <li><a href="yardim.html">Yardım Al</a></li>
-      <li><a href="admin.html">Admin</a></li>
-    </ul>
-  </nav>
-</header>
-  <main class="ks-container admin-wrap" style="padding:28px 0">
-    <h1>Yönetim Paneli</h1>
-    <section class="card" id="admin-login">
-      <h3>Giriş</h3>
-      <div class="admin-login-row">
-        <input type="password" id="admin-pin" placeholder="PIN">
-        <button class="btn btn-primary" id="admin-enter">Giriş</button>
+    <!-- Üst görseller (sade, şık) -->
+    <section class="admin-hero">
+      <h1>Yönetim Paneli</h1>
+      <p>Etkinlikleri ekleyin, düzenleyin ve test sonuçlarını yönetin.</p>
+      <div class="grid">
+        <figure class="poster">
+          <img src="https://images.unsplash.com/photo-1520975693411-b59323f5b5c6?q=80&w=1600&auto=format&fit=crop" alt="Topluluk ve farkındalık">
+        </figure>
+        <figure class="poster">
+          <img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=1600&auto=format&fit=crop" alt="Sağlıklı yaşam">
+        </figure>
       </div>
-      
     </section>
 
-    <section class="card" id="admin-panel" style="display:none">
+    <!-- Login -->
+    <section id="admin-login">
+      <div class="card">
+        <h2>Giriş Yap</h2>
+        <p class="muted">Yetkili erişim alanı.</p>
+        <div style="display:flex; gap:10px; margin-top:10px">
+          <input id="admin-pin" class="input" type="password" placeholder="PIN" inputmode="numeric" autocomplete="one-time-code" style="flex:1">
+          <button id="admin-enter" class="btn btn-primary">Giriş</button>
+        </div>
+        <div class="hint">Güvenliğiniz için PIN’i kimseyle paylaşmayın.</div>
+      </div>
+    </section>
+
+    <!-- Panel -->
+    <section id="admin-panel">
       <div class="tabs">
         <button id="tab-events" class="btn btn-primary">Etkinlikler</button>
-        <button id="tab-results" class="btn ghost">Kullanıcı Sonuçları</button>
+        <button id="tab-results" class="btn ghost">Sonuçlar</button>
       </div>
 
-      <!-- Etkinlik Yönetimi -->
-      <div id="events-panel">
+      <!-- Etkinlikler -->
+      <section id="events-panel" class="card" style="display:block">
         <h3>Etkinlik Ekle</h3>
-        <div class="event-form">
-          <input type="text" id="event-title" placeholder="Başlık">
-          <input type="text" id="event-desc" placeholder="Açıklama">
-          <input type="text" id="event-img" placeholder="Görsel URL">
+        <div class="form-grid" style="margin:8px 0 14px">
+          <input id="event-title" class="input" type="text" placeholder="Başlık (zorunlu)">
+          <input id="event-desc" class="input" type="text" placeholder="Açıklama (isteğe bağlı)">
+          <input id="event-img" class="input" type="url" placeholder="Görsel URL (zorunlu)">
           <button id="add-event" class="btn btn-primary">Ekle</button>
         </div>
-        <div id="admin-event-list" class="grid-3"></div>
-      </div>
 
-      <!-- Test Sonuçları -->
-      <div id="results-panel" style="display:none">
-        <h3>Kullanıcı Sonuçları</h3>
-        <div id="admin-result-list" class="history-list"></div>
-      </div>
+        <h3>Eklenen Etkinlikler</h3>
+        <div id="admin-event-list" class="grid list-gap-md" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:12px"></div>
+      </section>
+
+      <!-- Sonuçlar -->
+      <section id="results-panel" class="card" style="display:none">
+        <h3>Test Sonuçları</h3>
+        <div id="admin-result-list" class="stack-md" style="display:grid; gap:10px; margin-top:8px"></div>
+      </section>
     </section>
+
   </main>
 
-  <footer class="site-footer">
-    <div class="ks-container foot">
-      <span class="tiny muted">© 2025 KontrolSende</span>
-      <a class="link tiny" href="index.html">Ana Sayfa</a>
-    </div>
+  <footer class="ks-footer">
+    <p>© <span id="y"></span> KontrolSende</p>
   </footer>
-  <script src="js/main.js?v=200" defer></script>
+
+  <script>
+    // Alt bilgi yılı
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
