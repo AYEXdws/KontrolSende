@@ -375,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
     panelBox.style.display='block';
     tabEvents.classList.add('btn-primary');
     eventsPanel.style.display='block'; resultsPanel.style.display='none';
-    renderAdminEvents(); renderAdminResults();
+    renderAdminEvents(); renderAdminResults();renderAdminDashboard();
   });
 let chartCats, chartTrend;
 
