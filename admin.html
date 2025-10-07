@@ -516,5 +516,114 @@
   });
 })();
 </script>
+  <script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const PIN = "29391354"; // Şifre
+  const loginBox = document.getElementById("a-login");
+  const panelBox = document.getElementById("a-panel");
+  const pinIn = document.getElementById("a-pin");
+  const enterBtn = document.getElementById("a-enter");
+
+  // ✅ Giriş (PIN kontrol)
+  enterBtn.addEventListener("click", () => {
+    const val = (pinIn.value || "").trim();
+    if (val !== PIN) return alert("Hatalı PIN");
+    loginBox.style.display = "none";
+    panelBox.style.display = "block";
+    renderAdminEvents();
+    renderAdminResults();
+  });
+
+  // ✅ Etkinlik ekleme
+  document.getElementById("add-event")?.addEventListener("click", async () => {
+    const title = document.getElementById("event-title").value.trim();
+    const desc = document.getElementById("event-desc").value.trim();
+    const img = document.getElementById("event-img").value.trim();
+
+    if (!title || !img) return alert("Başlık ve görsel URL gerekli.");
+
+    await fetch("https://kontrolsende-api.onrender.com/addEvent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, desc, img }),
+    });
+
+    alert("Etkinlik eklendi ✅");
+    renderAdminEvents();
+  });
+
+  // ✅ Etkinlikleri getir
+  async function renderAdminEvents() {
+    const wrap = document.getElementById("admin-event-list");
+    wrap.innerHTML = `<p class="muted">Yükleniyor...</p>`;
+    const res = await fetch("https://kontrolsende-api.onrender.com/events");
+    const events = await res.json();
+
+    if (!events.length) {
+      wrap.innerHTML = `<p class="muted">Henüz etkinlik yok.</p>`;
+      return;
+    }
+
+    wrap.innerHTML = events.map(ev => `
+      <article class="event-card">
+        <img src="${ev.img}" alt="${ev.title}">
+        <h4>${ev.title}</h4>
+        <p>${ev.desc || ''}</p>
+        <button class="btn ghost" data-del="${ev.id}">Sil</button>
+      </article>
+    `).join('');
+
+    wrap.querySelectorAll("[data-del]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("Bu etkinliği silmek istediğine emin misin?")) return;
+        await fetch("https://kontrolsende-api.onrender.com/deleteEvent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: btn.dataset.del }),
+        });
+        renderAdminEvents();
+      });
+    });
+  }
+
+  // ✅ Sonuçları getir
+  async function renderAdminResults() {
+    const wrap = document.getElementById("admin-result-list");
+    wrap.innerHTML = `<p class="muted">Yükleniyor...</p>`;
+    const res = await fetch("https://kontrolsende-api.onrender.com/results");
+    const results = await res.json();
+
+    if (!results.length) {
+      wrap.innerHTML = `<p class="muted">Henüz kayıtlı test sonucu yok.</p>`;
+      return;
+    }
+
+    wrap.innerHTML = results.map(r => `
+      <div class="history-item">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <strong>${new Date(r.at).toLocaleString()}</strong>
+          <span class="pill">Genel: ${r.total_pct}%</span>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${r.cats.map(c=>`<span class="pill">${c.cat}: ${c.pct}%</span>`).join('')}
+        </div>
+        <button class="btn ghost" data-id="${r.id}">Sil</button>
+      </div>
+    `).join('');
+
+    wrap.querySelectorAll("[data-id]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("Bu sonucu silmek istediğine emin misin?")) return;
+        await fetch("https://kontrolsende-api.onrender.com/deleteResult", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: btn.dataset.id }),
+        });
+        renderAdminResults();
+      });
+    });
+  }
+});
+</script>
 </body>
 </html>
