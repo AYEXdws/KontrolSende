@@ -78,7 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const btn    = $('#ks-hamburger');
   const drawer = $('#ks-drawer');
   if (!header || !btn || !drawer) return;
-
+   // İlk yüklemede temiz başla (bazı sayfalarda class kalıntısı olabiliyor)
+btn.className = btn.className.replace('ks-active','');
+drawer.className = drawer.className.replace('ks-open','');
+btn.setAttribute('aria-expanded','false');
   const setOffset = () => {
     const h = header.offsetHeight || 64;
     document.documentElement.style.setProperty('--ks-offset', `${h}px`);
