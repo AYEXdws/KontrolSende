@@ -45,6 +45,7 @@
           <input id="event-title" placeholder="Başlık">
           <input id="event-desc" placeholder="Açıklama">
           <input id="event-img" placeholder="Görsel URL">
+          <input id="event-video" placeholder="Video URL (opsiyonel)">
           <button id="add-event" class="btn btn-primary" type="button">Ekle</button>
         </div>
         <div id="admin-event-list"></div>
@@ -103,19 +104,22 @@
 
     // ✅ Etkinlik ekleme
     document.getElementById("add-event").addEventListener("click", async () => {
-      const title = document.getElementById("event-title").value.trim();
-      const desc  = document.getElementById("event-desc").value.trim();
-      const img   = document.getElementById("event-img").value.trim();
-      if (!title || !img) return alert("Başlık ve görsel URL gerekli.");
-      await fetch("https://kontrolsende-api.onrender.com/addEvent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, desc, img }),
-      });
-      alert("Etkinlik eklendi ✅");
-      renderAdminEvents();
-    });
+  const title = document.getElementById("event-title").value.trim();
+  const desc  = document.getElementById("event-desc").value.trim();
+  const img   = document.getElementById("event-img").value.trim();
+  const video = document.getElementById("event-video").value.trim();
 
+  if (!title) return alert("Başlık gerekli.");
+  // img ya da video’dan en az biri olsa güzel olur ama zorunlu değil.
+
+  await fetch("https://kontrolsende-api.onrender.com/addEvent",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ title, desc, img, video })
+  });
+  alert("Etkinlik eklendi ✅");
+  renderAdminEvents();
+});
     // ✅ Etkinlikleri getir
     async function renderAdminEvents() {
       const wrap = document.getElementById("admin-event-list");
