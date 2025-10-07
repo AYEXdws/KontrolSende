@@ -1,66 +1,54 @@
-<!doctype html>
-<html lang="tr">
-<head>
-  <base href="https://ayexdws.github.io/KontrolSende/">
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>KontrolSende • Test</title>
-  <link rel="stylesheet" href="css/style.css?v=200">
-</head>
-<body class="theme-glass">
- <header id="ks-header" class="ks-header">
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Hızlı Test • KontrolSende</title>
+<link rel="stylesheet" href="css/style.css?v=1">
+</head><body class="theme-glass">
+<header id="ks-header" class="ks-header">
   <nav class="ks-nav ks-container">
     <a class="ks-logo" href="index.html">KontrolSende</a>
-
-    <!-- Hamburger -->
-    <button id="ks-hamburger" class="ks-hamburger" aria-label="Menüyü aç/kapat" aria-expanded="false">
+    <button id="ks-hamburger" class="ks-hamburger" aria-label="Menü" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
-
-    <!-- Menü -->
     <ul id="ks-drawer" class="ks-drawer" role="menu">
       <li><a href="index.html">Ana Sayfa</a></li>
       <li><a href="test.html">Test Et</a></li>
       <li><a href="etkinlikler.html">Etkinlikler</a></li>
       <li><a href="yardim.html">Yardım Al</a></li>
+      <li><a href="admin.html">Admin</a></li>
     </ul>
   </nav>
 </header>
- <main class="ks-container">
-  <section id="quiz-container" class="quiz-wrap">
-    <div id="question-container"></div>
 
+<main class="ks-container quiz-wrap">
+  <div id="quiz-container" class="card quiz">
+    <div class="meta">
+      <span id="category-chip" class="pill soft">Kategori</span>
+      <span id="percent-chip" class="pill">%0</span>
+    </div>
+    <div class="progress"><div id="progress-bar"></div></div>
+    <div id="question-counter" class="tiny muted">Soru 1 / 1</div>
+    <div id="question-container" class="question"></div>
     <div class="quiz-nav">
-      <button id="prev-btn" class="btn ghost">Önceki</button>
+      <button id="prev-btn" class="btn ghost">Geri</button>
       <div class="right">
+        <button id="restart-btn" class="btn ghost">Sıfırla</button>
         <button id="next-btn" class="btn btn-primary">Sonraki</button>
       </div>
     </div>
+  </div>
 
-    <div class="progress">
-      <div id="progress-bar"></div>
-    </div>
+  <div id="result-container" class="card result" style="display:none"></div>
 
-    <div class="meta">
-      <span id="category-chip" class="pill soft">Kategori</span>
-      <span id="percent-chip" class="pill soft">%0</span>
-      <span id="question-counter" class="pill soft">Soru 1 / ?</span>
-    </div>
-  </section>
-
-  <section id="result-container" class="card" style="display:none"></section>
-
-  <section id="history-container" style="display:none; margin-top:24px">
-    <h3>Sonuç Geçmişi</h3>
+  <section id="history-container" class="history" style="display:none">
+    <h3>Son Kaydın</h3>
     <div id="history-list" class="history-list"></div>
   </section>
 </main>
-  <footer class="site-footer">
-    <div class="ks-container foot">
-      <span class="tiny muted">© 2025 KontrolSende</span>
-      <a class="link tiny" href="yardim.html">Yardım</a>
-    </div>
-  </footer>
-  <script src="js/main.js?v=200" defer></script>
-</body>
-</html>
+
+<footer class="site-footer"><div class="ks-container foot">
+  <span class="tiny muted">© 2025 KontrolSende</span>
+</div></footer>
+
+<script>window.API_BASE="https://kontrolsende-api.onrender.com";</script>
+<script src="js/main.js?v=1" defer></script>
+</body></html>
