@@ -1,639 +1,194 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8">
-  <title>KontrolSende — Yönetim</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <base href="https://ayexdws.github.io/KontrolSende/">
-
-  <!-- İstersen genel stilini de kullan; admin kendi stilini ayrıca getiriyor -->
-  <link rel="stylesheet" href="css/style.css?v=600">
-
-  <!-- Admin'e özel stiller (çakışmayı önlemek için .a- prefix) -->
-  <style>
-    :root{
-      --a-bg: #f6f8fb;
-      --a-text: #0f172a;
-      --a-muted:#64748b;
-      --a-green:#0ea567;
-      --a-border:#e6ebf0;
-      --a-card:#ffffff;
-    }
-    html,body{background:var(--a-bg);color:var(--a-text)}
-    /* ====== HEADER + HAMBURGER ====== */
-    .a-header{
-      position:sticky; top:0; z-index:1000;
-      background:rgba(255,255,255,.85); backdrop-filter: blur(10px);
-      border-bottom:1px solid var(--a-border);
-    }
-    .a-nav{
-      max-width:1100px; margin:0 auto; padding:10px 16px;
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-    }
-    .a-brand{ font-weight:800; text-decoration:none; color:var(--a-text); font-size:18px }
-    .a-hamb{
-      position:relative; width:44px; height:44px;
-      display:inline-flex; align-items:center; justify-content:center;
-      color:var(--a-text); border:none; background:transparent; cursor:pointer; z-index:1101;
-    }
-    .a-hamb .line{
-      position:absolute; left:50%; width:26px; height:2px; border-radius:2px;
-      background: currentColor; transform:translateX(-50%); transition: transform .25s ease, opacity .2s ease, top .25s ease;
-    }
-    .a-hamb .line:nth-child(1){ top:14px }
-    .a-hamb .line:nth-child(2){ top:21px }
-    .a-hamb .line:nth-child(3){ top:28px }
-    .a-hamb.is-open .line:nth-child(1){ top:21px; transform:translateX(-50%) rotate(45deg) }
-    .a-hamb.is-open .line:nth-child(2){ opacity:0 }
-    .a-hamb.is-open .line:nth-child(3){ top:21px; transform:translateX(-50%) rotate(-45deg) }
-
-    .a-drawer{
-      position:fixed; inset:60px 0 0 auto; width:min(330px,92vw);
-      transform:translateX(102%); transition: transform .28s ease;
-      background:rgba(255,255,255,.95); backdrop-filter: blur(12px);
-      border-left:1px solid var(--a-border); z-index:1100; padding:14px;
-      box-shadow:-22px 0 44px rgba(15,23,42,.12);
-    }
-    .a-drawer.is-open{ transform:translateX(0) }
-    .a-backdrop{
-      position:fixed; inset:0; background:rgba(0,0,0,.38);
-      opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:1090;
-    }
-    .a-backdrop.is-show{ opacity:1; pointer-events:all }
-    .a-drawer a{
-      display:block; padding:10px 10px; border-radius:10px; text-decoration:none; color:var(--a-text);
-    }
-    .a-drawer a[aria-current="page"]{ background:#e9f7ef; color:#066e3c; font-weight:700 }
-
-    /* ====== LAYOUT ====== */
-    .a-container{ max-width:1100px; margin:0 auto; padding:16px }
-    .a-card{
-      background:var(--a-card); border:1px solid var(--a-border); border-radius:14px; padding:14px;
-      box-shadow: 0 10px 28px rgba(15,23,42,.06);
-    }
-    .a-hero{
-      margin:16px 0; padding:18px;
-      border:1px solid var(--a-border); border-radius:16px;
-      background:linear-gradient(135deg, rgba(255,255,255,.70), rgba(255,255,255,.55));
-      backdrop-filter: blur(10px);
-    }
-    .a-hero h1{ margin:4px 0 8px }
-    .a-hero .grid{ display:grid; gap:10px; grid-template-columns:1fr 1fr }
-    .a-hero .poster{ aspect-ratio:16/9; border-radius:12px; overflow:hidden; border:1px solid var(--a-border) }
-    .a-hero .poster img{ width:100%; height:100%; object-fit:cover; display:block }
-    @media (max-width:780px){ .a-hero .grid{ grid-template-columns:1fr } }
-
-    /* ====== LOGIN ====== */
-    #a-login .a-card{ max-width:480px; margin: 14px auto; }
-    .a-muted{ color:var(--a-muted) }
-    .a-row{ display:flex; gap:10px; }
-    .a-input{ flex:1; height:42px; padding:0 12px; border:1px solid var(--a-border); border-radius:10px; background:#fff; color:var(--a-text) }
-    .a-btn{ height:42px; padding:0 14px; border-radius:10px; border:1px solid transparent; cursor:pointer; font-weight:600 }
-    .a-btn.primary{ background:var(--a-green); color:#fff }
-    .a-btn.ghost{ background:#fff; border-color:var(--a-border); color:var(--a-text) }
-
-    /* ====== TABS & PANELS ====== */
-    #a-panel{ display:none }
-    .a-tabs{ display:flex; gap:8px; flex-wrap:wrap; margin: 8px 0 14px }
-    .a-grid{ display:grid; gap:12px; grid-template-columns: repeat(2, 1fr) }
-    @media (max-width:900px){ .a-grid{ grid-template-columns:1fr } }
-
-    /* ====== STATS & CHARTS ====== */
-    .a-stats{ display:grid; gap:12px; grid-template-columns: repeat(4,1fr); margin:12px 0 16px }
-    @media (max-width:900px){ .a-stats{ grid-template-columns: repeat(2,1fr) } }
-    @media (max-width:560px){ .a-stats{ grid-template-columns: 1fr } }
-    .a-stat .val{ font-size:24px; font-weight:800 }
-
-    /* ====== FORMS ====== */
-    .a-form{ display:grid; gap:10px; grid-template-columns: 2fr 3fr 3fr auto; align-items:center }
-    @media (max-width:900px){ .a-form{ grid-template-columns:1fr 1fr } }
-    @media (max-width:560px){ .a-form{ grid-template-columns:1fr } }
-
-    /* ====== EVENT & RESULT CARDS ====== */
-    .a-event-list{ display:grid; gap:12px; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); }
-    .a-event .media{ width:100%; aspect-ratio:16/9; overflow:hidden; border-radius:12px; border:1px solid var(--a-border); background:#fff }
-    .a-event img{ width:100%; height:100%; object-fit:cover }
-    .a-event .meta{ display:flex; justify-content:space-between; gap:8px; align-items:center }
-    .a-result{ background:#fff; border:1px solid var(--a-border); border-radius:12px; padding:10px }
-
-    footer{ margin:28px 0; text-align:center; color:var(--a-muted) }
-    /* Admin overlay sırası: tıklamalar çalışsın */
-.a-backdrop{ z-index: 1090 !important; }
-.a-drawer  { z-index: 1100 !important; pointer-events:auto !important; }
-.a-hamb    { z-index: 1110 !important; }
-.a-drawer a{ position:relative; z-index:1; }
-
-#a-login .a-card, #a-panel .a-card, #a-panel .a-btn { pointer-events:auto; }
-  </style>
-
-  <!-- Chart.js grafikleri için -->
-  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KontrolSende • Admin Panel</title>
+  <link rel="stylesheet" href="css/style.css?v=702">
 </head>
-<body>
+<body class="theme-glass">
 
-  <!-- ADMIN HEADER -->
-  <header class="a-header">
-    <div class="a-nav">
-      <a class="a-brand" href="index.html">KontrolSende</a>
-
-      <button id="a-hamb" class="a-hamb" aria-label="Menü" aria-expanded="false">
-        <span class="line"></span><span class="line"></span><span class="line"></span>
-      </button>
-      <nav id="a-drawer" class="a-drawer" aria-hidden="true">
-        <a href="index.html">Anasayfa</a>
-        <a href="test.html">Test</a>
-        <a href="etkinlikler.html">Etkinlikler</a>
-        <a href="yardim.html">Yardım Al</a>
-        <a href="admin.html" aria-current="page">Yönetim</a>
-      </nav>
+  <header class="ks-header">
+    <div class="ks-container ks-nav">
+      <a href="index.html" class="ks-logo">KontrolSende</a>
     </div>
   </header>
-  <div id="a-backdrop" class="a-backdrop"></div>
 
-  <!-- CONTENT -->
-  <main class="a-container">
-
-    <!-- HERO (görseller) -->
-    <section class="a-hero a-card">
-      <h1>Yönetim Paneli</h1>
-      <p class="a-muted">Etkinlikleri yönetin, test sonuçlarını görün ve istatistikleri takip edin.</p>
-      <div class="grid a-hero grid">
-        <figure class="poster"><img src="https://images.unsplash.com/photo-1520975693411-b59323f5b5c6?q=80&w=1600&auto=format&fit=crop" alt="Topluluk ve farkındalık"></figure>
-        <figure class="poster"><img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=1600&auto=format&fit=crop" alt="Sağlıklı yaşam"></figure>
+  <main class="ks-container" style="padding:40px 0">
+    
+    <!-- 🔐 Giriş Ekranı -->
+    <section id="a-login" style="text-align:center;">
+      <div class="admin-hero">
+        <div class="admin-hero-icon">🔒</div>
+        <h1>Admin Paneli</h1>
+        <p class="muted">Lütfen PIN kodunu girin</p>
+      </div>
+      <div class="admin-login-row" style="justify-content:center;">
+        <input id="a-pin" type="password" placeholder="PIN kodu" inputmode="numeric">
+        <button id="a-enter" class="btn btn-primary" type="button">Giriş</button>
       </div>
     </section>
 
-    <!-- LOGIN -->
-    <div id="a-login"> ... </div>
-<div id="a-panel" style="display:none">
-  <div class="tabs">
-    <button id="tab-events">Etkinlikler</button>
-    <button id="tab-results">Sonuçlar</button>
-  </div>
+    <!-- 📊 Panel -->
+    <section id="a-panel" style="display:none;">
+      <h2>Yönetim Paneli</h2>
 
-  <div id="events-panel">
-    <div class="event-form">
-      <input id="event-title" placeholder="Başlık">
-      <input id="event-desc" placeholder="Açıklama">
-      <input id="event-img" placeholder="Görsel URL">
-      <button id="add-event" class="btn primary">Ekle</button>
-    </div>
-    <div id="admin-event-list"></div>
-  </div>
-
-  <div id="results-panel">
-    <div id="admin-result-list"></div>
-  </div>
-</div>
-
-    <!-- PANEL -->
-    <section id="a-panel">
-      <!-- Genel İstatistik -->
-      <section class="a-stats">
-        <div class="a-card a-stat"><div>Toplam Test</div><div class="val" id="s-total">0</div></div>
-        <div class="a-card a-stat"><div>Ortalama Skor</div><div class="val" id="s-avg">0%</div></div>
-        <div class="a-card a-stat"><div>Bugün</div><div class="val" id="s-today">0</div></div>
-        <div class="a-card a-stat"><div>Son 7 Gün</div><div class="val" id="s-week">0</div></div>
-      </section>
-
-      <section class="a-grid">
-        <div class="a-card">
-          <h3>Kategori Ortalama %</h3>
-          <canvas id="c-cats" height="140"></canvas>
-        </div>
-        <div class="a-card">
-          <h3>Günlük Test Adedi (7g)</h3>
-          <canvas id="c-trend" height="140"></canvas>
-        </div>
-      </section>
-
-      <div class="a-tabs">
-        <button id="t-events" class="a-btn primary">Etkinlikler</button>
-        <button id="t-results" class="a-btn ghost">Sonuçlar</button>
+      <!-- Tabs -->
+      <div class="tabs">
+        <button id="tab-events" class="btn btn-primary">Etkinlikler</button>
+        <button id="tab-results" class="btn ghost">Sonuçlar</button>
       </div>
 
       <!-- Etkinlikler -->
-      <section id="p-events" class="a-card" style="display:block">
-        <h3>Etkinlik Ekle</h3>
-        <div class="a-form" style="margin:10px 0 14px">
-          <input id="ev-title" class="a-input" type="text" placeholder="Başlık (zorunlu)">
-          <input id="ev-desc" class="a-input" type="text" placeholder="Açıklama (isteğe bağlı)">
-          <input id="ev-img"  class="a-input" type="url"  placeholder="Görsel URL (zorunlu)">
-          <button id="ev-add" class="a-btn primary">Ekle</button>
+      <div id="events-panel">
+        <div class="event-form">
+          <input id="event-title" placeholder="Başlık">
+          <input id="event-desc" placeholder="Açıklama">
+          <input id="event-img" placeholder="Görsel URL">
+          <button id="add-event" class="btn btn-primary" type="button">Ekle</button>
         </div>
-
-        <h3>Eklenen Etkinlikler</h3>
-        <div id="ev-list" class="a-event-list"></div>
-      </section>
+        <div id="admin-event-list"></div>
+      </div>
 
       <!-- Sonuçlar -->
-      <section id="p-results" class="a-card" style="display:none">
-        <h3>Test Sonuçları</h3>
-        <div id="res-list" style="display:grid; gap:10px; margin-top:8px"></div>
-      </section>
+      <div id="results-panel" style="display:none;">
+        <div id="admin-result-list"></div>
+      </div>
     </section>
+
   </main>
 
-  <footer>© <span id="y"></span> KontrolSende</footer>
+  <footer class="site-footer">
+    <div class="ks-container foot">
+      <span class="muted small">© 2025 KontrolSende</span>
+    </div>
+  </footer>
 
-  <!-- Admin'e özel JS (tam entegre) -->
+  <!-- ⚙️ Admin JS -->
   <script>
-    // Yıl
-    document.getElementById('y').textContent = new Date().getFullYear();
+  document.addEventListener("DOMContentLoaded", async () => {
+    const PIN = "29391354";
+    const loginBox = document.getElementById("a-login");
+    const panelBox = document.getElementById("a-panel");
+    const pinIn = document.getElementById("a-pin");
+    const enterBtn = document.getElementById("a-enter");
 
-    // ====== Basit Menü (çakışmasın diye .a- ile yazıldı) ======
-    (function(){
-      const hamb = document.getElementById('a-hamb');
-      const drawer = document.getElementById('a-drawer');
-      const backdrop = document.getElementById('a-backdrop');
+    // 🔐 PIN kontrol
+    enterBtn.addEventListener("click", () => {
+      const val = (pinIn.value || "").trim();
+      if (val !== PIN) return alert("Hatalı PIN");
+      loginBox.style.display = "none";
+      panelBox.style.display = "block";
+      renderAdminEvents();
+      renderAdminResults();
+    });
 
-      function open() {
-        hamb.classList.add('is-open');
-        hamb.setAttribute('aria-expanded','true');
-        drawer.classList.add('is-open');
-        drawer.setAttribute('aria-hidden','false');
-        backdrop.classList.add('is-show');
-        document.documentElement.style.overflow='hidden';
-      }
-      function close() {
-        hamb.classList.remove('is-open');
-        hamb.setAttribute('aria-expanded','false');
-        drawer.classList.remove('is-open');
-        drawer.setAttribute('aria-hidden','true');
-        backdrop.classList.remove('is-show');
-        document.documentElement.style.overflow='';
-      }
-      function toggle(){ drawer.classList.contains('is-open') ? close() : open(); }
+    // Tab geçişleri
+    const tabEvents = document.getElementById("tab-events");
+    const tabResults = document.getElementById("tab-results");
+    const eventsPanel = document.getElementById("events-panel");
+    const resultsPanel = document.getElementById("results-panel");
 
-      hamb.addEventListener('click', toggle);
-      backdrop.addEventListener('click', close);
-      drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
-      document.addEventListener('keydown', e => { if (e.key==='Escape' && drawer.classList.contains('is-open')) close(); });
-    })();
+    tabEvents.addEventListener("click", () => {
+      tabEvents.classList.add("btn-primary"); tabResults.classList.remove("btn-primary"); tabResults.classList.add("ghost");
+      eventsPanel.style.display = "block"; resultsPanel.style.display = "none";
+      renderAdminEvents();
+    });
 
-    // ====== API Katmanı ======
-    const API_BASE = "https://kontrolsende-api.onrender.com";
-    const DB = {
-      async getEvents() {
-        const r = await fetch(\`\${API_BASE}/getEvents\`);
-        const j = await r.json().catch(()=>({success:false}));
-        return j && j.success ? j.rows : [];
-      },
-      async addEvent({ title, desc, img }) {
-        const r = await fetch(\`\${API_BASE}/addEvent\`, {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ title, description: desc || "", image_url: img })
-        });
-        const j = await r.json().catch(()=>({success:false}));
-        return !!(j && j.success);
-      },
-      async deleteEvent(id){
-        const r = await fetch(\`\${API_BASE}/deleteEvent/\${id}\`, { method:'DELETE' });
-        const j = await r.json().catch(()=>({success:false}));
-        return !!(j && j.success);
-      },
+    tabResults.addEventListener("click", () => {
+      tabResults.classList.add("btn-primary"); tabEvents.classList.remove("btn-primary"); tabEvents.classList.add("ghost");
+      eventsPanel.style.display = "none"; resultsPanel.style.display = "block";
+      renderAdminResults();
+    });
 
-      async getResults(){
-        const r = await fetch(\`\${API_BASE}/getResults\`);
-        const j = await r.json().catch(()=>({success:false, rows:[]}));
-        return j && j.success
-          ? j.rows.map(x => ({ id:x.id, at:x.created_at, totalPct:x.total_pct, cats:x.cats }))
-          : [];
-      },
-      async deleteResult(id){
-        const r = await fetch(\`\${API_BASE}/deleteResult/\${id}\`, { method:'DELETE' });
-        const j = await r.json().catch(()=>({success:false}));
-        return !!(j && j.success);
-      }
-    };
-
-    // ====== Admin Login & Panel ======
-    (function(){
-      const PIN = '29391354'; // Not: Frontend PIN güvenlik amaçlı değildir; ileride server-side auth ekleyin.
-      const loginBox = document.getElementById('a-login');
-      const panelBox = document.getElementById('a-panel');
-      const pinIn = document.getElementById('a-pin');
-      document.getElementById('a-enter').addEventListener('click', ()=>{
-        const val = (pinIn.value||'').trim();
-        if (val !== PIN) return alert('Hatalı PIN');
-        loginBox.style.display='none';
-        panelBox.style.display='block';
-        renderAll();
+    // ✅ Etkinlik ekleme
+    document.getElementById("add-event").addEventListener("click", async () => {
+      const title = document.getElementById("event-title").value.trim();
+      const desc  = document.getElementById("event-desc").value.trim();
+      const img   = document.getElementById("event-img").value.trim();
+      if (!title || !img) return alert("Başlık ve görsel URL gerekli.");
+      await fetch("https://kontrolsende-api.onrender.com/addEvent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, desc, img }),
       });
+      alert("Etkinlik eklendi ✅");
+      renderAdminEvents();
+    });
 
-      // Tabs
-      const tEvents = document.getElementById('t-events');
-      const tResults= document.getElementById('t-results');
-      const pEvents = document.getElementById('p-events');
-      const pResults= document.getElementById('p-results');
-      tEvents.addEventListener('click', ()=>{
-        tEvents.classList.add('primary'); tResults.classList.remove('primary');
-        pEvents.style.display='block'; pResults.style.display='none';
-        renderEvents();
-      });
-      tResults.addEventListener('click', ()=>{
-        tResults.classList.add('primary'); tEvents.classList.remove('primary');
-        pEvents.style.display='none'; pResults.style.display='block';
-        renderResults(); renderStats(); // sonuç görünürken istatistikleri de güncelle
-      });
+    // ✅ Etkinlikleri getir
+    async function renderAdminEvents() {
+      const wrap = document.getElementById("admin-event-list");
+      wrap.innerHTML = `<p class="muted">Yükleniyor...</p>`;
+      const res = await fetch("https://kontrolsende-api.onrender.com/events");
+      const events = await res.json();
 
-      // Events — add
-      const evTitle = document.getElementById('ev-title');
-      const evDesc  = document.getElementById('ev-desc');
-      const evImg   = document.getElementById('ev-img');
-      document.getElementById('ev-add').addEventListener('click', async ()=>{
-        const title = (evTitle.value||'').trim();
-        const desc  = (evDesc.value||'').trim();
-        const img   = (evImg.value||'').trim();
-        if (!title || !img) return alert('Başlık ve Görsel URL zorunlu.');
-        const ok = await DB.addEvent({ title, desc, img });
-        if (ok){ evTitle.value=''; evDesc.value=''; evImg.value=''; renderEvents(); alert('Etkinlik eklendi.'); }
-        else alert('Eklenemedi.');
-      });
-
-      async function renderAll(){ await renderEvents(); await renderResults(); await renderStats(); }
-      async function renderEvents(){
-        const list = await DB.getEvents();
-        const wrap = document.getElementById('ev-list');
-        wrap.innerHTML = !list.length ? '<p class="a-muted">Henüz etkinlik yok.</p>' :
-          list.map(ev=>`
-            <article class="a-event a-card">
-              <div class="media"><img src="${ev.image_url}" alt="${ev.title}" loading="lazy"></div>
-              <div class="meta">
-                <strong>${ev.title}</strong>
-                <span class="a-muted" style="font-size:12px">${new Date(ev.created_at).toLocaleDateString()}</span>
-              </div>
-              <p>${ev.description||''}</p>
-              <div style="display:flex; justify-content:flex-end">
-                <button class="a-btn ghost" data-del="${ev.id}">Sil</button>
-              </div>
-            </article>
-          `).join('');
-        wrap.querySelectorAll('[data-del]').forEach(btn=>{
-          btn.onclick = async ()=>{
-            const id = btn.getAttribute('data-del');
-            if (!confirm('Etkinlik silinsin mi?')) return;
-            const ok = await DB.deleteEvent(id);
-            if (ok) renderEvents(); else alert('Silme başarısız.');
-          };
-        });
+      if (!events.length) {
+        wrap.innerHTML = `<p class="muted">Henüz etkinlik yok.</p>`;
+        return;
       }
 
-      async function renderResults(){
-        const list = await DB.getResults();
-        const wrap = document.getElementById('res-list');
-        wrap.innerHTML = !list.length ? '<p class="a-muted">Kayıtlı sonuç yok.</p>' :
-          list.map(it=>`
-            <div class="a-result">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-                <strong>${new Date(it.at).toLocaleString()}</strong>
-                <div style="display:flex;gap:6px;align-items:center">
-                  <span class="a-muted">Genel: ${it.totalPct}%</span>
-                  <button class="a-btn ghost" data-del-res="${it.id}">Sil</button>
-                </div>
-              </div>
-              <div style="display:flex;gap:6px;flex-wrap:wrap">
-                ${it.cats.map(c=>`<span class="a-card" style="padding:4px 8px; border-radius:999px; border:1px solid var(--a-border)">${c.cat}: ${c.pct}%</span>`).join('')}
-              </div>
-            </div>
-          `).join('');
-        wrap.querySelectorAll('[data-del-res]').forEach(btn=>{
-          btn.onclick = async ()=>{
-            const id = Number(btn.getAttribute('data-del-res'));
-            if (!confirm('Bu sonuç silinsin mi?')) return;
-            const ok = await DB.deleteResult(id);
-            if (ok) { renderResults(); renderStats(); } else alert('Silme başarısız.');
-          };
-        });
-      }
+      wrap.innerHTML = events.map(ev => `
+        <article class="event-card">
+          <img src="${ev.img}" alt="${ev.title}">
+          <h4>${ev.title}</h4>
+          <p>${ev.desc || ''}</p>
+          <button class="btn ghost" data-del="${ev.id}">Sil</button>
+        </article>
+      `).join('');
 
-      // ====== Stats + Charts ======
-      let chartCats, chartTrend;
-      function buildStats(rows){
-        const total = rows.length;
-        const avg = total ? Math.round(rows.reduce((s,r)=>s+(r.totalPct||0),0)/total) : 0;
-
-        const todayStr = new Date().toLocaleDateString();
-        let today = 0, week = 0;
-        const dayCounts = {};
-        const days = [];
-        for (let d=6; d>=0; d--){
-          const dt = new Date(); dt.setDate(dt.getDate()-d);
-          const k = dt.toLocaleDateString();
-          days.push(k); dayCounts[k]=0;
-        }
-        const catsAgg = {};
-        rows.forEach(r=>{
-          const at = new Date(r.at);
-          const key = at.toLocaleDateString();
-          if (key === todayStr) today++;
-          if (days.includes(key)) dayCounts[key]++;
-          const diff = (Date.now()-at.getTime())/86400000; if (diff<=7) week++;
-          (r.cats||[]).forEach(c=>{
-            const k = c.cat || 'Diğer';
-            if (!catsAgg[k]) catsAgg[k] = { sum:0, count:0 };
-            catsAgg[k].sum += Number(c.pct||0); catsAgg[k].count++;
+      wrap.querySelectorAll("[data-del]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          if (!confirm("Bu etkinliği silmek istediğine emin misin?")) return;
+          await fetch("https://kontrolsende-api.onrender.com/deleteEvent", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: btn.dataset.del }),
           });
+          renderAdminEvents();
         });
-        const catLabels = Object.keys(catsAgg);
-        const catValues = catLabels.map(k => Math.round(catsAgg[k].sum / catsAgg[k].count));
-        const trendLabels = days;
-        const trendValues = days.map(k=>dayCounts[k]||0);
-        return { total, avg, today, week, catLabels, catValues, trendLabels, trendValues };
-      }
-      async function renderStats(){
-        const rows = await DB.getResults();
-        const s = buildStats(rows);
-        document.getElementById('s-total').textContent = String(s.total);
-        document.getElementById('s-avg').textContent   = (s.avg||0)+'%';
-        document.getElementById('s-today').textContent = String(s.today);
-        document.getElementById('s-week').textContent  = String(s.week);
+      });
+    }
 
-        // Grafikler
-        const ctx1 = document.getElementById('c-cats');
-        const ctx2 = document.getElementById('c-trend');
-        if (window.Chart){
-          chartCats && chartCats.destroy();
-          chartCats = new Chart(ctx1, {
-            type:'bar',
-            data:{ labels:s.catLabels, datasets:[{ label:'Ortalama %', data:s.catValues }] },
-            options:{ responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true,max:100}} }
-          });
-          chartTrend && chartTrend.destroy();
-          chartTrend = new Chart(ctx2, {
-            type:'line',
-            data:{ labels:s.trendLabels, datasets:[{ label:'Test Adedi', data:s.trendValues, tension:.35, fill:false }] },
-            options:{ responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true,precision:0}} }
-          });
-        }
+    // ✅ Sonuçları getir
+    async function renderAdminResults() {
+      const wrap = document.getElementById("admin-result-list");
+      wrap.innerHTML = `<p class="muted">Yükleniyor...</p>`;
+      const res = await fetch("https://kontrolsende-api.onrender.com/results");
+      const results = await res.json();
+
+      if (!results.length) {
+        wrap.innerHTML = `<p class="muted">Henüz kayıtlı test sonucu yok.</p>`;
+        return;
       }
-    })();
+
+      wrap.innerHTML = results.map(r => `
+        <div class="history-item">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <strong>${new Date(r.at).toLocaleString()}</strong>
+            <span class="pill">Genel: ${r.total_pct}%</span>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            ${r.cats.map(c=>`<span class="pill">${c.cat}: ${c.pct}%</span>`).join('')}
+          </div>
+          <button class="btn ghost" data-id="${r.id}">Sil</button>
+        </div>
+      `).join('');
+
+      wrap.querySelectorAll("[data-id]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          if (!confirm("Bu sonucu silmek istediğine emin misin?")) return;
+          await fetch("https://kontrolsende-api.onrender.com/deleteResult", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: btn.dataset.id }),
+          });
+          renderAdminResults();
+        });
+      });
+    }
+  });
   </script>
-  <script>
-(function(){
-  // ===== PIN sabiti (frontend) =====
-  const PIN = '29391354';
 
-  // ===== Menü (hamburger) =====
-  const hamb = document.getElementById('a-hamb');
-  const drawer = document.getElementById('a-drawer');
-  const backdrop = document.getElementById('a-backdrop');
-
-  function openMenu(){
-    hamb?.classList.add('is-open'); hamb?.setAttribute('aria-expanded','true');
-    drawer?.classList.add('is-open'); drawer?.setAttribute('aria-hidden','false');
-    backdrop?.classList.add('is-show');
-    document.documentElement.style.overflow = 'hidden';
-  }
-  function closeMenu(){
-    hamb?.classList.remove('is-open'); hamb?.setAttribute('aria-expanded','false');
-    drawer?.classList.remove('is-open'); drawer?.setAttribute('aria-hidden','true');
-    backdrop?.classList.remove('is-show');
-    document.documentElement.style.overflow = '';
-  }
-  function toggleMenu(){ drawer?.classList.contains('is-open') ? closeMenu() : openMenu(); }
-
-  hamb?.addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); toggleMenu(); });
-  backdrop?.addEventListener('click', closeMenu);
-  drawer?.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
-  document.addEventListener('keydown', e=>{ if (e.key === 'Escape' && drawer?.classList.contains('is-open')) closeMenu(); });
-
-  // ===== Giriş / PIN =====
-  const loginBox = document.getElementById('a-login');
-  const panelBox = document.getElementById('a-panel');
-  const pinIn    = document.getElementById('a-pin');
-  const enterBtn = document.getElementById('a-enter');
-
-  function openPanel(){
-    loginBox.style.display = 'none';
-    panelBox.style.display = 'block';
-    // Panel açıldığında varsa bu fonksiyonları çağır
-    if (typeof renderEvents  === 'function') renderEvents();
-    if (typeof renderResults === 'function') renderResults();
-    if (typeof renderStats   === 'function') renderStats();
-  }
-
-  enterBtn?.addEventListener('click', (e)=>{
-    e.preventDefault();
-    const val = (pinIn?.value || '').trim();
-    if (val !== PIN) { alert('Hatalı PIN'); return; }
-    openPanel();
-  });
-
-  // Enter tuşu ile giriş
-  pinIn?.addEventListener('keydown', (e)=>{
-    if (e.key === 'Enter') { enterBtn?.click(); }
-  });
-})();
-</script>
-  <script>
-document.addEventListener("DOMContentLoaded", async () => {
-  const PIN = "29391354"; // Şifre
-  const loginBox = document.getElementById("a-login");
-  const panelBox = document.getElementById("a-panel");
-  const pinIn = document.getElementById("a-pin");
-  const enterBtn = document.getElementById("a-enter");
-
-  // ✅ Giriş (PIN kontrol)
-  enterBtn.addEventListener("click", () => {
-    const val = (pinIn.value || "").trim();
-    if (val !== PIN) return alert("Hatalı PIN");
-    loginBox.style.display = "none";
-    panelBox.style.display = "block";
-    renderAdminEvents();
-    renderAdminResults();
-  });
-
-  // ✅ Etkinlik ekleme
-  document.getElementById("add-event")?.addEventListener("click", async () => {
-    const title = document.getElementById("event-title").value.trim();
-    const desc = document.getElementById("event-desc").value.trim();
-    const img = document.getElementById("event-img").value.trim();
-
-    if (!title || !img) return alert("Başlık ve görsel URL gerekli.");
-
-    await fetch("https://kontrolsende-api.onrender.com/addEvent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, desc, img }),
-    });
-
-    alert("Etkinlik eklendi ✅");
-    renderAdminEvents();
-  });
-
-  // ✅ Etkinlikleri getir
-  async function renderAdminEvents() {
-    const wrap = document.getElementById("admin-event-list");
-    wrap.innerHTML = `<p class="muted">Yükleniyor...</p>`;
-    const res = await fetch("https://kontrolsende-api.onrender.com/events");
-    const events = await res.json();
-
-    if (!events.length) {
-      wrap.innerHTML = `<p class="muted">Henüz etkinlik yok.</p>`;
-      return;
-    }
-
-    wrap.innerHTML = events.map(ev => `
-      <article class="event-card">
-        <img src="${ev.img}" alt="${ev.title}">
-        <h4>${ev.title}</h4>
-        <p>${ev.desc || ''}</p>
-        <button class="btn ghost" data-del="${ev.id}">Sil</button>
-      </article>
-    `).join('');
-
-    wrap.querySelectorAll("[data-del]").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        if (!confirm("Bu etkinliği silmek istediğine emin misin?")) return;
-        await fetch("https://kontrolsende-api.onrender.com/deleteEvent", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: btn.dataset.del }),
-        });
-        renderAdminEvents();
-      });
-    });
-  }
-
-  // ✅ Sonuçları getir
-  async function renderAdminResults() {
-    const wrap = document.getElementById("admin-result-list");
-    wrap.innerHTML = `<p class="muted">Yükleniyor...</p>`;
-    const res = await fetch("https://kontrolsende-api.onrender.com/results");
-    const results = await res.json();
-
-    if (!results.length) {
-      wrap.innerHTML = `<p class="muted">Henüz kayıtlı test sonucu yok.</p>`;
-      return;
-    }
-
-    wrap.innerHTML = results.map(r => `
-      <div class="history-item">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <strong>${new Date(r.at).toLocaleString()}</strong>
-          <span class="pill">Genel: ${r.total_pct}%</span>
-        </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          ${r.cats.map(c=>`<span class="pill">${c.cat}: ${c.pct}%</span>`).join('')}
-        </div>
-        <button class="btn ghost" data-id="${r.id}">Sil</button>
-      </div>
-    `).join('');
-
-    wrap.querySelectorAll("[data-id]").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        if (!confirm("Bu sonucu silmek istediğine emin misin?")) return;
-        await fetch("https://kontrolsende-api.onrender.com/deleteResult", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: btn.dataset.id }),
-        });
-        renderAdminResults();
-      });
-    });
-  }
-});
-</script>
 </body>
 </html>
