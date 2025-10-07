@@ -6,63 +6,133 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <base href="https://ayexdws.github.io/KontrolSende/">
 
-  <!-- Stil & Script -->
-  <link rel="stylesheet" href="css/style.css?v=431">
-  <script src="js/main.js?v=431" defer></script>
+  <!-- İstersen genel stilini de kullan; admin kendi stilini ayrıca getiriyor -->
+  <link rel="stylesheet" href="css/style.css?v=600">
 
+  <!-- Admin'e özel stiller (çakışmayı önlemek için .a- prefix) -->
   <style>
-    /* Sayfaya özel ufak dokunuşlar */
-    .admin-hero{
-      text-align:center; margin:24px auto 16px; max-width:840px;
-      padding:18px; border-radius:16px;
+    :root{
+      --a-bg: #f6f8fb;
+      --a-text: #0f172a;
+      --a-muted:#64748b;
+      --a-green:#0ea567;
+      --a-border:#e6ebf0;
+      --a-card:#ffffff;
+    }
+    html,body{background:var(--a-bg);color:var(--a-text)}
+    /* ====== HEADER + HAMBURGER ====== */
+    .a-header{
+      position:sticky; top:0; z-index:1000;
+      background:rgba(255,255,255,.85); backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--a-border);
+    }
+    .a-nav{
+      max-width:1100px; margin:0 auto; padding:10px 16px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    .a-brand{ font-weight:800; text-decoration:none; color:var(--a-text); font-size:18px }
+    .a-hamb{
+      position:relative; width:44px; height:44px;
+      display:inline-flex; align-items:center; justify-content:center;
+      color:var(--a-text); border:none; background:transparent; cursor:pointer; z-index:1101;
+    }
+    .a-hamb .line{
+      position:absolute; left:50%; width:26px; height:2px; border-radius:2px;
+      background: currentColor; transform:translateX(-50%); transition: transform .25s ease, opacity .2s ease, top .25s ease;
+    }
+    .a-hamb .line:nth-child(1){ top:14px }
+    .a-hamb .line:nth-child(2){ top:21px }
+    .a-hamb .line:nth-child(3){ top:28px }
+    .a-hamb.is-open .line:nth-child(1){ top:21px; transform:translateX(-50%) rotate(45deg) }
+    .a-hamb.is-open .line:nth-child(2){ opacity:0 }
+    .a-hamb.is-open .line:nth-child(3){ top:21px; transform:translateX(-50%) rotate(-45deg) }
+
+    .a-drawer{
+      position:fixed; inset:60px 0 0 auto; width:min(330px,92vw);
+      transform:translateX(102%); transition: transform .28s ease;
+      background:rgba(255,255,255,.95); backdrop-filter: blur(12px);
+      border-left:1px solid var(--a-border); z-index:1100; padding:14px;
+      box-shadow:-22px 0 44px rgba(15,23,42,.12);
+    }
+    .a-drawer.is-open{ transform:translateX(0) }
+    .a-backdrop{
+      position:fixed; inset:0; background:rgba(0,0,0,.38);
+      opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:1090;
+    }
+    .a-backdrop.is-show{ opacity:1; pointer-events:all }
+    .a-drawer a{
+      display:block; padding:10px 10px; border-radius:10px; text-decoration:none; color:var(--a-text);
+    }
+    .a-drawer a[aria-current="page"]{ background:#e9f7ef; color:#066e3c; font-weight:700 }
+
+    /* ====== LAYOUT ====== */
+    .a-container{ max-width:1100px; margin:0 auto; padding:16px }
+    .a-card{
+      background:var(--a-card); border:1px solid var(--a-border); border-radius:14px; padding:14px;
+      box-shadow: 0 10px 28px rgba(15,23,42,.06);
+    }
+    .a-hero{
+      margin:16px 0; padding:18px;
+      border:1px solid var(--a-border); border-radius:16px;
       background:linear-gradient(135deg, rgba(255,255,255,.70), rgba(255,255,255,.55));
       backdrop-filter: blur(10px);
-      border:1px solid #e6ebf0;
-      box-shadow: 0 10px 28px rgba(15,23,42,.08);
     }
-    .admin-hero h1{ margin:6px 0 6px; font-size:28px }
-    .admin-hero p{ margin:0; color:#475467 }
-    .admin-hero .grid{
-      display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:14px;
-    }
-    .admin-hero .poster{
-      aspect-ratio: 16/9; border-radius:12px; overflow:hidden;
-      border:1px solid #e8edf3; background:#fff;
-    }
-    .admin-hero .poster img{ width:100%; height:100%; object-fit:cover; display:block }
+    .a-hero h1{ margin:4px 0 8px }
+    .a-hero .grid{ display:grid; gap:10px; grid-template-columns:1fr 1fr }
+    .a-hero .poster{ aspect-ratio:16/9; border-radius:12px; overflow:hidden; border:1px solid var(--a-border) }
+    .a-hero .poster img{ width:100%; height:100%; object-fit:cover; display:block }
+    @media (max-width:780px){ .a-hero .grid{ grid-template-columns:1fr } }
 
-    /* Login kartı */
-    #admin-login .card{
-      max-width:420px; margin:16px auto; padding:18px; border-radius:16px;
-      background:#fff; border:1px solid #eaecef;
-      box-shadow: 0 12px 30px rgba(2,6,23,.10);
-    }
-    #admin-login .hint{ font-size:12px; color:#667085; margin-top:8px }
+    /* ====== LOGIN ====== */
+    #a-login .a-card{ max-width:480px; margin: 14px auto; }
+    .a-muted{ color:var(--a-muted) }
+    .a-row{ display:flex; gap:10px; }
+    .a-input{ flex:1; height:42px; padding:0 12px; border:1px solid var(--a-border); border-radius:10px; background:#fff; color:var(--a-text) }
+    .a-btn{ height:42px; padding:0 14px; border-radius:10px; border:1px solid transparent; cursor:pointer; font-weight:600 }
+    .a-btn.primary{ background:var(--a-green); color:#fff }
+    .a-btn.ghost{ background:#fff; border-color:var(--a-border); color:var(--a-text) }
 
-    /* Panel düzeni */
-    #admin-panel{ display:none; max-width:1100px; margin:0 auto }
-    .tabs{ display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap }
-    .form-grid{ display:grid; gap:10px; grid-template-columns: 2fr 3fr 3fr auto }
-    @media (max-width:800px){
-      .form-grid{ grid-template-columns: 1fr; }
-    }
-    .event-card{ display:flex; gap:12px; align-items:flex-start }
-    .event-media{ width:160px; min-width:160px; aspect-ratio: 16/10; overflow:hidden; border-radius:12px; border:1px solid #eaecef; background:#fff }
-    .event-media img{ width:100%; height:100%; object-fit:cover }
-    .event-actions{ margin-top:6px }
-    .history-item{ background:#fff; border:1px solid #eaecef; border-radius:12px; padding:10px }
+    /* ====== TABS & PANELS ====== */
+    #a-panel{ display:none }
+    .a-tabs{ display:flex; gap:8px; flex-wrap:wrap; margin: 8px 0 14px }
+    .a-grid{ display:grid; gap:12px; grid-template-columns: repeat(2, 1fr) }
+    @media (max-width:900px){ .a-grid{ grid-template-columns:1fr } }
+
+    /* ====== STATS & CHARTS ====== */
+    .a-stats{ display:grid; gap:12px; grid-template-columns: repeat(4,1fr); margin:12px 0 16px }
+    @media (max-width:900px){ .a-stats{ grid-template-columns: repeat(2,1fr) } }
+    @media (max-width:560px){ .a-stats{ grid-template-columns: 1fr } }
+    .a-stat .val{ font-size:24px; font-weight:800 }
+
+    /* ====== FORMS ====== */
+    .a-form{ display:grid; gap:10px; grid-template-columns: 2fr 3fr 3fr auto; align-items:center }
+    @media (max-width:900px){ .a-form{ grid-template-columns:1fr 1fr } }
+    @media (max-width:560px){ .a-form{ grid-template-columns:1fr } }
+
+    /* ====== EVENT & RESULT CARDS ====== */
+    .a-event-list{ display:grid; gap:12px; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); }
+    .a-event .media{ width:100%; aspect-ratio:16/9; overflow:hidden; border-radius:12px; border:1px solid var(--a-border); background:#fff }
+    .a-event img{ width:100%; height:100%; object-fit:cover }
+    .a-event .meta{ display:flex; justify-content:space-between; gap:8px; align-items:center }
+    .a-result{ background:#fff; border:1px solid var(--a-border); border-radius:12px; padding:10px }
+
+    footer{ margin:28px 0; text-align:center; color:var(--a-muted) }
   </style>
+
+  <!-- Chart.js grafikleri için -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
 </head>
 <body>
 
-  <!-- Üst Bar -->
-  <header id="ks-header" class="ks-header">
-    <div class="ks-nav">
-      <a class="brand" href="index.html">KontrolSende</a>
-      <button id="ks-hamburger" class="ks-hamburger" aria-label="Menü" aria-expanded="false">
-        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+  <!-- ADMIN HEADER -->
+  <header class="a-header">
+    <div class="a-nav">
+      <a class="a-brand" href="index.html">KontrolSende</a>
+
+      <button id="a-hamb" class="a-hamb" aria-label="Menü" aria-expanded="false">
+        <span class="line"></span><span class="line"></span><span class="line"></span>
       </button>
-      <nav id="ks-drawer" class="ks-drawer">
+      <nav id="a-drawer" class="a-drawer" aria-hidden="true">
         <a href="index.html">Anasayfa</a>
         <a href="test.html">Test</a>
         <a href="etkinlikler.html">Etkinlikler</a>
@@ -71,74 +141,316 @@
       </nav>
     </div>
   </header>
-  <div class="ks-backdrop"></div>
+  <div id="a-backdrop" class="a-backdrop"></div>
 
-  <main class="ks-container">
+  <!-- CONTENT -->
+  <main class="a-container">
 
-    <!-- Üst görseller (sade, şık) -->
-    <section class="admin-hero">
+    <!-- HERO (görseller) -->
+    <section class="a-hero a-card">
       <h1>Yönetim Paneli</h1>
-      <p>Etkinlikleri ekleyin, düzenleyin ve test sonuçlarını yönetin.</p>
-      <div class="grid">
-        <figure class="poster">
-          <img src="https://images.unsplash.com/photo-1520975693411-b59323f5b5c6?q=80&w=1600&auto=format&fit=crop" alt="Topluluk ve farkındalık">
-        </figure>
-        <figure class="poster">
-          <img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=1600&auto=format&fit=crop" alt="Sağlıklı yaşam">
-        </figure>
+      <p class="a-muted">Etkinlikleri yönetin, test sonuçlarını görün ve istatistikleri takip edin.</p>
+      <div class="grid a-hero grid">
+        <figure class="poster"><img src="https://images.unsplash.com/photo-1520975693411-b59323f5b5c6?q=80&w=1600&auto=format&fit=crop" alt="Topluluk ve farkındalık"></figure>
+        <figure class="poster"><img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=1600&auto=format&fit=crop" alt="Sağlıklı yaşam"></figure>
       </div>
     </section>
 
-    <!-- Login -->
-    <section id="admin-login">
-      <div class="card">
+    <!-- LOGIN -->
+    <section id="a-login">
+      <div class="a-card">
         <h2>Giriş Yap</h2>
-        <p class="muted">Yetkili erişim alanı.</p>
-        <div style="display:flex; gap:10px; margin-top:10px">
-          <input id="admin-pin" class="input" type="password" placeholder="PIN" inputmode="numeric" autocomplete="one-time-code" style="flex:1">
-          <button id="admin-enter" class="btn btn-primary">Giriş</button>
+        <p class="a-muted">Yetkili erişim alanı.</p>
+        <div class="a-row" style="margin-top:10px">
+          <input id="a-pin" class="a-input" type="password" placeholder="PIN" inputmode="numeric" autocomplete="one-time-code">
+          <button id="a-enter" class="a-btn primary">Giriş</button>
         </div>
-        <div class="hint">Güvenliğiniz için PIN’i kimseyle paylaşmayın.</div>
+        <div class="a-muted" style="margin-top:8px; font-size:12px">Güvenlik için PIN’i paylaşmayın.</div>
       </div>
     </section>
 
-    <!-- Panel -->
-    <section id="admin-panel">
-      <div class="tabs">
-        <button id="tab-events" class="btn btn-primary">Etkinlikler</button>
-        <button id="tab-results" class="btn ghost">Sonuçlar</button>
+    <!-- PANEL -->
+    <section id="a-panel">
+      <!-- Genel İstatistik -->
+      <section class="a-stats">
+        <div class="a-card a-stat"><div>Toplam Test</div><div class="val" id="s-total">0</div></div>
+        <div class="a-card a-stat"><div>Ortalama Skor</div><div class="val" id="s-avg">0%</div></div>
+        <div class="a-card a-stat"><div>Bugün</div><div class="val" id="s-today">0</div></div>
+        <div class="a-card a-stat"><div>Son 7 Gün</div><div class="val" id="s-week">0</div></div>
+      </section>
+
+      <section class="a-grid">
+        <div class="a-card">
+          <h3>Kategori Ortalama %</h3>
+          <canvas id="c-cats" height="140"></canvas>
+        </div>
+        <div class="a-card">
+          <h3>Günlük Test Adedi (7g)</h3>
+          <canvas id="c-trend" height="140"></canvas>
+        </div>
+      </section>
+
+      <div class="a-tabs">
+        <button id="t-events" class="a-btn primary">Etkinlikler</button>
+        <button id="t-results" class="a-btn ghost">Sonuçlar</button>
       </div>
 
       <!-- Etkinlikler -->
-      <section id="events-panel" class="card" style="display:block">
+      <section id="p-events" class="a-card" style="display:block">
         <h3>Etkinlik Ekle</h3>
-        <div class="form-grid" style="margin:8px 0 14px">
-          <input id="event-title" class="input" type="text" placeholder="Başlık (zorunlu)">
-          <input id="event-desc" class="input" type="text" placeholder="Açıklama (isteğe bağlı)">
-          <input id="event-img" class="input" type="url" placeholder="Görsel URL (zorunlu)">
-          <button id="add-event" class="btn btn-primary">Ekle</button>
+        <div class="a-form" style="margin:10px 0 14px">
+          <input id="ev-title" class="a-input" type="text" placeholder="Başlık (zorunlu)">
+          <input id="ev-desc" class="a-input" type="text" placeholder="Açıklama (isteğe bağlı)">
+          <input id="ev-img"  class="a-input" type="url"  placeholder="Görsel URL (zorunlu)">
+          <button id="ev-add" class="a-btn primary">Ekle</button>
         </div>
 
         <h3>Eklenen Etkinlikler</h3>
-        <div id="admin-event-list" class="grid list-gap-md" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:12px"></div>
+        <div id="ev-list" class="a-event-list"></div>
       </section>
 
       <!-- Sonuçlar -->
-      <section id="results-panel" class="card" style="display:none">
+      <section id="p-results" class="a-card" style="display:none">
         <h3>Test Sonuçları</h3>
-        <div id="admin-result-list" class="stack-md" style="display:grid; gap:10px; margin-top:8px"></div>
+        <div id="res-list" style="display:grid; gap:10px; margin-top:8px"></div>
       </section>
     </section>
-
   </main>
 
-  <footer class="ks-footer">
-    <p>© <span id="y"></span> KontrolSende</p>
-  </footer>
+  <footer>© <span id="y"></span> KontrolSende</footer>
 
+  <!-- Admin'e özel JS (tam entegre) -->
   <script>
-    // Alt bilgi yılı
+    // Yıl
     document.getElementById('y').textContent = new Date().getFullYear();
+
+    // ====== Basit Menü (çakışmasın diye .a- ile yazıldı) ======
+    (function(){
+      const hamb = document.getElementById('a-hamb');
+      const drawer = document.getElementById('a-drawer');
+      const backdrop = document.getElementById('a-backdrop');
+
+      function open() {
+        hamb.classList.add('is-open');
+        hamb.setAttribute('aria-expanded','true');
+        drawer.classList.add('is-open');
+        drawer.setAttribute('aria-hidden','false');
+        backdrop.classList.add('is-show');
+        document.documentElement.style.overflow='hidden';
+      }
+      function close() {
+        hamb.classList.remove('is-open');
+        hamb.setAttribute('aria-expanded','false');
+        drawer.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden','true');
+        backdrop.classList.remove('is-show');
+        document.documentElement.style.overflow='';
+      }
+      function toggle(){ drawer.classList.contains('is-open') ? close() : open(); }
+
+      hamb.addEventListener('click', toggle);
+      backdrop.addEventListener('click', close);
+      drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+      document.addEventListener('keydown', e => { if (e.key==='Escape' && drawer.classList.contains('is-open')) close(); });
+    })();
+
+    // ====== API Katmanı ======
+    const API_BASE = "https://kontrolsende-api.onrender.com";
+    const DB = {
+      async getEvents() {
+        const r = await fetch(\`\${API_BASE}/getEvents\`);
+        const j = await r.json().catch(()=>({success:false}));
+        return j && j.success ? j.rows : [];
+      },
+      async addEvent({ title, desc, img }) {
+        const r = await fetch(\`\${API_BASE}/addEvent\`, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ title, description: desc || "", image_url: img })
+        });
+        const j = await r.json().catch(()=>({success:false}));
+        return !!(j && j.success);
+      },
+      async deleteEvent(id){
+        const r = await fetch(\`\${API_BASE}/deleteEvent/\${id}\`, { method:'DELETE' });
+        const j = await r.json().catch(()=>({success:false}));
+        return !!(j && j.success);
+      },
+
+      async getResults(){
+        const r = await fetch(\`\${API_BASE}/getResults\`);
+        const j = await r.json().catch(()=>({success:false, rows:[]}));
+        return j && j.success
+          ? j.rows.map(x => ({ id:x.id, at:x.created_at, totalPct:x.total_pct, cats:x.cats }))
+          : [];
+      },
+      async deleteResult(id){
+        const r = await fetch(\`\${API_BASE}/deleteResult/\${id}\`, { method:'DELETE' });
+        const j = await r.json().catch(()=>({success:false}));
+        return !!(j && j.success);
+      }
+    };
+
+    // ====== Admin Login & Panel ======
+    (function(){
+      const PIN = '29391354'; // Not: Frontend PIN güvenlik amaçlı değildir; ileride server-side auth ekleyin.
+      const loginBox = document.getElementById('a-login');
+      const panelBox = document.getElementById('a-panel');
+      const pinIn = document.getElementById('a-pin');
+      document.getElementById('a-enter').addEventListener('click', ()=>{
+        const val = (pinIn.value||'').trim();
+        if (val !== PIN) return alert('Hatalı PIN');
+        loginBox.style.display='none';
+        panelBox.style.display='block';
+        renderAll();
+      });
+
+      // Tabs
+      const tEvents = document.getElementById('t-events');
+      const tResults= document.getElementById('t-results');
+      const pEvents = document.getElementById('p-events');
+      const pResults= document.getElementById('p-results');
+      tEvents.addEventListener('click', ()=>{
+        tEvents.classList.add('primary'); tResults.classList.remove('primary');
+        pEvents.style.display='block'; pResults.style.display='none';
+        renderEvents();
+      });
+      tResults.addEventListener('click', ()=>{
+        tResults.classList.add('primary'); tEvents.classList.remove('primary');
+        pEvents.style.display='none'; pResults.style.display='block';
+        renderResults(); renderStats(); // sonuç görünürken istatistikleri de güncelle
+      });
+
+      // Events — add
+      const evTitle = document.getElementById('ev-title');
+      const evDesc  = document.getElementById('ev-desc');
+      const evImg   = document.getElementById('ev-img');
+      document.getElementById('ev-add').addEventListener('click', async ()=>{
+        const title = (evTitle.value||'').trim();
+        const desc  = (evDesc.value||'').trim();
+        const img   = (evImg.value||'').trim();
+        if (!title || !img) return alert('Başlık ve Görsel URL zorunlu.');
+        const ok = await DB.addEvent({ title, desc, img });
+        if (ok){ evTitle.value=''; evDesc.value=''; evImg.value=''; renderEvents(); alert('Etkinlik eklendi.'); }
+        else alert('Eklenemedi.');
+      });
+
+      async function renderAll(){ await renderEvents(); await renderResults(); await renderStats(); }
+      async function renderEvents(){
+        const list = await DB.getEvents();
+        const wrap = document.getElementById('ev-list');
+        wrap.innerHTML = !list.length ? '<p class="a-muted">Henüz etkinlik yok.</p>' :
+          list.map(ev=>`
+            <article class="a-event a-card">
+              <div class="media"><img src="${ev.image_url}" alt="${ev.title}" loading="lazy"></div>
+              <div class="meta">
+                <strong>${ev.title}</strong>
+                <span class="a-muted" style="font-size:12px">${new Date(ev.created_at).toLocaleDateString()}</span>
+              </div>
+              <p>${ev.description||''}</p>
+              <div style="display:flex; justify-content:flex-end">
+                <button class="a-btn ghost" data-del="${ev.id}">Sil</button>
+              </div>
+            </article>
+          `).join('');
+        wrap.querySelectorAll('[data-del]').forEach(btn=>{
+          btn.onclick = async ()=>{
+            const id = btn.getAttribute('data-del');
+            if (!confirm('Etkinlik silinsin mi?')) return;
+            const ok = await DB.deleteEvent(id);
+            if (ok) renderEvents(); else alert('Silme başarısız.');
+          };
+        });
+      }
+
+      async function renderResults(){
+        const list = await DB.getResults();
+        const wrap = document.getElementById('res-list');
+        wrap.innerHTML = !list.length ? '<p class="a-muted">Kayıtlı sonuç yok.</p>' :
+          list.map(it=>`
+            <div class="a-result">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                <strong>${new Date(it.at).toLocaleString()}</strong>
+                <div style="display:flex;gap:6px;align-items:center">
+                  <span class="a-muted">Genel: ${it.totalPct}%</span>
+                  <button class="a-btn ghost" data-del-res="${it.id}">Sil</button>
+                </div>
+              </div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                ${it.cats.map(c=>`<span class="a-card" style="padding:4px 8px; border-radius:999px; border:1px solid var(--a-border)">${c.cat}: ${c.pct}%</span>`).join('')}
+              </div>
+            </div>
+          `).join('');
+        wrap.querySelectorAll('[data-del-res]').forEach(btn=>{
+          btn.onclick = async ()=>{
+            const id = Number(btn.getAttribute('data-del-res'));
+            if (!confirm('Bu sonuç silinsin mi?')) return;
+            const ok = await DB.deleteResult(id);
+            if (ok) { renderResults(); renderStats(); } else alert('Silme başarısız.');
+          };
+        });
+      }
+
+      // ====== Stats + Charts ======
+      let chartCats, chartTrend;
+      function buildStats(rows){
+        const total = rows.length;
+        const avg = total ? Math.round(rows.reduce((s,r)=>s+(r.totalPct||0),0)/total) : 0;
+
+        const todayStr = new Date().toLocaleDateString();
+        let today = 0, week = 0;
+        const dayCounts = {};
+        const days = [];
+        for (let d=6; d>=0; d--){
+          const dt = new Date(); dt.setDate(dt.getDate()-d);
+          const k = dt.toLocaleDateString();
+          days.push(k); dayCounts[k]=0;
+        }
+        const catsAgg = {};
+        rows.forEach(r=>{
+          const at = new Date(r.at);
+          const key = at.toLocaleDateString();
+          if (key === todayStr) today++;
+          if (days.includes(key)) dayCounts[key]++;
+          const diff = (Date.now()-at.getTime())/86400000; if (diff<=7) week++;
+          (r.cats||[]).forEach(c=>{
+            const k = c.cat || 'Diğer';
+            if (!catsAgg[k]) catsAgg[k] = { sum:0, count:0 };
+            catsAgg[k].sum += Number(c.pct||0); catsAgg[k].count++;
+          });
+        });
+        const catLabels = Object.keys(catsAgg);
+        const catValues = catLabels.map(k => Math.round(catsAgg[k].sum / catsAgg[k].count));
+        const trendLabels = days;
+        const trendValues = days.map(k=>dayCounts[k]||0);
+        return { total, avg, today, week, catLabels, catValues, trendLabels, trendValues };
+      }
+      async function renderStats(){
+        const rows = await DB.getResults();
+        const s = buildStats(rows);
+        document.getElementById('s-total').textContent = String(s.total);
+        document.getElementById('s-avg').textContent   = (s.avg||0)+'%';
+        document.getElementById('s-today').textContent = String(s.today);
+        document.getElementById('s-week').textContent  = String(s.week);
+
+        // Grafikler
+        const ctx1 = document.getElementById('c-cats');
+        const ctx2 = document.getElementById('c-trend');
+        if (window.Chart){
+          chartCats && chartCats.destroy();
+          chartCats = new Chart(ctx1, {
+            type:'bar',
+            data:{ labels:s.catLabels, datasets:[{ label:'Ortalama %', data:s.catValues }] },
+            options:{ responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true,max:100}} }
+          });
+          chartTrend && chartTrend.destroy();
+          chartTrend = new Chart(ctx2, {
+            type:'line',
+            data:{ labels:s.trendLabels, datasets:[{ label:'Test Adedi', data:s.trendValues, tension:.35, fill:false }] },
+            options:{ responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true,precision:0}} }
+          });
+        }
+      }
+    })();
   </script>
 </body>
 </html>
