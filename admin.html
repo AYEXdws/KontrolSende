@@ -1,441 +1,55 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KontrolSende • Admin Panel</title>
-  <link rel="stylesheet" href="css/style.css?v=702">
-</head>
-<body class="theme-glass">
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin • KontrolSende</title>
+<link rel="stylesheet" href="css/style.css?v=1">
+</head><body class="theme-glass">
+<header id="ks-header" class="ks-header">
+  <nav class="ks-nav ks-container">
+    <a class="ks-logo" href="index.html">KontrolSende</a>
+  </nav>
+</header>
 
-  <header class="ks-header">
-    <div class="ks-container ks-nav">
-      <a href="index.html" class="ks-logo">KontrolSende</a>
+<main class="ks-container" style="padding:20px 0">
+  <div id="a-login" class="card">
+    <div class="admin-hero">
+      <div class="admin-hero-icon">🔒</div>
+      <h1>Yönetim Girişi</h1>
+      <p class="muted">Lütfen PIN girin</p>
     </div>
-  </header>
-
-  <main class="ks-container" style="padding:40px 0">
-    
-    <!-- 🔐 Giriş Ekranı -->
-    <section id="a-login" style="text-align:center;">
-      <div class="admin-hero">
-        <div class="admin-hero-icon">🔒</div>
-        <h1>Admin Paneli</h1>
-        <p class="muted">Lütfen PIN kodunu girin</p>
-      </div>
-      <div class="admin-login-row" style="justify-content:center;">
-        <input id="a-pin" type="password" placeholder="PIN kodu" inputmode="numeric">
-        <button id="a-enter" class="btn btn-primary" type="button">Giriş</button>
-      </div>
-    </section>
-
-    <!-- 📊 Panel -->
-    <section id="a-panel" style="display:none;">
-      <h2>Yönetim Paneli</h2>
-
-      <!-- Tabs -->
-      <div class="tabs">
-        <button id="tab-events" class="btn btn-primary">Etkinlikler</button>
-        <button id="tab-results" class="btn ghost">Sonuçlar</button>
-      </div>
-
-      <!-- Etkinlikler -->
-      <div id="events-panel">
-        <div class="event-form">
-          <input id="event-title" placeholder="Başlık">
-          <input id="event-desc" placeholder="Açıklama">
-          <input id="event-img" placeholder="Görsel URL">
-          <input id="event-video" placeholder="Video URL (opsiyonel)">
-          <button id="add-event" class="btn btn-primary" type="button">Ekle</button>
-        </div>
-        <div id="admin-event-list"></div>
-      </div>
-
-      <!-- Sonuçlar -->
-      <div id="results-panel" style="display:none;">
-        <div id="admin-result-list"></div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="site-footer">
-    <div class="ks-container foot">
-      <span class="muted small">© 2025 KontrolSende</span>
+    <div class="admin-login-row">
+      <input id="a-pin" placeholder="PIN">
+      <button id="a-enter" class="btn btn-primary">Giriş</button>
     </div>
-  </footer>
+  </div>
 
-  <!-- ⚙️ Admin JS -->
-  <script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    const PIN = "29391354";
-    const loginBox = document.getElementById("a-login");
-    const panelBox = document.getElementById("a-panel");
-    const pinIn = document.getElementById("a-pin");
-    const enterBtn = document.getElementById("a-enter");
+  <section id="a-panel" style="display:none">
+    <div class="tabs">
+      <button id="tab-events" class="btn btn-primary">Etkinlikler</button>
+      <button id="tab-results" class="btn ghost">Test Sonuçları</button>
+    </div>
 
-    // 🔐 PIN kontrol
-    enterBtn.addEventListener("click", () => {
-      const val = (pinIn.value || "").trim();
-      if (val !== PIN) return alert("Hatalı PIN");
-      loginBox.style.display = "none";
-      panelBox.style.display = "block";
-      renderAdminEvents();
-      renderAdminResults();
-    });
+    <div id="events-panel">
+      <div class="event-form">
+        <input id="event-title" placeholder="Başlık">
+        <input id="event-desc" placeholder="Açıklama (opsiyonel)">
+        <input id="event-img" placeholder="Görsel URL (opsiyonel)">
+        <input id="event-video" placeholder="Video URL (opsiyonel)">
+        <button id="add-event" class="btn btn-primary">Ekle</button>
+      </div>
+      <div id="admin-event-list"></div>
+    </div>
 
-    // Tab geçişleri
-    const tabEvents = document.getElementById("tab-events");
-    const tabResults = document.getElementById("tab-results");
-    const eventsPanel = document.getElementById("events-panel");
-    const resultsPanel = document.getElementById("results-panel");
+    <div id="results-panel" style="display:none">
+      <div id="admin-result-list"></div>
+    </div>
+  </section>
+</main>
 
-    tabEvents.addEventListener("click", () => {
-      tabEvents.classList.add("btn-primary"); tabResults.classList.remove("btn-primary"); tabResults.classList.add("ghost");
-      eventsPanel.style.display = "block"; resultsPanel.style.display = "none";
-      renderAdminEvents();
-    });
+<footer class="site-footer"><div class="ks-container foot">
+  <span class="tiny muted">© 2025 KontrolSende</span>
+</div></footer>
 
-    tabResults.addEventListener("click", () => {
-      tabResults.classList.add("btn-primary"); tabEvents.classList.remove("btn-primary"); tabEvents.classList.add("ghost");
-      eventsPanel.style.display = "none"; resultsPanel.style.display = "block";
-      renderAdminResults();
-    });
-
-    // ✅ Etkinlik ekleme
-    document.getElementById("add-event").addEventListener("click", async () => {
-  const title = document.getElementById("event-title").value.trim();
-  const desc  = document.getElementById("event-desc").value.trim();
-  const img   = document.getElementById("event-img").value.trim();
-  const video = document.getElementById("event-video").value.trim();
-
-  if (!title) return alert("Başlık gerekli.");
-  // img ya da video’dan en az biri olsa güzel olur ama zorunlu değil.
-
-  await fetch("https://kontrolsende-api.onrender.com/addEvent",{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({ title, desc, img, video })
-  });
-  alert("Etkinlik eklendi ✅");
-  renderAdminEvents();
-});
-    // ✅ Etkinlikleri getir
-    async function renderAdminEvents() {
-      const wrap = document.getElementById("admin-event-list");
-      wrap.innerHTML = `<p class="muted">Yükleniyor...</p>`;
-      const res = await fetch("https://kontrolsende-api.onrender.com/events");
-      const events = await res.json();
-
-      if (!events.length) {
-        wrap.innerHTML = `<p class="muted">Henüz etkinlik yok.</p>`;
-        return;
-      }
-
-      wrap.innerHTML = events.map(ev => `
-        <article class="event-card">
-          <img src="${ev.img}" alt="${ev.title}">
-          <h4>${ev.title}</h4>
-          <p>${ev.desc || ''}</p>
-          <button class="btn ghost" data-del="${ev.id}">Sil</button>
-        </article>
-      `).join('');
-
-      wrap.querySelectorAll("[data-del]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          if (!confirm("Bu etkinliği silmek istediğine emin misin?")) return;
-          await fetch("https://kontrolsende-api.onrender.com/deleteEvent", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: btn.dataset.del }),
-          });
-          renderAdminEvents();
-        });
-      });
-    }
-
-    // ✅ Sonuçları getir
-    async function renderAdminResults() {
-      const wrap = document.getElementById("admin-result-list");
-      wrap.innerHTML = `<p class="muted">Yükleniyor...</p>`;
-      const res = await fetch("https://kontrolsende-api.onrender.com/results");
-      const results = await res.json();
-
-      if (!results.length) {
-        wrap.innerHTML = `<p class="muted">Henüz kayıtlı test sonucu yok.</p>`;
-        return;
-      }
-
-      wrap.innerHTML = results.map(r => `
-        <div class="history-item">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <strong>${new Date(r.at).toLocaleString()}</strong>
-            <span class="pill">Genel: ${r.total_pct}%</span>
-          </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            ${r.cats.map(c=>`<span class="pill">${c.cat}: ${c.pct}%</span>`).join('')}
-          </div>
-          <button class="btn ghost" data-id="${r.id}">Sil</button>
-        </div>
-      `).join('');
-
-      wrap.querySelectorAll("[data-id]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          if (!confirm("Bu sonucu silmek istediğine emin misin?")) return;
-          await fetch("https://kontrolsende-api.onrender.com/deleteResult", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: btn.dataset.id }),
-          });
-          renderAdminResults();
-        });
-      });
-    }
-  });
-  </script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const PIN = "29391354";
-  const API = "https://kontrolsende-api.onrender.com";
-
-  // ==== Elemanlar
-  const loginBox   = document.getElementById("a-login");
-  const panelBox   = document.getElementById("a-panel");
-  const pinIn      = document.getElementById("a-pin");
-  const enterBtn   = document.getElementById("a-enter");
-
-  const tabEvents  = document.getElementById("tab-events");
-  const tabResults = document.getElementById("tab-results");
-  const eventsPanel= document.getElementById("events-panel");
-  const resultsPanel= document.getElementById("results-panel");
-
-  const titleIn = document.getElementById("event-title");
-  const descIn  = document.getElementById("event-desc");
-  const imgIn   = document.getElementById("event-img");
-  const videoIn = document.getElementById("event-video"); // varsa; yoksa null olur
-  const addBtn  = document.getElementById("add-event");
-
-  const eventListWrap  = document.getElementById("admin-event-list");
-  const resultListWrap = document.getElementById("admin-result-list");
-
-  // ==== küçük yardımcılar
-  const j = (url, opt={}) => fetch(url, opt).then(r => {
-    if (!r.ok) throw new Error("HTTP " + r.status);
-    return r.json().catch(()=> ({}));
-  });
-
-  function normalizeArray(maybe) {
-    if (Array.isArray(maybe)) return maybe;
-    if (maybe && Array.isArray(maybe.rows)) return maybe.rows;
-    return [];
-  }
-
-  function toEmbed(url){
-    if (!url) return null;
-    try{
-      const u = new URL(url);
-      if (u.hostname.includes('youtube.com')) {
-        const v = u.searchParams.get('v');
-        if (v) return `https://www.youtube.com/embed/${v}`;
-      }
-      if (u.hostname === 'youtu.be') {
-        const id = u.pathname.replace('/','');
-        if (id) return `https://www.youtube.com/embed/${id}`;
-      }
-      if (u.hostname.includes('vimeo.com')) {
-        const id = u.pathname.split('/').filter(Boolean)[0];
-        if (id) return `https://player.vimeo.com/video/${id}`;
-      }
-      return null;
-    }catch{ return null; }
-  }
-
-  function mediaHTML(ev){
-    const img = ev.image_url;
-    const vid = ev.video_url;
-
-    if (vid) {
-      if (/\.(mp4|webm|ogg)$/i.test(vid)) {
-        const poster = img ? ` poster="${img}"` : '';
-        return `<video controls playsinline${poster} style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block">
-                  <source src="${vid}">
-                </video>`;
-      }
-      const emb = toEmbed(vid);
-      if (emb) {
-        return `<iframe src="${emb}" title="Etkinlik videosu"
-                  style="width:100%;height:100%;border:0;border-radius:12px;display:block"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowfullscreen loading="lazy"></iframe>`;
-      }
-    }
-    if (img) {
-      return `<img src="${img}" alt="${ev.title}" loading="lazy"
-              style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block">`;
-    }
-    return `<div style="width:100%;height:100%;display:grid;place-items:center;color:#667085">Medya yok</div>`;
-  }
-
-  // ==== Giriş
-  enterBtn?.addEventListener("click", () => {
-    const val = (pinIn?.value || "").trim();
-    if (val !== PIN) return alert("Hatalı PIN");
-    loginBox.style.display = "none";
-    panelBox.style.display = "block";
-    // varsayılan sekme
-    eventsPanel.style.display = "block";
-    resultsPanel.style.display = "none";
-    tabEvents.classList.add("btn-primary");
-    tabResults.classList.add("ghost");
-    renderAdminEvents();
-  });
-
-  // ==== Sekmeler
-  tabEvents?.addEventListener("click", () => {
-    tabEvents.classList.add("btn-primary"); tabEvents.classList.remove("ghost");
-    tabResults.classList.add("ghost"); tabResults.classList.remove("btn-primary");
-    eventsPanel.style.display = "block"; resultsPanel.style.display = "none";
-    renderAdminEvents();
-  });
-
-  tabResults?.addEventListener("click", () => {
-    tabResults.classList.add("btn-primary"); tabResults.classList.remove("ghost");
-    tabEvents.classList.add("ghost"); tabEvents.classList.remove("btn-primary");
-    eventsPanel.style.display = "none"; resultsPanel.style.display = "block";
-    renderAdminResults();
-  });
-
-  // ==== Etkinlik ekle
-  addBtn?.addEventListener("click", async () => {
-    try{
-      const title = (titleIn?.value || "").trim();
-      const desc  = (descIn?.value  || "").trim();
-      const img   = (imgIn?.value   || "").trim();
-      const video = (videoIn?.value || "").trim();
-      if (!title) return alert("Başlık gerekli.");
-
-      await j(`${API}/addEvent`, {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ title, desc, img, video })
-      });
-
-      // formu temizle
-      if (titleIn) titleIn.value = "";
-      if (descIn)  descIn.value  = "";
-      if (imgIn)   imgIn.value   = "";
-      if (videoIn) videoIn.value = "";
-
-      alert("Etkinlik eklendi ✅");
-      renderAdminEvents();
-    }catch(err){
-      console.error("addEvent error:", err);
-      alert("Eklenemedi ❌");
-    }
-  });
-
-  // ==== Etkinlik listesi
-  async function renderAdminEvents(){
-    if (!eventListWrap) return;
-    eventListWrap.innerHTML = `<p class="muted">Yükleniyor...</p>`;
-    try{
-      const res = await j(`${API}/events?t=${Date.now()}`, {
-        headers:{ "Accept":"application/json" }, cache:"no-store", mode:"cors"
-      });
-      const events = normalizeArray(res);
-
-      if (!events.length){
-        eventListWrap.innerHTML = `<p class="muted">Henüz etkinlik yok.</p>`;
-        return;
-      }
-      eventListWrap.innerHTML = events.map(ev => `
-        <article class="event-card">
-          <div class="event-media">${mediaHTML(ev)}</div>
-          <div class="event-meta">
-            <span class="event-title">${ev.title}</span>
-            <span class="tiny muted">${ev.created_at ? new Date(ev.created_at).toLocaleDateString() : ""}</span>
-          </div>
-          <p class="event-desc">${ev.description || ""}</p>
-          <div class="event-actions">
-            <button class="btn ghost" data-del="${ev.id}">Sil</button>
-          </div>
-        </article>
-      `).join("");
-
-      // sil
-      eventListWrap.querySelectorAll("[data-del]").forEach(btn=>{
-        btn.addEventListener("click", async () => {
-          if (!confirm("Bu etkinliği silmek istiyor musun?")) return;
-          try{
-            await j(`${API}/deleteEvent`, {
-              method:"POST",
-              headers:{ "Content-Type":"application/json" },
-              body: JSON.stringify({ id: btn.dataset.del })
-            });
-            renderAdminEvents();
-          }catch(err){
-            console.error("deleteEvent error:", err);
-            alert("Silinemedi ❌");
-          }
-        });
-      });
-
-    }catch(err){
-      console.error("[admin events] hata:", err);
-      eventListWrap.innerHTML = `<p class="muted">Etkinlikler yüklenemedi.</p>`;
-    }
-  }
-
-  // ==== Sonuç listesi
-  async function renderAdminResults(){
-    if (!resultListWrap) return;
-    resultListWrap.innerHTML = `<p class="muted">Yükleniyor...</p>`;
-    try{
-      const res = await j(`${API}/results?t=${Date.now()}`, {
-        headers:{ "Accept":"application/json" }, cache:"no-store", mode:"cors"
-      });
-      const results = normalizeArray(res);
-
-      if (!results.length){
-        resultListWrap.innerHTML = `<p class="muted">Henüz kayıtlı test sonucu yok.</p>`;
-        return;
-      }
-      resultListWrap.innerHTML = results.map(r => `
-        <div class="history-item">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <strong>${new Date(r.created_at || r.at).toLocaleString()}</strong>
-            <span class="pill">Genel: ${r.total_pct}%</span>
-          </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            ${(r.cats || []).map(c=>`<span class="pill">${c.cat}: ${c.pct}%</span>`).join('')}
-          </div>
-          <button class="btn ghost" data-id="${r.id}">Sil</button>
-        </div>
-      `).join("");
-
-      // sil
-      resultListWrap.querySelectorAll("[data-id]").forEach(btn=>{
-        btn.addEventListener("click", async () => {
-          if (!confirm("Bu sonucu silmek istiyor musun?")) return;
-          try{
-            await j(`${API}/deleteResult`, {
-              method:"POST",
-              headers:{ "Content-Type":"application/json" },
-              body: JSON.stringify({ id: btn.dataset.id })
-            });
-            renderAdminResults();
-          }catch(err){
-            console.error("deleteResult error:", err);
-            alert("Silinemedi ❌");
-          }
-        });
-      });
-    }catch(err){
-      console.error("[admin results] hata:", err);
-      resultListWrap.innerHTML = `<p class="muted">Sonuçlar yüklenemedi.</p>`;
-    }
-  }
-});
-</script>
-</body>
-</html>
+<script>window.API_BASE="https://kontrolsende-api.onrender.com";</script>
+<script>window.ADMIN_PIN="29391354";</script>
+<script src="js/main.js?v=1" defer></script>
+</body></html>
