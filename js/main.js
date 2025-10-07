@@ -19,27 +19,37 @@ const nowISO = () => new Date().toISOString();
 const API_BASE = "https://kontrolsende-api.onrender.com"; // Render URL’in
 
 const DB = {
-  // ---- EVENTS ----
-  async getEvents() {
-    const r = await fetch(`${API_BASE}/getEvents`);
-    const j = await r.json().catch(()=>({success:false}));
-    return j && j.success ? j.rows : [];
-  },
-  async addEvent({ title, desc, img }) {
-    const r = await fetch(`${API_BASE}/addEvent`, {
+  // ... (events aynı)
+
+  async addResult({ totalPct, cats }) {
+    const r = await fetch(`${API_BASE}/addResult`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description: desc || "", image_url: img })
+      body: JSON.stringify({ total_pct: totalPct, cats })
     });
     const j = await r.json().catch(()=>({success:false}));
     return !!(j && j.success);
   },
-  async deleteEvent(id) {
-    const r = await fetch(`${API_BASE}/deleteEvent/${id}`, { method: "DELETE" });
+
+  async getResults() {
+    const r = await fetch(`${API_BASE}/getResults`);
+    const j = await r.json().catch(()=>({success:false, rows:[]}));
+    return j && j.success
+      ? j.rows.map(x => ({
+          id: x.id,                 // 👈 id'yi koru
+          at: x.created_at,
+          totalPct: x.total_pct,
+          cats: x.cats
+        }))
+      : [];
+  },
+
+  async deleteResult(id) {
+    const r = await fetch(`${API_BASE}/deleteResult/${id}`, { method:"DELETE" });
     const j = await r.json().catch(()=>({success:false}));
     return !!(j && j.success);
   },
-
+};
   // ---- RESULTS ----
   async addResult({ totalPct, cats }) {
     const r = await fetch(`${API_BASE}/addResult`, {
