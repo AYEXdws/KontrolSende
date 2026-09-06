@@ -1,84 +1,65 @@
-# 🧠 KontrolSende
+# KontrolSende
 
-**KontrolSende**, bağımlılık farkındalığını artırmayı amaçlayan bir okul projesidir.  
-Bu web sitesi, öğrencilerin ve genç bireylerin **sigara, alkol, dijital bağımlılık ve benzeri davranışlar** hakkında farkındalık kazanmasını hedefler.
+Gençlerin günlük alışkanlıkları üzerine düşünmesini amaçlayan bir bağımlılık farkındalığı okul projesi.
 
----
+Bu depo, HTML/CSS/JavaScript arayüzünü ve ayrı bir API'ye bağlanan etkinlik/sonuç akışını içerir.
 
-## 🎯 Projenin Amacı
+## İşlevler
 
-Bağımlılığın sadece maddeyle sınırlı olmadığını; **duygusal, dijital, alışveriş ve oyun** gibi farklı alanlarda da oluşabileceğini göstermek.  
-Her bireyin kendi alışkanlıklarını fark etmesi, “kontrol”ü yeniden eline alması hedeflenmiştir.
+- Ana sayfa ve proje tanıtımı.
+- Kategori bazlı farkındalık testi ve yüzdelik sonuç grafikleri.
+- API üzerinden yüklenen etkinlikler; görsel ve video gösterimi.
+- Yardım ve destek kaynakları sayfası.
+- Etkinlik ve test sonuçları için yönetim arayüzü.
 
----
+Test puanları uygulamadaki soru ve puanlama mantığından üretilir. Klinik risk ölçümü veya tanı olarak kullanılmamalıdır.
 
-## 🧩 Özellikler
+## Veri akışı
 
-- **Farkındalık Testi:**  
-  Kullanıcıların günlük alışkanlıklarını değerlendirip, kategori bazlı sonuçlar (sigara, alkol, dijital, genel vb.) verir.
+Testin puanlanması tarayıcıda yapılır. Tamamlanan testin toplam yüzdesi ve kategori özetleri, yapılandırılmış API'ye gönderilir. Etkinlik listeleri ve yönetim işlemleri de aynı API'yi kullanır.
 
-- **İstatistikli Sonuç Analizi:**  
-  Test sonunda, her kategori için yüzdelik “risk eğilimi” grafikleri sunulur.
+Bu nedenle uygulama, yalnız cihaz içinde sonuç saklayan çevrimdışı bir araç olarak değerlendirilmemelidir. Ayrı API'nin sunucu kodu bu depoda yer almaz.
 
-- **Yerel Kayıt & Gizli Rapor:**  
-  Sonuçlar cihazda güvenli şekilde saklanır ve sadece belirli PIN ile erişilen `admin.html` sayfasında görüntülenebilir.
+## Dosya yapısı
 
-- **Mobil Uyumluluk:**  
-  Tamamen responsive tasarım — bilgisayar, tablet ve mobil cihazlarda kusursuz çalışır.
+| Yol | İçerik |
+| --- | --- |
+| `index.html` | Ana sayfa |
+| `test.html` | Test arayüzü |
+| `etkinlikler.html` | Etkinlik listesi |
+| `yardim.html` | Yardım kaynakları |
+| `admin.html` | Yönetim ekranı |
+| `js/main.js` | Test, etkinlik ve API etkileşimleri |
+| `css/style.css` | Görünüm |
 
-- **Yardım Kaynakları:**  
-  “Yardım Al” sayfasında Yeşilay, YEDAM (115), 183 ve 191 hatlarına yönlendirme yapılır.
+## Yerel kullanım
 
----
+Depo kökünde:
 
-## 📂 Dosya Yapısı
-KontrolSende/
-│
-├── index.html              # Ana sayfa
-├── test.html               # Farkındalık testi sayfası
-├── etkinlikler.html        # Proje etkinlikleri
-├── yardim.html             # Yardım / destek hatları
-├── admin.html              # Gizli istatistik raporu (PIN korumalı)
-│
-├── css/
-│   └── style.css           # Tüm stil dosyası
-│
-├── js/
-│   └── main.js             # Menü + test + istatistik mantığı
-│
-├── .gitignore              # Gereksiz dosyaları hariç tutar
-└── README.md               # Proje tanıtımı ve dokümantasyonu
----
+```bash
+python3 -m http.server 8000
+```
 
-## 🚀 Yayınlama (GitHub Pages)
+[localhost:8000](http://localhost:8000) adresini açın. Node.js bağımlılığı veya derleme adımı yoktur.
 
-1. GitHub deposuna gir → **Settings → Pages**  
-2. **Branch:** `main`  
-   **Folder:** `/ (root)` seç → **Save**  
-3. 1–2 dakika içinde site aktif olur:  
-   👉 [https://ayexdws.github.io/KontrolSende/](https://ayexdws.github.io/KontrolSende/)
+Sayfalarda kullanılan `window.API_BASE` ayarını kendi geliştirme API'nizle eşleştirin. Arayüzün açılması, ayrı API'nin çalıştığını veya yönetim yetkisinin doğrulandığını göstermez. Yönetim yetkilendirmesi API tarafında uygulanmalıdır; yayın yapılandırmasına erişim bilgisi eklemeyin.
 
----
+## Yayınlama
 
-## 🔒 Gizli Rapor Sayfası
+GitHub Pages için depo kökünü yayın kaynağı olarak seçebilirsiniz. Aynı dosyalar başka bir statik sunucuda da çalışır.
 
-> Adres: `admin.html#AYEX-KEY-2025`
+API'nin arayüz origin'ini kabul etmesi ve HTTPS üzerinden ulaşılabilir olması gerekir. Test sonuçlarının gönderildiği veri akışını, kullanılacağı ortamın bilgilendirme ve veri saklama politikasıyla birlikte değerlendirin.
 
-Bu sayfa herkese açık değildir.  
-Test sonuçları yalnızca **tarayıcıda yerel olarak** saklanır ve bu anahtarı bilen kişi tarafından görüntülenebilir.  
-Menülerde link verilmez, `noindex` etiketiyle arama motorlarından gizlenmiştir.
+## Kontroller
 
----
+Depoda otomatik test paketi bulunmaz. Geliştirme verisiyle şunları kontrol edin:
 
-## 🧑‍💻 Geliştirici
+- Test boyunca ileri/geri gezinme ve yeniden başlatma.
+- Kategori ve toplam sonuç gösterimi.
+- Etkinliklerin yüklenmesi, görsel ve video bağlantıları.
+- API erişimi olmadığında arayüz davranışı.
+- Yetkili geliştirme hesabıyla yönetim akışı.
 
-**Proje sahibi:** Ahmet Cemal ([@AYEXdws](https://github.com/AYEXdws))  
-Bu proje okul kapsamında geliştirilmiştir.  
-Tüm içerik ve tasarımlar eğitim amaçlıdır.
+## Lisans
 
----
-
-## 🧾 Lisans
-
-Bu proje **MIT Lisansı** altında paylaşılmıştır.  
-Kullanım serbesttir ancak kaynak gösterilmesi rica olunur.
+Kod [MIT lisansı](LICENSE) altındadır. Medya dosyalarının yeniden kullanım şartları ayrıca değerlendirilmelidir.
